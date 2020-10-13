@@ -1,1 +1,74 @@
-<p>parametrages works!</p>
+<mat-card>
+  <h3>Paramétrages</h3>
+  <ol class="breadcrumb text-right">
+    <li>
+      <a href="#"><em class="fa fa-home"></em> Accueil</a>
+    </li>
+    <li class="active">Paramétrages</li>
+  </ol>
+</mat-card>
+<section class="content">
+  <div class="row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+      <mat-card>
+        <mat-tab-group dynamicHeight>
+          <mat-tab label="Domaines & Mentions & Spécialités & Parcours">
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel expanded>
+                  <mat-expansion-panel-header>
+                    Domaines
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-domaine></app-domaine>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Mentions
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-mention></app-mention>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Parcours
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-parcours></app-parcours>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Spécialités
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-specialite></app-specialite>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </mat-tab>
+          <mat-tab label="Mention"> Mention </mat-tab>
+        </mat-tab-group>
+      </mat-card>
+    </div>
+  </div>
+</section>

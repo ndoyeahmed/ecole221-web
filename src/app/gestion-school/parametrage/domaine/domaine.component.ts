@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-domaine',
@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DomaineComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+  ) {
+  }
 
   ngOnInit(): void {
   }

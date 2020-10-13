@@ -1,16 +1,31 @@
-<div class="row" style="margin-bottom: 2%;">
+<div class="row" style="margin-bottom: 2%">
   <div class="col-md-12 col-lg-8 col-sm-12 col-xs-12">
     <div class="form-group row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <mat-label>Libellé : </mat-label>
-          <input name="libelle" matInput/>
+          <mat-label>Domaines :</mat-label>
+          <mat-select>
+            <mat-option>Domaine 1</mat-option>
+            <mat-option>Domaine 2</mat-option>
+            <mat-option>Domaine 3</mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
+      <div class="col-md-6">
+        <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <mat-label>Libellé : </mat-label>
+          <input name="libelle" matInput />
+        </mat-form-field>
       </div>
+    </div>
   </div>
   <div class="col-md-12 col-lg-3 col-sm-12 col-xs-12">
-    <button mat-raised-button color="primary" data-toggle="modal" data-target="#addModal">
+    <button
+      mat-raised-button
+      color="primary"
+      data-toggle="modal"
+      data-target="#addModal"
+    >
       Enregistrer
       <em class="fa fa-save fa-lg"></em>
     </button>
@@ -22,6 +37,7 @@
     <tr>
       <th>N°</th>
       <th>Domaine</th>
+      <th>Mention</th>
       <th>Statut</th>
       <th class="text-center">Actions</th>
     </tr>
@@ -30,6 +46,7 @@
     <tr>
       <td>1</td>
       <td>Domaine 1</td>
+      <td>Mention 1</td>
       <td>
         <mat-slide-toggle color="primary"> </mat-slide-toggle>
       </td>
@@ -38,12 +55,14 @@
           <div
             class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
           >
-            <button matTooltip="Modifier" mat-mini-fab color="primary"><em class="fa fa-edit fa-lg">
-            </em></button>
+            <button matTooltip="Modifier" mat-mini-fab color="primary">
+              <em class="fa fa-edit fa-lg"> </em>
+            </button>
           </div>
           <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-            <button matTooltip="Supprimer" mat-mini-fab color="warn"><em class="fa fa-trash fa-lg">
-            </em></button>
+            <button matTooltip="Supprimer" mat-mini-fab color="warn">
+              <em class="fa fa-trash fa-lg"> </em>
+            </button>
           </div>
         </div>
       </td>
