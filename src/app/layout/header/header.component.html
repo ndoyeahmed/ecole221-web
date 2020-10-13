@@ -1,0 +1,105 @@
+<header class="main-header">
+  <!-- Logo -->
+  <a href="javascript:void(0);" class="logo">
+    <!-- mini logo for sidebar mini 50x50 pixels -->
+    <span class="logo-mini"><strong>ESN</strong></span>
+    <!-- logo for regular state and mobile devices -->
+    <span class="logo-lg"><strong>ECOLE</strong></span>
+  </a>
+  <!-- Header Navbar: style can be found in header.less -->
+  <nav class="navbar navbar-static-top">
+    <!-- Sidebar toggle button-->
+    <a href="javascript:void(0);" class="sidebar-toggle" data-toggle="push-menu" role="button">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="navbar-custom-menu">
+      <ul class="nav navbar-nav">
+        <!--<li class="dropdown tasks-menu" *ngIf="languages && languages.length > 1">
+          <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+            <em class="fa fa-globe"></em> &nbsp;
+            <span>{{'global.menu.language.title' | translate }}</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <ul class="menu">
+                <li *ngFor="let language of languages">
+                  <a href="javascript:void(0);" (click)="changeLanguage(language.value);"> {{ 'global.menu.language.' + language.text | translate}} </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>-->
+        <!-- Notifications: style can be found in dropdown.less -->
+        <li class="dropdown notifications-menu">
+          <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-bell"></i>
+            <span class="label label-warning">10</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li class="header">{{ 'header.notifications' }}</li>
+            <li>
+              <!-- inner menu: contains the actual data -->
+              <ul class="menu">
+                <!--<li>
+                    <a href="javascript:void(0);">
+                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                    </a>
+                </li>-->
+              </ul>
+            </li>
+            <li class="footer"><a href="javascript:void(0);">View all</a></li>
+          </ul>
+        </li>
+
+        <!-- User Account: style can be found in dropdown.less -->
+        <li class="dropdown user user-menu">
+          <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+            <img [src]="'../../../assets/images/login2.png'"
+                 alt="User Image" class="user-image">
+            <span class="hidden-xs"> Mouhamed NDOYE
+            </span>
+          </a>
+          <ul class="dropdown-menu">
+            <!-- User image -->
+            <li class="user-header">
+              <img [src]="'../../../assets/images/avatar2.png'"
+                   class="img-circle" alt="User Image">
+
+              <p>
+              ADMIN
+                <!--<small>Member since Nov. 2012</small>-->
+              </p>
+            </li>
+            <!-- Menu Body -->
+            <!--<li class="user-body">
+                <div class="row">
+                    <div class="col-xs-4 text-center">
+                        <a href="javascript:void(0);">Followers</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                        <a href="javascript:void(0);">Sales</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                        <a href="javascript:void(0);">Friends</a>
+                    </div>
+                </div>
+            </li>-->
+            <!-- Menu Footer-->
+            <li class="user-footer">
+              <div class="pull-left">
+                <a [routerLink]="'/gestion-patients/profil-user'" class="btn btn-default btn-flat">Profil</a>
+              </div>
+              <div class="pull-right">
+                <a (click)="logout()" href="javascript:void(0);" class="btn btn-default btn-flat">Sign out</a>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
