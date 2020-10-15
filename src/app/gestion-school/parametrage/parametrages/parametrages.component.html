@@ -66,7 +66,101 @@
               </mat-accordion>
             </div>
           </mat-tab>
-          <mat-tab label="Mention"> Mention </mat-tab>
+          <mat-tab label="Horaire & Année scolaire & Module & Cycle & Pays & Semestre">
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel expanded>
+                  <mat-expansion-panel-header>
+                    Année scolaire
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-anneescolaire></app-anneescolaire>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel expanded>
+                  <mat-expansion-panel-header>
+                    Cycle
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-cycle></app-cycle>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Module
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-module></app-module>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Horaire
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-horaire></app-horaire>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Pays
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-pays></app-pays>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Semestre
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-semestre></app-semestre>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </mat-tab>
+          <mat-tab label="Niveau">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel expanded>
+                  <mat-expansion-panel-header>
+                    Niveau
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-niveau></app-niveau>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </mat-tab>
         </mat-tab-group>
       </mat-card>
     </div>

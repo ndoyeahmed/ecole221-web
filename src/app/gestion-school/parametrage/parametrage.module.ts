@@ -13,11 +13,18 @@ import { ParametragesComponent } from './parametrages/parametrages.component';
 import { MentionComponent } from './mention/mention.component';
 import { SpecialiteComponent } from './specialite/specialite.component';
 import { ParcoursComponent } from './parcours/parcours.component';
+import { HoraireComponent } from './horaire/horaire.component';
+import { ModuleComponent } from './module/module.component';
+import { AnneescolaireComponent } from './anneescolaire/anneescolaire.component';
+import { CycleComponent } from './cycle/cycle.component';
+import { PaysComponent } from './pays/pays.component';
+import { SemestreComponent } from './semestre/semestre.component';
+import { NiveauComponent } from './niveau/niveau.component';
 
 
 
 @NgModule({
-  declarations: [DomaineComponent, ParametragesComponent, MentionComponent, SpecialiteComponent, ParcoursComponent],
+  declarations: [DomaineComponent, ParametragesComponent, MentionComponent, SpecialiteComponent, ParcoursComponent, HoraireComponent, ModuleComponent, AnneescolaireComponent, CycleComponent, PaysComponent, SemestreComponent, NiveauComponent],
   imports: [
     ParametrageRoutingModule,
     SharedModule,
