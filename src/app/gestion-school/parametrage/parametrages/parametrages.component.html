@@ -160,9 +160,9 @@
             </div>
           </mat-tab>
           <mat-tab label="Paramétrages modules & UE">
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
-                <mat-expansion-panel>
+                <mat-expansion-panel expanded>
                   <mat-expansion-panel-header>
                     Module
                   </mat-expansion-panel-header>
@@ -173,15 +173,15 @@
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
-                <mat-expansion-panel>
+                <mat-expansion-panel expanded>
                   <mat-expansion-panel-header>
                     UE
                   </mat-expansion-panel-header>
 
                   <ng-template matExpansionPanelContent>
-                    <app-module></app-module>
+                    <app-ue></app-ue>
                   </ng-template>
                 </mat-expansion-panel>
               </mat-accordion>
@@ -190,13 +190,13 @@
           <mat-tab label="Paramétrages références">
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
-                <mat-expansion-panel>
+                <mat-expansion-panel expanded>
                   <mat-expansion-panel-header>
                     Référentiel
                   </mat-expansion-panel-header>
 
                   <ng-template matExpansionPanelContent>
-                    <app-pays></app-pays>
+                    <app-referentiel></app-referentiel>
                   </ng-template>
                 </mat-expansion-panel>
               </mat-accordion>

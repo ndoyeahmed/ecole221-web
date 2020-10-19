@@ -22,6 +22,7 @@ import { SemestreComponent } from './semestre/semestre.component';
 import { NiveauComponent } from './niveau/niveau.component';
 import { DocumentComponent } from './document/document.component';
 import { ReferentielComponent } from './referentiel/referentiel.component';
+import { UeComponent } from './ue/ue.component';
 
 
 
@@ -40,7 +41,8 @@ import { ReferentielComponent } from './referentiel/referentiel.component';
     SemestreComponent,
     NiveauComponent,
     DocumentComponent,
-    ReferentielComponent
+    ReferentielComponent,
+    UeComponent
   ],
   imports: [
     ParametrageRoutingModule,
