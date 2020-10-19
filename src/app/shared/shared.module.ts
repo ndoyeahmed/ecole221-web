@@ -20,7 +20,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     RouterModule,
     MatTooltipModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
   ]
 })
 export class SharedModule { }

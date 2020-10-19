@@ -51,4 +51,7 @@ body {
   src: url("~assets/fonts/lucida-handwriting/qkmarisa.ttf") format("opentype");
 }
 
-.cdk-global-overlay-wrapper, .cdk-overlay-container { z-index: 9999!important; }
+/* .cdk-global-overlay-wrapper, .cdk-overlay-container { z-index: 9999!important; } */
+.modal-backdrop {
+  z-index: -1;
+}

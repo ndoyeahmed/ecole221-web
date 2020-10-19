@@ -1,5 +1,5 @@
 <div class="row" style="margin-bottom: 2%">
-  <div class="col-md-12 col-lg-8 col-sm-12 col-xs-12">
+  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
     <div class="form-group row">
       <div class="col-md-6">
         <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -18,8 +18,22 @@
         </mat-form-field>
       </div>
     </div>
+    <div class="row" style="margin-bottom: 4%">
+      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <h3>Choisir les niveaux :</h3>
+        <mat-checkbox color="primary" class="example-margin">L1</mat-checkbox>
+        <mat-checkbox color="primary" class="example-margin">L2</mat-checkbox>
+        <mat-checkbox color="primary" class="example-margin">L3</mat-checkbox>
+        <mat-checkbox color="primary" class="example-margin"
+          >Master 1</mat-checkbox
+        >
+        <mat-checkbox color="primary" class="example-margin"
+          >Master 2</mat-checkbox
+        >
+      </div>
+    </div>
   </div>
-  <div class="col-md-12 col-lg-3 col-sm-12 col-xs-12">
+  <div style="margin-bottom: 4%" class="col-md-12 col-lg-3 col-sm-12 col-xs-12">
     <button
       mat-raised-button
       color="primary"
@@ -36,6 +50,7 @@
   <thead>
     <tr>
       <th>N°</th>
+      <th>Niveaux</th>
       <th>Mention</th>
       <th>Spécialité</th>
       <th>Statut</th>
@@ -45,6 +60,23 @@
   <tbody>
     <tr>
       <td>1</td>
+      <td>
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              Liste des niveaux
+            </mat-expansion-panel-header>
+
+            <ng-template matExpansionPanelContent>
+              <ul>
+                <li>L1</li>
+                <li>L2</li>
+                <li>L3</li>
+              </ul>
+            </ng-template>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </td>
       <td>Mention 1</td>
       <td>Spécialité 1</td>
       <td>
@@ -55,12 +87,14 @@
           <div
             class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
           >
-            <button matTooltip="Modifier" mat-mini-fab color="primary"><em class="fa fa-edit fa-lg">
-            </em></button>
+            <button matTooltip="Modifier" mat-mini-fab color="primary">
+              <em class="fa fa-edit fa-lg"> </em>
+            </button>
           </div>
           <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-            <button matTooltip="Supprimer" mat-mini-fab color="warn"><em class="fa fa-trash fa-lg">
-            </em></button>
+            <button matTooltip="Supprimer" mat-mini-fab color="warn">
+              <em class="fa fa-trash fa-lg"> </em>
+            </button>
           </div>
         </div>
       </td>

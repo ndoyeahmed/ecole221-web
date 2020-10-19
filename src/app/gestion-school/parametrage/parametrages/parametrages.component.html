@@ -12,7 +12,20 @@
     <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
       <mat-card>
         <mat-tab-group dynamicHeight>
-          <mat-tab label="Domaines & Mentions & Spécialités & Parcours">
+          <mat-tab label="Paramétrages de base">
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel expanded>
+                  <mat-expansion-panel-header>
+                    Année scolaire
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-anneescolaire></app-anneescolaire>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
             <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
                 <mat-expansion-panel expanded>
@@ -22,6 +35,19 @@
 
                   <ng-template matExpansionPanelContent>
                     <app-domaine></app-domaine>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Cycle
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-cycle></app-cycle>
                   </ng-template>
                 </mat-expansion-panel>
               </mat-accordion>
@@ -56,60 +82,6 @@
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
-                    Spécialités
-                  </mat-expansion-panel-header>
-
-                  <ng-template matExpansionPanelContent>
-                    <app-specialite></app-specialite>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-          </mat-tab>
-          <mat-tab label="Horaire & Année scolaire & Module & Cycle & Pays & Semestre">
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel expanded>
-                  <mat-expansion-panel-header>
-                    Année scolaire
-                  </mat-expansion-panel-header>
-
-                  <ng-template matExpansionPanelContent>
-                    <app-anneescolaire></app-anneescolaire>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel expanded>
-                  <mat-expansion-panel-header>
-                    Cycle
-                  </mat-expansion-panel-header>
-
-                  <ng-template matExpansionPanelContent>
-                    <app-cycle></app-cycle>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    Module
-                  </mat-expansion-panel-header>
-
-                  <ng-template matExpansionPanelContent>
-                    <app-module></app-module>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
                     Horaire
                   </mat-expansion-panel-header>
 
@@ -123,11 +95,52 @@
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
+                    Document
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-document></app-document>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
                     Pays
                   </mat-expansion-panel-header>
 
                   <ng-template matExpansionPanelContent>
                     <app-pays></app-pays>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </mat-tab>
+          <mat-tab label="Paramétrages spécialité">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel expanded>
+                  <mat-expansion-panel-header>
+                    Niveau
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-niveau></app-niveau>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Spécialités
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-specialite></app-specialite>
                   </ng-template>
                 </mat-expansion-panel>
               </mat-accordion>
@@ -146,21 +159,76 @@
               </mat-accordion>
             </div>
           </mat-tab>
-          <mat-tab label="Niveau">
-            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+          <mat-tab label="Paramétrages modules & UE">
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
-                <mat-expansion-panel expanded>
+                <mat-expansion-panel>
                   <mat-expansion-panel-header>
-                    Niveau
+                    Module
                   </mat-expansion-panel-header>
 
                   <ng-template matExpansionPanelContent>
-                    <app-niveau></app-niveau>
+                    <app-module></app-module>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    UE
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-module></app-module>
                   </ng-template>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
           </mat-tab>
+          <mat-tab label="Paramétrages références">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Référentiel
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-pays></app-pays>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Programmation Module
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-pays></app-pays>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Programmation UE
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-pays></app-pays>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </mat-tab>
+          <mat-tab label="Gestion des classes"></mat-tab>
         </mat-tab-group>
       </mat-card>
     </div>

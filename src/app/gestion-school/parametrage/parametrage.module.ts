@@ -3,8 +3,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { SharedModule } from './../../shared/shared.module';
 import { ParametrageRoutingModule } from './parametrage-routing.module';
 import { NgModule } from '@angular/core';
@@ -20,11 +20,28 @@ import { CycleComponent } from './cycle/cycle.component';
 import { PaysComponent } from './pays/pays.component';
 import { SemestreComponent } from './semestre/semestre.component';
 import { NiveauComponent } from './niveau/niveau.component';
+import { DocumentComponent } from './document/document.component';
+import { ReferentielComponent } from './referentiel/referentiel.component';
 
 
 
 @NgModule({
-  declarations: [DomaineComponent, ParametragesComponent, MentionComponent, SpecialiteComponent, ParcoursComponent, HoraireComponent, ModuleComponent, AnneescolaireComponent, CycleComponent, PaysComponent, SemestreComponent, NiveauComponent],
+  declarations: [
+    DomaineComponent,
+    ParametragesComponent,
+    MentionComponent,
+    SpecialiteComponent,
+    ParcoursComponent,
+    HoraireComponent,
+    ModuleComponent,
+    AnneescolaireComponent,
+    CycleComponent,
+    PaysComponent,
+    SemestreComponent,
+    NiveauComponent,
+    DocumentComponent,
+    ReferentielComponent
+  ],
   imports: [
     ParametrageRoutingModule,
     SharedModule,
