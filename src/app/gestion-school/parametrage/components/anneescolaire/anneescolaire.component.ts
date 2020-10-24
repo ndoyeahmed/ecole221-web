@@ -1,10 +1,12 @@
-import { MycustomSnackbarService } from './../../services/mycustom-snackbar.service';
+import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { DeleteDialogComponent } from './../delete-dialog/delete-dialog.component';
 import { ParametragesBaseService } from './../../services/parametrages-base.service';
 import { AnneeScolaireModel } from './../../../../shared/models/annee-scolaire.model';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-anneescolaire',
@@ -17,12 +19,15 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
   listAnneeScolaire = [] as AnneeScolaireModel[];
   anneeScolaire = new AnneeScolaireModel();
 
+  LOADERID = 'annee-scolaire-loader';
+
   dialogRef: any;
 
   constructor(private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-              private snacbar: MycustomSnackbarService) { }
+              private notif: MycustomNotificationService, private ngxService: NgxSpinnerService) { }
 
   ngOnInit(): void {
+    this.ngxService.show(this.LOADERID);
     this.loadListAnneeScolaire();
   }
 
@@ -36,28 +41,39 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
         (data) => {
           this.listAnneeScolaire = data;
         },
-        (error) => console.log(error)
+        (error) => {
+          this.notif.error('Echec chargement des données');
+          this.ngxService.hide(this.LOADERID);
+        },
+        () => {
+          this.ngxService.hide(this.LOADERID);
+        }
       )
     );
   }
 
   save() {
     if (this.anneeScolaire.libelle && this.anneeScolaire.libelle.trim() !== '') {
+      this.ngxService.show(this.LOADERID);
       this.subscription.push(
         (this.anneeScolaire.id ?
           this.paramBaseService.updateAnneeScolaire(this.anneeScolaire, this.anneeScolaire.id) :
           this.paramBaseService.addAnneeScolaire(this.anneeScolaire)).subscribe(
             (data) => {
-              console.log(data);
               this.loadListAnneeScolaire();
               this.anneeScolaire = new AnneeScolaireModel();
-              this.snacbar.success();
+              this.notif.success();
             },
-            (error) => this.snacbar.error()
+            (error) => {
+              this.notif.error();
+              this.ngxService.hide(this.LOADERID);
+            }, () => {
+              this.ngxService.hide(this.LOADERID);
+            }
           )
       );
     } else {
-      console.log('libelle is required');
+      this.notif.error('Le libellé est obligatoire');
     }
   }
 
@@ -66,12 +82,19 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
+    this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramBaseService.archiveAnneeScolaire(id).subscribe(
         (data) => {
           this.loadListAnneeScolaire();
+          this.notif.success();
         },
-        (error) => console.log(error)
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
       )
     );
   }
@@ -87,5 +110,24 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
         this.archive(result.item.id);
       }
     });
+  }
+
+  onChangeStatus(value: MatSlideToggleChange, item) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramBaseService.updateAnneeScolaireEnCoursStatus(value.checked, item.id)
+      .subscribe(
+        (data) => {
+          this.loadListAnneeScolaire();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
   }
 }

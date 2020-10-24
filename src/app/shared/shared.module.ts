@@ -10,6 +10,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialogModule} from '@angular/material/dialog';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgxSpinnerModule } from "ngx-spinner";
+
 
 
 
@@ -28,7 +30,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     MatSelectModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    NgxSpinnerModule
   ],
   providers: [
     {

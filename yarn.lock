@@ -6129,6 +6129,18 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+ngx-spinner@9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-spinner/-/ngx-spinner-9.0.1.tgz#0c9f19dad84a0c9333282868cd8220b0141d2ce1"
+  integrity sha512-BUQHLrg+7LkQphNfvAZ9a7BmISOvM15FR/9wJmnu5tIx6oUVBzLQ6+XtEk8ZtyPjRpLeWV657gn564Nc2w0Vyg==
+
+ngx-toastr@12.1.0:
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/ngx-toastr/-/ngx-toastr-12.1.0.tgz#50f6eee4262f4ba342918f06f98a657f223194cf"
+  integrity sha512-rytCRBhvuudj614Kfj9GoIVQDrFuLvHSMP1YrMwTmR1SNkNJZOpGKmaSDCCBrNDkSrGouzMWBlFbl1UDBBsiqw==
+  dependencies:
+    tslib "^1.10.0"
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"

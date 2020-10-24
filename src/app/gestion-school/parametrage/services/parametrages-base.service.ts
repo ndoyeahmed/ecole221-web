@@ -24,6 +24,10 @@ export class ParametragesBaseService {
     return this.http.put<any>(this.api + '/annee-scolaire/' + id, anneeScolaire);
   }
 
+  updateAnneeScolaireEnCoursStatus(status: boolean, id: any): Observable<any> {
+    return this.http.put<any>(this.api + '/annee-scolaire/encours/' + id, {status: status + ''});
+  }
+
   archiveAnneeScolaire(id: any): Observable<any> {
     return this.http.delete<any>(this.api + '/annee-scolaire/' + id);
   }

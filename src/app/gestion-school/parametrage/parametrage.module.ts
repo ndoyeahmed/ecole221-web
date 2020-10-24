@@ -1,4 +1,4 @@
-import { MycustomSnackbarService } from './services/mycustom-snackbar.service';
+import { MycustomNotificationService } from './services/mycustom-notification.service';
 import { ParametragesBaseService } from './services/parametrages-base.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -61,7 +61,7 @@ import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.
   ],
   providers: [
     ParametragesBaseService,
-    MycustomSnackbarService
+    MycustomNotificationService
   ]
 })
 export class ParametrageModule { }
