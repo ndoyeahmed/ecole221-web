@@ -1,4 +1,4 @@
-import { DomaineComponent } from './domaine/domaine.component';
+import { DomaineComponent } from './components/domaine/domaine.component';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 

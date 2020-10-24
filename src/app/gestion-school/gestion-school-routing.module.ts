@@ -1,4 +1,4 @@
-import { ParametragesComponent } from './parametrage/parametrages/parametrages.component';
+import { ParametragesComponent } from './parametrage/components/parametrages/parametrages.component';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 

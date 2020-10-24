@@ -1,3 +1,5 @@
+import { MycustomSnackbarService } from './services/mycustom-snackbar.service';
+import { ParametragesBaseService } from './services/parametrages-base.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -8,21 +10,22 @@ import { MatInputModule } from '@angular/material/input';
 import { SharedModule } from './../../shared/shared.module';
 import { ParametrageRoutingModule } from './parametrage-routing.module';
 import { NgModule } from '@angular/core';
-import { DomaineComponent } from './domaine/domaine.component';
-import { ParametragesComponent } from './parametrages/parametrages.component';
-import { MentionComponent } from './mention/mention.component';
-import { SpecialiteComponent } from './specialite/specialite.component';
-import { ParcoursComponent } from './parcours/parcours.component';
-import { HoraireComponent } from './horaire/horaire.component';
-import { ModuleComponent } from './module/module.component';
-import { AnneescolaireComponent } from './anneescolaire/anneescolaire.component';
-import { CycleComponent } from './cycle/cycle.component';
-import { PaysComponent } from './pays/pays.component';
-import { SemestreComponent } from './semestre/semestre.component';
-import { NiveauComponent } from './niveau/niveau.component';
-import { DocumentComponent } from './document/document.component';
-import { ReferentielComponent } from './referentiel/referentiel.component';
-import { UeComponent } from './ue/ue.component';
+import { DomaineComponent } from './components/domaine/domaine.component';
+import { ParametragesComponent } from './components/parametrages/parametrages.component';
+import { MentionComponent } from './components//mention/mention.component';
+import { SpecialiteComponent } from './components/specialite/specialite.component';
+import { ParcoursComponent } from './components/parcours/parcours.component';
+import { HoraireComponent } from './components/horaire/horaire.component';
+import { ModuleComponent } from './components/module/module.component';
+import { AnneescolaireComponent } from './components/anneescolaire/anneescolaire.component';
+import { CycleComponent } from './components/cycle/cycle.component';
+import { PaysComponent } from './components/pays/pays.component';
+import { SemestreComponent } from './components/semestre/semestre.component';
+import { NiveauComponent } from './components/niveau/niveau.component';
+import { DocumentComponent } from './components/document/document.component';
+import { ReferentielComponent } from './components/referentiel/referentiel.component';
+import { UeComponent } from './components/ue/ue.component';
+import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
 
 
 
@@ -42,7 +45,8 @@ import { UeComponent } from './ue/ue.component';
     NiveauComponent,
     DocumentComponent,
     ReferentielComponent,
-    UeComponent
+    UeComponent,
+    DeleteDialogComponent
   ],
   imports: [
     ParametrageRoutingModule,
@@ -55,5 +59,9 @@ import { UeComponent } from './ue/ue.component';
     MatFormFieldModule,
     MatInputModule,
   ],
+  providers: [
+    ParametragesBaseService,
+    MycustomSnackbarService
+  ]
 })
 export class ParametrageModule { }

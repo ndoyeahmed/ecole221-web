@@ -55,3 +55,24 @@ body {
 .modal-backdrop {
   z-index: -1;
 }
+
+.success-snacbar {
+  background: rgb(16, 126, 31)!important;
+  color: white!important;
+}
+
+.info-snacbar {
+  background:  rgb(58, 126, 204)!important;
+  color: white!important;
+}
+
+.warning-snacbar {
+  background: rgb(216, 216, 2)!important;
+  color: white!important;
+}
+
+.error-snacbar {
+  background:rgb(167, 45, 45)!important;
+  color: white!important;
+}
+
