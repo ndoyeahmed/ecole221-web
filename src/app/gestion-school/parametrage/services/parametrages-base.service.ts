@@ -1,3 +1,4 @@
+import { DomaineModel } from './../../../shared/models/domaine.model';
 import { AnneeScolaireModel } from './../../../shared/models/annee-scolaire.model';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -31,4 +32,25 @@ export class ParametragesBaseService {
   archiveAnneeScolaire(id: any): Observable<any> {
     return this.http.delete<any>(this.api + '/annee-scolaire/' + id);
   }
+
+  addDomaine(domaine: DomaineModel): Observable<any> {
+    return this.http.post<any>(this.api + '/domaine', domaine);
+  }
+
+  getAllDomaine(): Observable<any> {
+    return this.http.get(this.api + '/domaine');
+  }
+
+  archiveDomaine(id: any): Observable<any> {
+    return this.http.delete<any>(this.api + '/domaine/' + id);
+  }
+
+  updateDomaine(id: number, domaine: any): Observable<any> {
+    return this.http.put<any>(this.api + '/domaine/' + id, domaine);
+  }
+
+  updateDomaineStatus(status: boolean, id: any): Observable<any> {
+    return this.http.put<any>(this.api + '/domaine/etat/' + id, {status: status + ''});
+  }
+
 }

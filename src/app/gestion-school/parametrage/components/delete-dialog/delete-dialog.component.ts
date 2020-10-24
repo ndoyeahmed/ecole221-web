@@ -1,4 +1,3 @@
-import { AnneeScolaireModel } from './../../../../shared/models/annee-scolaire.model';
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -11,7 +10,7 @@ export class DeleteDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<DeleteDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AnneeScolaireModel) { }
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onResponse(item): void {
     const response = {
