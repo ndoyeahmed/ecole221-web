@@ -96,4 +96,39 @@ export class ParametragesBaseService {
   updateParcoursStatus(status: boolean, id: any): Observable<any> {
     return this.http.put<any>(this.api + '/parcours/etat/' + id, {status: status + ''});
   }
+
+  // ------------------ horaire service
+  addHoraire(horaire: any): Observable<any> {
+    return this.http.post<any>(this.api + '/horaire', horaire);
+  }
+
+  getAllHoraire(): Observable<any> {
+    return this.http.get(this.api + '/horaire');
+  }
+
+  archiveHoraire(id: any): Observable<any> {
+    return this.http.delete<any>(this.api + '/horaire/' + id);
+  }
+
+  updateHoraire(id: number, horaire: any): Observable<any> {
+    return this.http.put<any>(this.api + '/horaire/' + id, horaire);
+  }
+
+  // ------------------ document service
+  addDocument(document: any): Observable<any> {
+    return this.http.post<any>(this.api + '/document', document);
+  }
+
+  getAllDocument(): Observable<any> {
+    return this.http.get(this.api + '/document');
+  }
+
+  archiveDocument(id: any): Observable<any> {
+    return this.http.delete<any>(this.api + '/document/' + id);
+  }
+
+  updateDocument(id: number, document: any): Observable<any> {
+    return this.http.put<any>(this.api + '/document/' + id, document);
+  }
+
 }

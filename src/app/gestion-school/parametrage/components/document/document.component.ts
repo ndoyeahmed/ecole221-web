@@ -1,15 +1,111 @@
-import { Component, OnInit } from '@angular/core';
+import { DocumentModel } from './../../../../shared/models/document.model';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription } from 'rxjs';
+import { MycustomNotificationService } from '../../services/mycustom-notification.service';
+import { ParametragesBaseService } from '../../services/parametrages-base.service';
+import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-document',
   templateUrl: './document.component.html',
   styleUrls: ['./document.component.css']
 })
-export class DocumentComponent implements OnInit {
+export class DocumentComponent implements OnInit, OnDestroy {
+  subscription = [] as Subscription[];
+  LOADERID = 'document-loader';
+  dialogRef: any;
 
-  constructor() { }
+  listDocument = [] as DocumentModel[];
+  documentModel = new DocumentModel();
+
+  constructor(
+    private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
+    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService
+  ) { }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach(x => x.unsubscribe());
+  }
 
   ngOnInit(): void {
+    this.ngxService.show(this.LOADERID);
+    this.loadListDocument();
+  }
+
+  loadListDocument() {
+    this.subscription.push(
+      this.paramBaseService.getAllDocument().subscribe(
+        (data) => {
+          this.listDocument = data;
+        },
+        (error) => {
+          this.notif.error('Echec de chargement des données');
+          this.ngxService.hide(this.LOADERID);
+        },
+        () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  save() {
+    if (this.documentModel.libelle && this.documentModel.libelle.trim() !== '') {
+      this.ngxService.show(this.LOADERID);
+      this.subscription.push(
+        (this.documentModel.id ?
+          this.paramBaseService.updateDocument(this.documentModel.id, this.documentModel) :
+          this.paramBaseService.addDocument(this.documentModel)).subscribe(
+            (data) => {
+              this.loadListDocument();
+              this.documentModel = new DocumentModel();
+              this.notif.success();
+            }, (error) => {
+              this.notif.error();
+              this.ngxService.hide(this.LOADERID);
+            }, () => {
+              this.ngxService.hide(this.LOADERID);
+            }
+          )
+      );
+    }
+  }
+
+  onEdit(item) {
+    this.documentModel = item as DocumentModel;
+  }
+
+  archive(id) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramBaseService.archiveDocument(id).subscribe(
+        (data) => {
+          this.loadListDocument();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  openDialog(item): void {
+    this.dialogRef = this.dialog.open(DeleteDialogComponent, {
+      width: '20%',
+      data: item
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (result.rep === true) {
+        this.archive(result.item.id);
+      }
+    });
   }
 
 }
