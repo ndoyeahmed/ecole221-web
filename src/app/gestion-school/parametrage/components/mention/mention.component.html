@@ -1,71 +1,114 @@
-<div class="row" style="margin-bottom: 2%">
-  <div class="col-md-12 col-lg-8 col-sm-12 col-xs-12">
-    <div class="form-group row">
-      <div class="col-md-6">
-        <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <mat-label>Domaines :</mat-label>
-          <mat-select>
-            <mat-option>Domaine 1</mat-option>
-            <mat-option>Domaine 2</mat-option>
-            <mat-option>Domaine 3</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col-md-6">
-        <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <mat-label>Libellé : </mat-label>
-          <input name="libelle" matInput />
-        </mat-form-field>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-12 col-lg-3 col-sm-12 col-xs-12">
-    <button
-      mat-raised-button
-      color="primary"
-      data-toggle="modal"
-      data-target="#addModal"
-    >
-      Enregistrer
-      <em class="fa fa-save fa-lg"></em>
-    </button>
-  </div>
-</div>
-
-<table class="table table-striped table-responsive">
-  <thead>
-    <tr>
-      <th>N°</th>
-      <th>Domaine</th>
-      <th>Mention</th>
-      <th>Statut</th>
-      <th class="text-center">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>Domaine 1</td>
-      <td>Mention 1</td>
-      <td>
-        <mat-slide-toggle color="primary"> </mat-slide-toggle>
-      </td>
-      <td>
-        <div class="row">
-          <div
-            class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
-          >
-            <button matTooltip="Modifier" mat-mini-fab color="primary">
-              <em class="fa fa-edit fa-lg"> </em>
-            </button>
+<div>
+  <ngx-spinner
+    [name]="LOADERID"
+    [fullScreen]="false"
+    type="square-jelly-box"
+    size="medium"
+  ></ngx-spinner>
+  <form #addForm="ngForm" (submit)="save()">
+    <div class="row" style="margin-bottom: 2%">
+      <div class="col-md-12 col-lg-8 col-sm-12 col-xs-12">
+        <div class="form-group row">
+          <div class="col-md-6">
+            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <mat-select
+                name="domaine"
+                [(ngModel)]="domaineModel"
+                [placeholder]="
+                  domaineModel.libelle
+                    ? domaineModel.libelle
+                    : 'Selectionnez le domaine'
+                "
+              >
+                <mat-option
+                  *ngFor="let domaine of listDomaine"
+                  [value]="domaine"
+                  >{{ domaine?.libelle }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
           </div>
-          <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-            <button matTooltip="Supprimer" mat-mini-fab color="warn">
-              <em class="fa fa-trash fa-lg"> </em>
-            </button>
+          <div class="col-md-6">
+            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <mat-label>Libellé : </mat-label>
+              <input
+                [(ngModel)]="mentionModel.libelle"
+                required
+                name="libelle"
+                matInput
+              />
+            </mat-form-field>
           </div>
         </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+      </div>
+      <div class="col-md-12 col-lg-3 col-sm-12 col-xs-12">
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="!addForm.valid"
+          type="submit"
+        >
+          Enregistrer
+          <em class="fa fa-save fa-lg"></em>
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <table class="table table-striped table-responsive">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Domaine</th>
+        <th>Mention</th>
+        <th>Statut</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mention of listMention">
+        <td>{{ listMention.indexOf(mention) + 1 }}</td>
+        <td>
+          {{ mention ? (mention.domaine ? mention.domaine.libelle : "") : "" }}
+        </td>
+        <td>{{ mention ? (mention.libelle ? mention.libelle : "") : "" }}</td>
+        <td>
+          <mat-slide-toggle
+            (change)="onChangeStatus($event, mention)"
+            [ngModel]="mention.etat"
+            color="primary"
+          >
+          </mat-slide-toggle>
+        </td>
+        <td>
+          <div class="row">
+            <div
+              class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
+            >
+              <button
+                type="button"
+                (click)="onEdit(mention)"
+                matTooltip="Modifier"
+                mat-mini-fab
+                color="primary"
+              >
+                <em class="fa fa-edit fa-lg"> </em>
+              </button>
+            </div>
+            <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
+              <button
+                type="button"
+                (click)="openDialog(mention)"
+                matTooltip="Supprimer"
+                mat-mini-fab
+                color="warn"
+              >
+                <em class="fa fa-trash fa-lg"> </em>
+              </button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

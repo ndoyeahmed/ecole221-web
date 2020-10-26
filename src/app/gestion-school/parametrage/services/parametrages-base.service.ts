@@ -131,4 +131,25 @@ export class ParametragesBaseService {
     return this.http.put<any>(this.api + '/document/' + id, document);
   }
 
+  // ------------------ mention service
+  addMention(mention: any): Observable<any> {
+    return this.http.post<any>(this.api + '/mention', mention);
+  }
+
+  getAllMention(): Observable<any> {
+    return this.http.get(this.api + '/mention');
+  }
+
+  archiveMention(id: any): Observable<any> {
+    return this.http.delete<any>(this.api + '/mention/' + id);
+  }
+
+  updateMention(id: number, mention: any): Observable<any> {
+    return this.http.put<any>(this.api + '/mention/' + id, mention);
+  }
+
+  updateMentionStatus(status: boolean, id: any): Observable<any> {
+    return this.http.put<any>(this.api + '/mention/etat/' + id, {status: status + ''});
+  }
+
 }

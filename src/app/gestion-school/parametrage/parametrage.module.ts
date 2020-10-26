@@ -1,3 +1,4 @@
+import { ParametragesSpecialiteService } from './services/parametrages-specialite.service';
 import { MycustomNotificationService } from './services/mycustom-notification.service';
 import { ParametragesBaseService } from './services/parametrages-base.service';
 import { MatCardModule } from '@angular/material/card';
@@ -61,7 +62,8 @@ import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.
   ],
   providers: [
     ParametragesBaseService,
-    MycustomNotificationService
+    MycustomNotificationService,
+    ParametragesSpecialiteService
   ]
 })
 export class ParametrageModule { }
