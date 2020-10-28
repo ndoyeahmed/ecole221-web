@@ -30,4 +30,43 @@ export class ParametragesSpecialiteService {
   updateSemestreStatus(status: boolean, id: any): Observable<any> {
     return this.http.put<any>(this.api + '/semestre/etat/' + id, {status: status + ''});
   }
+
+  // ------------------ NIVEAU service
+  addNiveau(niveau: any): Observable<any> {
+    return this.http.post<any>(this.api + '/niveau', niveau);
+  }
+
+  getAllNiveau(): Observable<any> {
+    return this.http.get(this.api + '/niveau');
+  }
+
+  updateNiveau(id: number, niveau: any): Observable<any> {
+    return this.http.put<any>(this.api + '/niveau/' + id, niveau);
+  }
+
+  updateNiveauStatus(status: boolean, id: any): Observable<any> {
+    return this.http.put<any>(this.api + '/niveau/etat/' + id, {status: status + ''});
+  }
+
+  archiveNiveau(id: any): Observable<any> {
+    return this.http.delete<any>(this.api + '/niveau/' + id);
+  }
+
+  // ------------------ DOCUMENT PAR NIVEAU service
+  addDocumentParNiveau(documentParNiveau: any): Observable<any> {
+    return this.http.post<any>(this.api + '/document-par-niveau', documentParNiveau);
+  }
+
+  getAllDocumentParNiveauByNiveau(niveauId: number): Observable<any> {
+    return this.http.get(this.api + '/document-par-niveau/niveau/' + niveauId);
+  }
+
+  // ------------------ SEMESTRE NIVEAU service
+  addSemestreNiveau(semestreNiveau: any[]): Observable<any> {
+    return this.http.post<any>(this.api + '/semestre-niveau', semestreNiveau);
+  }
+
+  getAllSemestreNiveauByNiveau(niveauId: number): Observable<any> {
+    return this.http.get(this.api + '/semestre-niveau/niveau/' + niveauId);
+  }
 }
