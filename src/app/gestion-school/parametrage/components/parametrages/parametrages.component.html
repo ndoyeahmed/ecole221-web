@@ -13,115 +13,123 @@
       <mat-card>
         <mat-tab-group dynamicHeight>
           <mat-tab label="Paramétrages de base">
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel expanded>
-                  <mat-expansion-panel-header>
-                    Année scolaire
-                  </mat-expansion-panel-header>
+            <div class="row">
+              <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Année scolaire
+                    </mat-expansion-panel-header>
 
-                  <ng-template matExpansionPanelContent>
-                    <app-anneescolaire></app-anneescolaire>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
+                    <ng-template matExpansionPanelContent>
+                      <app-anneescolaire></app-anneescolaire>
+                    </ng-template>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Domaines
+                    </mat-expansion-panel-header>
+
+                    <ng-template matExpansionPanelContent>
+                      <app-domaine></app-domaine>
+                    </ng-template>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
             </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel expanded>
-                  <mat-expansion-panel-header>
-                    Domaines
-                  </mat-expansion-panel-header>
+            <div class="row">
+              <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Cycle
+                    </mat-expansion-panel-header>
 
-                  <ng-template matExpansionPanelContent>
-                    <app-domaine></app-domaine>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
+                    <ng-template matExpansionPanelContent>
+                      <app-cycle></app-cycle>
+                    </ng-template>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Mentions
+                    </mat-expansion-panel-header>
+
+                    <ng-template matExpansionPanelContent>
+                      <app-mention></app-mention>
+                    </ng-template>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
             </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    Cycle
-                  </mat-expansion-panel-header>
+            <div class="row">
+              <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Parcours
+                    </mat-expansion-panel-header>
 
-                  <ng-template matExpansionPanelContent>
-                    <app-cycle></app-cycle>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
+                    <ng-template matExpansionPanelContent>
+                      <app-parcours></app-parcours>
+                    </ng-template>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Horaire
+                    </mat-expansion-panel-header>
+
+                    <ng-template matExpansionPanelContent>
+                      <app-horaire></app-horaire>
+                    </ng-template>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
             </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    Mentions
-                  </mat-expansion-panel-header>
+            <div class="row">
+              <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Document
+                    </mat-expansion-panel-header>
 
-                  <ng-template matExpansionPanelContent>
-                    <app-mention></app-mention>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    Parcours
-                  </mat-expansion-panel-header>
+                    <ng-template matExpansionPanelContent>
+                      <app-document></app-document>
+                    </ng-template>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Pays
+                    </mat-expansion-panel-header>
 
-                  <ng-template matExpansionPanelContent>
-                    <app-parcours></app-parcours>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    Horaire
-                  </mat-expansion-panel-header>
-
-                  <ng-template matExpansionPanelContent>
-                    <app-horaire></app-horaire>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    Document
-                  </mat-expansion-panel-header>
-
-                  <ng-template matExpansionPanelContent>
-                    <app-document></app-document>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-            <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    Pays
-                  </mat-expansion-panel-header>
-
-                  <ng-template matExpansionPanelContent>
-                    <app-pays></app-pays>
-                  </ng-template>
-                </mat-expansion-panel>
-              </mat-accordion>
+                    <ng-template matExpansionPanelContent>
+                      <app-pays></app-pays>
+                    </ng-template>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
             </div>
           </mat-tab>
           <mat-tab label="Paramétrages spécialité">
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
-                <mat-expansion-panel expanded>
+                <mat-expansion-panel >
                   <mat-expansion-panel-header>
                     Niveau
                   </mat-expansion-panel-header>
@@ -162,7 +170,7 @@
           <mat-tab label="Paramétrages modules & UE">
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
-                <mat-expansion-panel expanded>
+                <mat-expansion-panel >
                   <mat-expansion-panel-header>
                     Module
                   </mat-expansion-panel-header>
@@ -175,7 +183,7 @@
             </div>
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
-                <mat-expansion-panel expanded>
+                <mat-expansion-panel >
                   <mat-expansion-panel-header>
                     UE
                   </mat-expansion-panel-header>

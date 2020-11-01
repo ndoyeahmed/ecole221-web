@@ -1,3 +1,4 @@
+import { ParametrageModuleUeService } from './services/parametrage-module-ue.service';
 import { ParametragesSpecialiteService } from './services/parametrages-specialite.service';
 import { MycustomNotificationService } from './services/mycustom-notification.service';
 import { ParametragesBaseService } from './services/parametrages-base.service';
@@ -63,7 +64,8 @@ import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.
   providers: [
     ParametragesBaseService,
     MycustomNotificationService,
-    ParametragesSpecialiteService
+    ParametragesSpecialiteService,
+    ParametrageModuleUeService
   ]
 })
 export class ParametrageModule { }
