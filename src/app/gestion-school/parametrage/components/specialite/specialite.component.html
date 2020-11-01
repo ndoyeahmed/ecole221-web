@@ -1,103 +1,127 @@
-<div class="row" style="margin-bottom: 2%">
-  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-    <div class="form-group row">
-      <div class="col-md-6">
-        <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <mat-label>Mentions :</mat-label>
-          <mat-select>
-            <mat-option>Mention 1</mat-option>
-            <mat-option>Mention 2</mat-option>
-            <mat-option>Mention 3</mat-option>
-          </mat-select>
-        </mat-form-field>
+<div>
+  <ngx-spinner
+  [name]="LOADERID"
+  [fullScreen]="false"
+  type="square-jelly-box"
+  size="medium"
+></ngx-spinner>
+<form #addForm="ngForm" (submit)="save(addForm)">
+  <div class="row" style="margin-bottom: 2%">
+    <div class="col-md-offset-2 col-lg-offset-2 col-md-8 col-lg-8 col-sm-12 col-xs-12">
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <mat-select required
+                  name="mention"
+                  [(ngModel)]="mentionModel"
+                  [placeholder]=" mentionModel ?
+                    mentionModel.libelle ? mentionModel.libelle : 'Selectionnez la mention' : 'Selectionnez la mention'
+                  "
+                >
+                  <mat-option *ngFor="let mention of listMention" [value]="mention">{{
+                    mention?.libelle
+                  }}</mat-option>
+                </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <mat-label>Libellé : </mat-label>
+            <input [(ngModel)]="specialiteModel.libelle"
+            required name="libelle" matInput />
+          </mat-form-field>
+        </div>
       </div>
-      <div class="col-md-6">
-        <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <mat-label>Libellé : </mat-label>
-          <input name="libelle" matInput />
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row" style="margin-bottom: 4%">
-      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-        <h3>Choisir les niveaux :</h3>
-        <mat-checkbox color="primary" class="example-margin">L1</mat-checkbox>
-        <mat-checkbox color="primary" class="example-margin">L2</mat-checkbox>
-        <mat-checkbox color="primary" class="example-margin">L3</mat-checkbox>
-        <mat-checkbox color="primary" class="example-margin"
-          >Master 1</mat-checkbox
-        >
-        <mat-checkbox color="primary" class="example-margin"
-          >Master 2</mat-checkbox
-        >
-      </div>
-    </div>
-  </div>
-  <div style="margin-bottom: 4%" class="col-md-12 col-lg-3 col-sm-12 col-xs-12">
-    <button
-      mat-raised-button
-      color="primary"
-      data-toggle="modal"
-      data-target="#addModal"
-    >
-      Enregistrer
-      <em class="fa fa-save fa-lg"></em>
-    </button>
-  </div>
-</div>
-
-<table class="table table-striped table-responsive">
-  <thead>
-    <tr>
-      <th>N°</th>
-      <th>Niveaux</th>
-      <th>Mention</th>
-      <th>Spécialité</th>
-      <th>Statut</th>
-      <th class="text-center">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>
-        <mat-accordion>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              Liste des niveaux
-            </mat-expansion-panel-header>
-
-            <ng-template matExpansionPanelContent>
-              <ul>
-                <li>L1</li>
-                <li>L2</li>
-                <li>L3</li>
-              </ul>
-            </ng-template>
-          </mat-expansion-panel>
-        </mat-accordion>
-      </td>
-      <td>Mention 1</td>
-      <td>Spécialité 1</td>
-      <td>
-        <mat-slide-toggle color="primary"> </mat-slide-toggle>
-      </td>
-      <td>
-        <div class="row">
-          <div
-            class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
-          >
-            <button matTooltip="Modifier" mat-mini-fab color="primary">
-              <em class="fa fa-edit fa-lg"> </em>
-            </button>
-          </div>
-          <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-            <button matTooltip="Supprimer" mat-mini-fab color="warn">
-              <em class="fa fa-trash fa-lg"> </em>
-            </button>
+      <div class="row" style="margin-bottom: 4%">
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+          <h3>Choisir les niveaux :</h3>
+          <div class="col-md-2" *ngFor="let niveau of listNiveau; let i = index">
+            <mat-checkbox
+              (change)="onCheckedNiveau($event, niveau)"
+              color="primary"
+              [name]="i"
+              class="example-margin"
+              >{{ niveau.libelle }}</mat-checkbox
+            >
           </div>
         </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+      </div>
+    </div>
+    <div style="margin-bottom: 4%" class="col-md-offset-2 col-lg-offset-2 col-md-8 col-lg-8 col-sm-12 col-xs-12">
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!addForm.valid"
+            type="submit"
+      >
+        Enregistrer
+        <em class="fa fa-save fa-lg"></em>
+      </button>
+    </div>
+  </div>
+</form>
+
+  <table class="table table-striped table-responsive">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Niveaux</th>
+        <th>Mention</th>
+        <th>Spécialité</th>
+        <th>Statut</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let specialite of listSpecialite | paginate: { itemsPerPage: 5, currentPage: page };let i=index">
+        <td>{{i + 1}}</td>
+        <td>
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                Liste des niveaux
+              </mat-expansion-panel-header>
+
+              <ng-template matExpansionPanelContent>
+                <ul>
+                  <li *ngFor="let s of specialite.niveauSpecialite">
+                    {{s.niveau.libelle}}
+                  </li>
+                </ul>
+              </ng-template>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </td>
+        <td>{{specialite ? specialite.mention ? specialite.mention.libelle ? specialite.mention.libelle : '' : '' : ''}}</td>
+        <td>{{specialite ? specialite.libelle ? specialite.libelle : '' : ''}}</td>
+        <td>
+          <mat-slide-toggle
+          (change)="onChangeStatus($event, specialite)"
+          [ngModel]="specialite.etat"
+          color="primary"
+        >
+        </mat-slide-toggle>
+        </td>
+        <td>
+          <div class="row">
+            <div
+              class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
+            >
+              <button type="button"
+              (click)="onEdit(specialite)" matTooltip="Modifier" mat-mini-fab color="primary">
+                <em class="fa fa-edit fa-lg"> </em>
+              </button>
+            </div>
+            <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
+              <button type="button"
+              (click)="openDialog(specialite)" matTooltip="Supprimer" mat-mini-fab color="warn">
+                <em class="fa fa-trash fa-lg"> </em>
+              </button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

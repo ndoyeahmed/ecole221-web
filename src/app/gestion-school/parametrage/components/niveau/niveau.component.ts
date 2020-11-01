@@ -174,8 +174,6 @@ export class NiveauComponent implements OnInit, OnDestroy {
     } else {
       this.listSemestreNiveau = this.listSemestreNiveau.filter(sn => Number(sn.semestre.id) !== Number(semestre.id));
     }
-
-    console.log(this.listSemestreNiveau);
   }
 
   onCheckedDocumentAFournir(event: MatCheckboxChange, doc) {
@@ -186,8 +184,6 @@ export class NiveauComponent implements OnInit, OnDestroy {
     } else {
       this.listSelectedDocumentsAFournir = this.listSelectedDocumentsAFournir.filter(sn => Number(sn.document.id) !== Number(doc.id));
     }
-
-    console.log(this.listSelectedDocumentsAFournir);
   }
 
   onCheckedDocumentADonner(event: MatCheckboxChange, doc) {
@@ -198,8 +194,6 @@ export class NiveauComponent implements OnInit, OnDestroy {
     } else {
       this.listSelectedDocumentsADonner = this.listSelectedDocumentsADonner.filter(sn => Number(sn.document.id) !== Number(doc.id));
     }
-
-    console.log(this.listSelectedDocumentsADonner);
   }
 
   save(addForm) {
@@ -290,6 +284,8 @@ export class NiveauComponent implements OnInit, OnDestroy {
 
   onEdit(item) {
     this.niveauModel = item as NiveauModel;
+    this.cycleModel = this.niveauModel.cycle;
+    this.parcoursModel = this.niveauModel.parcours;
   }
 
   archive(id) {

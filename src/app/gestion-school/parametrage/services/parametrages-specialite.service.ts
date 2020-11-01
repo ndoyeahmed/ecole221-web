@@ -69,4 +69,34 @@ export class ParametragesSpecialiteService {
   getAllSemestreNiveauByNiveau(niveauId: number): Observable<any> {
     return this.http.get(this.api + '/semestre-niveau/niveau/' + niveauId);
   }
+
+  // ------------------ SPECIALITE service
+  addSpecialite(specialite: any): Observable<any> {
+    return this.http.post<any>(this.api + '/specialite', specialite);
+  }
+
+  getAllSpecialite(): Observable<any> {
+    return this.http.get(this.api + '/specialite');
+  }
+
+  updateSpecialiteStatus(status: boolean, id: any): Observable<any> {
+    return this.http.put<any>(this.api + '/specialite/etat/' + id, {status: status + ''});
+  }
+
+  updateSpecialite(id: number, specialite: any): Observable<any> {
+    return this.http.put<any>(this.api + '/specialite/' + id, specialite);
+  }
+
+  archiveSpecialite(id: any): Observable<any> {
+    return this.http.delete<any>(this.api + '/specialite/' + id);
+  }
+
+  // ------------------ NIVEAU SPECIALITE service
+  addNiveauSpecialite(niveauSpecialite: any[]): Observable<any> {
+    return this.http.post<any>(this.api + '/niveau-specialite', niveauSpecialite);
+  }
+
+  getAllNiveauSpecialiteBySpecialite(specialiteId: number): Observable<any> {
+    return this.http.get(this.api + '/niveau-specialite/specialite/' + specialiteId);
+  }
 }
