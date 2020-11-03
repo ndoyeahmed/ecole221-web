@@ -1,3 +1,4 @@
+import { ParametrageReferentielService } from './services/parametrage-referentiel.service';
 import { ParametrageModuleUeService } from './services/parametrage-module-ue.service';
 import { ParametragesSpecialiteService } from './services/parametrages-specialite.service';
 import { MycustomNotificationService } from './services/mycustom-notification.service';
@@ -28,6 +29,9 @@ import { DocumentComponent } from './components/document/document.component';
 import { ReferentielComponent } from './components/referentiel/referentiel.component';
 import { UeComponent } from './components/ue/ue.component';
 import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
+import { ClasseComponent } from './components/classe/classe.component';
+import { SousClasseComponent } from './components/sous-classe/sous-classe.component';
+import { AffectationClasseReferentielComponent } from './components/affectation-classe-referentiel/affectation-classe-referentiel.component';
 
 
 
@@ -48,7 +52,10 @@ import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.
     DocumentComponent,
     ReferentielComponent,
     UeComponent,
-    DeleteDialogComponent
+    DeleteDialogComponent,
+    ClasseComponent,
+    SousClasseComponent,
+    AffectationClasseReferentielComponent
   ],
   imports: [
     ParametrageRoutingModule,
@@ -65,7 +72,8 @@ import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.
     ParametragesBaseService,
     MycustomNotificationService,
     ParametragesSpecialiteService,
-    ParametrageModuleUeService
+    ParametrageModuleUeService,
+    ParametrageReferentielService
   ]
 })
 export class ParametrageModule { }

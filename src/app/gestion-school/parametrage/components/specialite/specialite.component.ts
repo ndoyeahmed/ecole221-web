@@ -154,7 +154,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
         this.notif.error('Selectionnez au moins un niveau');
       }
     } else {
-      this.notif.error('Veuillez remplir tous le formulaire SVP');
+      this.notif.error('Veuillez remplir tout le formulaire SVP');
     }
   }
 

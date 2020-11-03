@@ -12,6 +12,7 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {NgxPaginationModule} from 'ngx-pagination';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 
 
@@ -33,7 +34,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     MatDialogModule,
     MatSnackBarModule,
     NgxSpinnerModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    DragDropModule
   ],
   providers: [
     {

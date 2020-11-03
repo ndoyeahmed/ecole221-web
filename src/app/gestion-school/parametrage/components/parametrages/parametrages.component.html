@@ -200,7 +200,7 @@
               <mat-accordion>
                 <mat-expansion-panel expanded>
                   <mat-expansion-panel-header>
-                    Référentiel
+                    Référentiel & Programmation module et ue
                   </mat-expansion-panel-header>
 
                   <ng-template matExpansionPanelContent>
@@ -209,15 +209,17 @@
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
+          </mat-tab>
+          <mat-tab label="Gestion des classes">
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
               <mat-accordion>
-                <mat-expansion-panel>
+                <mat-expansion-panel >
                   <mat-expansion-panel-header>
-                    Programmation Module
+                    Classe
                   </mat-expansion-panel-header>
 
                   <ng-template matExpansionPanelContent>
-                    <app-pays></app-pays>
+                    <app-classe></app-classe>
                   </ng-template>
                 </mat-expansion-panel>
               </mat-accordion>
@@ -226,17 +228,29 @@
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
-                    Programmation UE
+                    Sous classe
                   </mat-expansion-panel-header>
 
                   <ng-template matExpansionPanelContent>
-                    <app-pays></app-pays>
+                    <app-sous-classe></app-sous-classe>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%; margin-bottom: 1%;">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    Affectation référentiel classe
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-affectation-classe-referentiel></app-affectation-classe-referentiel>
                   </ng-template>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
           </mat-tab>
-          <mat-tab label="Gestion des classes"></mat-tab>
         </mat-tab-group>
       </mat-card>
     </div>
