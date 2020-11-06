@@ -4,9 +4,12 @@
 
 export const environment = {
   production: false,
-  url: 'http://localhost:8090'
+  url: 'https://school221-api.herokuapp.com'
 };
 
+
+// https://school221-api.herokuapp.com/ deployed to Heroku
+// http://localhost:8090
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
