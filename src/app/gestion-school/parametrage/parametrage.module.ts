@@ -1,3 +1,4 @@
+import { ParametrageClasseService } from './services/parametrage-classe.service';
 import { ParametrageReferentielService } from './services/parametrage-referentiel.service';
 import { ParametrageModuleUeService } from './services/parametrage-module-ue.service';
 import { ParametragesSpecialiteService } from './services/parametrages-specialite.service';
@@ -73,7 +74,8 @@ import { AffectationClasseReferentielComponent } from './components/affectation-
     MycustomNotificationService,
     ParametragesSpecialiteService,
     ParametrageModuleUeService,
-    ParametrageReferentielService
+    ParametrageReferentielService,
+    ParametrageClasseService
   ]
 })
 export class ParametrageModule { }
