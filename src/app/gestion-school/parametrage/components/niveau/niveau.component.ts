@@ -29,11 +29,11 @@ export class NiveauComponent implements OnInit, OnDestroy {
 
   listNiveau = [] as NiveauModel[];
   listDocument = [] as DocumentModel[];
-  listSelectedDocumentsAFournir = [] as DocumentParNiveauModel[];
-  listSelectedDocumentsADonner = [] as DocumentParNiveauModel[];
+  listSelectedDocument = [] as DocumentModel[];
   listCycle = [] as CycleModel[];
   listParcours = [] as ParcoursModel[];
   listSemestre = [] as SemestreModel[];
+  listSelectedSemestre = [] as SemestreModel[];
   listSemestreNiveau = [] as SemestreNiveauModel[];
 
   listDocumentParNiveau = [] as DocumentParNiveauModel[];
@@ -44,6 +44,11 @@ export class NiveauComponent implements OnInit, OnDestroy {
 
   page = 1;
   page2 = 1;
+
+  onAdd = false;
+  onNewSemestreNiveau = false;
+  onNewDocumentFournirNiveau = false;
+  onNewDocumentDonnerNiveau = false;
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
@@ -57,12 +62,123 @@ export class NiveauComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
     this.loadListNiveau();
-    this.loadListCycle();
+  }
+
+  onAddSemestreNiveau() {
+    this.onNewSemestreNiveau = true;
     this.loadListSemestre();
-    this.loadListParcours();
+  }
+
+  onAddDocumentAFournirNiveau() {
+    this.onNewDocumentFournirNiveau = true;
     this.loadListDocument();
+  }
+
+  onAddDocumentDonnerNiveau() {
+    this.onNewDocumentDonnerNiveau = true;
+    this.loadListDocument();
+  }
+
+  saveSemestreNiveau(niveau) {
+    this.listSemestreNiveau = [];
+    if (this.listSelectedSemestre && this.listSelectedSemestre.length > 0) {
+      this.ngxService.show(this.LOADERID);
+      this.listSelectedSemestre.forEach(s => {
+        const semestreNiveau = new SemestreNiveauModel();
+        semestreNiveau.niveau = niveau;
+        semestreNiveau.semestre = s;
+        this.listSemestreNiveau.push(semestreNiveau);
+      });
+      this.subscription.push(
+        this.paramSpecialiteService.addSemestreNiveau(this.listSemestreNiveau).subscribe(
+          (data) => {
+            console.log(data);
+          }, (error) => {
+            this.listSelectedSemestre = [];
+            this.onNewSemestreNiveau = false;
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.onNewSemestreNiveau = false;
+            this.listSelectedSemestre = [];
+            this.notif.success();
+            this.ngxService.hide(this.LOADERID);
+            this.loadListNiveau();
+          }
+        )
+      );
+    } else {
+      this.notif.error('Veuillez remplir tout le formulaire SVP');
+    }
+  }
+
+  saveDocumentNiveauAFournir(niveau) {
+    this.listDocumentParNiveau = [];
+    if (this.listSelectedDocument && this.listSelectedDocument.length > 0) {
+      this.ngxService.show(this.LOADERID);
+      this.listSelectedDocument.forEach(s => {
+        const documentNiveau = new DocumentParNiveauModel();
+        documentNiveau.niveau = niveau;
+        documentNiveau.document = s;
+        documentNiveau.fournir = true;
+        this.listDocumentParNiveau.push(documentNiveau);
+      });
+      this.subscription.push(
+        this.paramSpecialiteService.addDocumentParNiveau(this.listDocumentParNiveau).subscribe(
+          (data) => {
+            console.log(data);
+          }, (error) => {
+            this.listSelectedDocument = [];
+            this.onNewDocumentFournirNiveau = false;
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.onNewDocumentFournirNiveau = false;
+            this.listSelectedDocument = [];
+            this.notif.success();
+            this.ngxService.hide(this.LOADERID);
+            this.loadListNiveau();
+          }
+        )
+      );
+    } else {
+      this.notif.error('Veuillez remplir tout le formulaire SVP');
+    }
+  }
+
+  saveDocumentNiveauADonner(niveau) {
+    this.listDocumentParNiveau = [];
+    if (this.listSelectedDocument && this.listSelectedDocument.length > 0) {
+      this.ngxService.show(this.LOADERID);
+      this.listSelectedDocument.forEach(s => {
+        const documentNiveau = new DocumentParNiveauModel();
+        documentNiveau.niveau = niveau;
+        documentNiveau.document = s;
+        documentNiveau.fournir = false;
+        this.listDocumentParNiveau.push(documentNiveau);
+      });
+      this.subscription.push(
+        this.paramSpecialiteService.addDocumentParNiveau(this.listDocumentParNiveau).subscribe(
+          (data) => {
+            console.log(data);
+          }, (error) => {
+            this.listSelectedDocument = [];
+            this.onNewDocumentDonnerNiveau = false;
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.onNewDocumentDonnerNiveau = false;
+            this.listSelectedDocument = [];
+            this.notif.success();
+            this.ngxService.hide(this.LOADERID);
+            this.loadListNiveau();
+          }
+        )
+      );
+    } else {
+      this.notif.error('Veuillez remplir tout le formulaire SVP');
+    }
   }
 
   loadListDocument() {
@@ -70,23 +186,6 @@ export class NiveauComponent implements OnInit, OnDestroy {
       this.paramBaseService.getAllDocument().subscribe(
         (data) => {
           this.listDocument = data;
-        },
-        (error) => {
-          this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
-        },
-        () => {
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
-    );
-  }
-
-  loadListParcours() {
-    this.subscription.push(
-      this.paramBaseService.getAllParcours().subscribe(
-        (data) => {
-          this.listParcours = data;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
@@ -117,6 +216,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
   }
 
   loadListNiveau() {
+    this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramSpecialiteService.getAllNiveau().subscribe(
         (data) => {
@@ -136,146 +236,20 @@ export class NiveauComponent implements OnInit, OnDestroy {
               )
             );
             this.subscription.push(
-              this.paramSpecialiteService.getAllDocumentParNiveauByNiveau(n.id).subscribe(
+              this.paramSpecialiteService.getAllDocumentParNiveauByNiveauAndFournir(true, n.id).subscribe(
                 (data) => {
-                  n.documentParNiveaus = data;
+                  n.documentAFournir = data;
+                }
+              )
+            );
+            this.subscription.push(
+              this.paramSpecialiteService.getAllDocumentParNiveauByNiveauAndFournir(false, n.id).subscribe(
+                (data) => {
+                  n.documentADonner = data;
                 }
               )
             );
           });
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
-    );
-  }
-
-  loadListCycle() {
-    this.subscription.push(
-      this.paramBaseService.getAllCycle().subscribe(
-        (data) => {
-          this.listCycle = data;
-        },
-        (error) => {
-          this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
-        },
-        () => {
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
-    );
-  }
-
-  onCheckedSemestre(event: MatCheckboxChange, semestre) {
-    if (event.checked === true) {
-      const semestreNiveauModel = new SemestreNiveauModel();
-      semestreNiveauModel.semestre = semestre;
-      this.listSemestreNiveau.push(semestreNiveauModel);
-    } else {
-      this.listSemestreNiveau = this.listSemestreNiveau.filter(sn => Number(sn.semestre.id) !== Number(semestre.id));
-    }
-  }
-
-  onCheckedDocumentAFournir(event: MatCheckboxChange, doc) {
-    if (event.checked === true) {
-      const documentParNiveauModel = new DocumentParNiveauModel();
-      documentParNiveauModel.document = doc;
-      this.listSelectedDocumentsAFournir.push(documentParNiveauModel);
-    } else {
-      this.listSelectedDocumentsAFournir = this.listSelectedDocumentsAFournir.filter(sn => Number(sn.document.id) !== Number(doc.id));
-    }
-  }
-
-  onCheckedDocumentADonner(event: MatCheckboxChange, doc) {
-    if (event.checked === true) {
-      const documentParNiveauModel = new DocumentParNiveauModel();
-      documentParNiveauModel.document = doc;
-      this.listSelectedDocumentsADonner.push(documentParNiveauModel);
-    } else {
-      this.listSelectedDocumentsADonner = this.listSelectedDocumentsADonner.filter(sn => Number(sn.document.id) !== Number(doc.id));
-    }
-  }
-
-  save(addForm) {
-    if (this.niveauModel.libelle && this.niveauModel.libelle.trim() !== ''
-      && this.parcoursModel.libelle && this.parcoursModel.libelle.trim() !== ''
-      && this.cycleModel.cycle && this.cycleModel.cycle.trim() !== '') {
-      if (this.listSemestreNiveau && this.listSemestreNiveau.length > 0
-        && this.listSelectedDocumentsADonner && this.listSelectedDocumentsADonner.length > 0
-        && this.listSelectedDocumentsAFournir && this.listSelectedDocumentsAFournir.length > 0) {
-        this.ngxService.show(this.LOADERID);
-        this.niveauModel.parcours = this.parcoursModel;
-        this.niveauModel.cycle = this.cycleModel;
-        console.log(this.niveauModel);
-        this.subscription.push(
-          (this.niveauModel.id ?
-            this.paramSpecialiteService.updateNiveau(this.niveauModel.id, this.niveauModel) :
-            this.paramSpecialiteService.addNiveau(this.niveauModel)).subscribe(
-              (data) => {
-                console.log(data);
-                if (data && data.id) {
-                  this.niveauModel = data as NiveauModel;
-                  this.saveDocumentParNiveau(this.listSelectedDocumentsADonner, this.niveauModel);
-                  this.saveSemestreNiveau(this.listSemestreNiveau, this.niveauModel);
-                }
-              }, (error) => {
-                this.notif.error();
-                this.ngxService.hide(this.LOADERID);
-              }, () => {
-                addForm.resetForm();
-                this.clear();
-                this.notif.success();
-                this.loadListNiveau();
-              }
-            )
-        );
-      } else {
-        this.notif.error('Selectionnez au moins un document à donner, un document à fournir et un semestre');
-      }
-    } else {
-      this.notif.error('Veuillez remplir tous le formulaire SVP');
-    }
-
-  }
-
-  clear() {
-    this.cycleModel = new CycleModel();
-    this.parcoursModel = new ParcoursModel();
-    this.niveauModel = new NiveauModel();
-  }
-
-  saveDocumentParNiveau(docParNiveau: DocumentParNiveauModel[], niveau: NiveauModel) {
-    docParNiveau.forEach(x => x.niveau = niveau);
-    this.subscription.push(
-      this.paramSpecialiteService.addDocumentParNiveau(docParNiveau).subscribe(
-        (data) => {
-          console.log(data);
-        }, (error) => {
-          this.notif.error();
-          this.ngxService.hide(this.LOADERID);
-        }, () => {
-          docParNiveau = [];
-          this.loadListDocument();
-          this.loadListNiveau();
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
-    );
-  }
-
-  saveSemestreNiveau(semestreNiveau: SemestreNiveauModel[], niveau: NiveauModel) {
-    semestreNiveau.forEach(x => x.niveau = niveau);
-    this.subscription.push(
-      this.paramSpecialiteService.addSemestreNiveau(semestreNiveau).subscribe(
-        (data) => {
-          console.log(data);
-        }, (error) => {
-          this.notif.error();
-          this.ngxService.hide(this.LOADERID);
-        }, () => {
-          semestreNiveau = [];
-          this.loadListSemestre();
-          this.loadListNiveau();
           this.ngxService.hide(this.LOADERID);
         }
       )
@@ -288,7 +262,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
     this.parcoursModel = this.niveauModel.parcours;
   }
 
-  archive(id) {
+  archiveNiveau(id) {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramSpecialiteService.archiveNiveau(id).subscribe(
@@ -306,7 +280,43 @@ export class NiveauComponent implements OnInit, OnDestroy {
     );
   }
 
-  openDialog(item): void {
+  archiveSemestreNiveau(id) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramSpecialiteService.archiveSemestreNiveau(id).subscribe(
+        (data) => {
+          this.loadListNiveau();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  archiveDocumentNiveau(id) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramSpecialiteService.archiveDocumentNiveau(id).subscribe(
+        (data) => {
+          this.loadListNiveau();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  openDialog(item, modelToArchive: string): void {
     this.dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '20%',
       data: item
@@ -314,7 +324,13 @@ export class NiveauComponent implements OnInit, OnDestroy {
 
     this.dialogRef.afterClosed().subscribe(result => {
       if (result.rep === true) {
-        this.archive(result.item.id);
+        if (modelToArchive === 'niveau') {
+          this.archiveNiveau(result.item.id);
+        } else if (modelToArchive === 'semestre') {
+          this.archiveSemestreNiveau(result.item.id);
+        } else {
+          this.archiveDocumentNiveau(result.item.id);
+        }
       }
     });
   }
@@ -323,6 +339,25 @@ export class NiveauComponent implements OnInit, OnDestroy {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramSpecialiteService.updateNiveauStatus(value.checked, item.id)
+      .subscribe(
+        (data) => {
+          this.loadListNiveau();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  onChangeStatusSemestre(value: MatSlideToggleChange, item) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramSpecialiteService.updateSemestreNiveauEncours(value.checked, item.id)
       .subscribe(
         (data) => {
           this.loadListNiveau();

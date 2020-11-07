@@ -1,0 +1,159 @@
+<div>
+  <ngx-spinner
+    [name]="LOADERID"
+    [fullScreen]="false"
+    type="square-jelly-box"
+    size="medium"
+  ></ngx-spinner>
+  <form #addForm="ngForm" (submit)="save(addForm)">
+    <div class="row" style="margin-top: 3%">
+      <div
+        class="col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 col-sm-12 col-xs-12"
+      >
+        <div class="form-group row">
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <mat-select required
+                name="cycle"
+                [(ngModel)]="cycleModel"
+                [placeholder]=" cycleModel ?
+                  cycleModel.cycle ? cycleModel.cycle : 'Selectionnez le cycle' : 'Selectionnez le cycle'
+                "
+              >
+                <mat-option *ngFor="let cycle of listCycle" [value]="cycle">{{
+                  cycle?.cycle
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <mat-select required
+                name="parcours"
+                [(ngModel)]="parcoursModel"
+                [placeholder]=" parcoursModel ?
+                  parcoursModel.libelle
+                    ? parcoursModel.libelle
+                    : 'Selectionnez le parcours' : 'Selectionnez le parcours'
+                "
+              >
+                <mat-option
+                  *ngFor="let parcours of listParcours"
+                  [value]="parcours"
+                  >{{ parcours?.libelle }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <mat-label>Libellé : </mat-label>
+              <input
+                [(ngModel)]="niveauModel.libelle"
+                required
+                name="libelle"
+                matInput
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <mat-label>Niveau : </mat-label>
+              <input
+                [(ngModel)]="niveauModel.niveau"
+                required
+                name="niveau"
+                matInput
+              />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 2%">
+      <div
+        class="col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 col-sm-12 col-xs-12"
+      >
+        <h3>Choisir les semestres :</h3>
+        <div class="col-md-1" *ngFor="let semestre of listSemestre; let i = index">
+          <mat-checkbox
+            (change)="onCheckedSemestre($event, semestre)"
+            color="primary"
+            [name]="i"
+            class="example-margin"
+            >{{ semestre.libelle }}</mat-checkbox
+          >
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 2%">
+      <div
+        class="col-md-offset-1 col-lg-offset-1 col-md-5 col-lg-5 col-sm-12 col-xs-12"
+      >
+        <h3>Choisir les documents à fournir :</h3>
+        <table class="table table-striped table-responsive">
+          <thead>
+            <tr>
+              <th>Document</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of listDocument | paginate: { itemsPerPage: 5, currentPage: page }">
+              <td>
+                <mat-checkbox
+                  (change)="onCheckedDocumentAFournir($event, doc)"
+                  color="primary"
+                  class="example-margin"
+                  >{{ doc.libelle }}</mat-checkbox
+                >
+              </td>
+            </tr>
+          </tbody>
+          <pagination-controls previousLabel="Précédent"
+          nextLabel="Suivant" (pageChange)="page = $event"></pagination-controls>
+        </table>
+      </div>
+      <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
+        <h3>Choisir les documents à donner :</h3>
+        <table class="table table-striped table-responsive">
+          <thead>
+            <tr>
+              <th>Document</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of listDocument | paginate: { itemsPerPage: 5, currentPage: page2 }">
+
+              <td>
+                <mat-checkbox
+                  (change)="onCheckedDocumentADonner($event, doc)"
+                  color="primary"
+                  class="example-margin"
+                  >{{ doc.libelle }}</mat-checkbox
+                >
+              </td>
+            </tr>
+          </tbody>
+          <pagination-controls previousLabel="Précédent"
+          nextLabel="Suivant" (pageChange)="page2 = $event"></pagination-controls>
+        </table>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 2%">
+      <div
+        class="col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 col-sm-12 col-xs-12"
+      >
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="!addForm.valid"
+          type="submit"
+        >
+          Enregistrer
+          <em class="fa fa-save fa-lg"></em>
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>

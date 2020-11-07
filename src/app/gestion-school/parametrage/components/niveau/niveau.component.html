@@ -5,168 +5,28 @@
     type="square-jelly-box"
     size="medium"
   ></ngx-spinner>
-  <form #addForm="ngForm" (submit)="save(addForm)">
-    <div class="row" style="margin-bottom: 2%">
-      <div
-        class="col-md-offset-2 col-lg-offset-2 col-md-8 col-lg-8 col-sm-12 col-xs-12"
-      >
-        <div class="form-group row">
-          <div class="col-md-6">
-            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <mat-select required
-                name="cycle"
-                [(ngModel)]="cycleModel"
-                [placeholder]=" cycleModel ?
-                  cycleModel.cycle ? cycleModel.cycle : 'Selectionnez le cycle' : 'Selectionnez le cycle'
-                "
-              >
-                <mat-option *ngFor="let cycle of listCycle" [value]="cycle">{{
-                  cycle?.cycle
-                }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6">
-            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <mat-select required
-                name="parcours"
-                [(ngModel)]="parcoursModel"
-                [placeholder]=" parcoursModel ?
-                  parcoursModel.libelle
-                    ? parcoursModel.libelle
-                    : 'Selectionnez le parcours' : 'Selectionnez le parcours'
-                "
-              >
-                <mat-option
-                  *ngFor="let parcours of listParcours"
-                  [value]="parcours"
-                  >{{ parcours?.libelle }}</mat-option
-                >
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-6">
-            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <mat-label>Libellé : </mat-label>
-              <input
-                [(ngModel)]="niveauModel.libelle"
-                required
-                name="libelle"
-                matInput
-              />
-            </mat-form-field>
-          </div>
-          <div class="col-md-6">
-            <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <mat-label>Niveau : </mat-label>
-              <input
-                [(ngModel)]="niveauModel.niveau"
-                required
-                name="niveau"
-                matInput
-              />
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row" style="margin-bottom: 4%">
-      <div
-        class="col-md-offset-2 col-lg-offset-2 col-md-8 col-lg-8 col-sm-12 col-xs-12"
-      >
-        <h3>Choisir les semestres :</h3>
-        <div class="col-md-1" *ngFor="let semestre of listSemestre; let i = index">
-          <mat-checkbox
-            (change)="onCheckedSemestre($event, semestre)"
-            color="primary"
-            [name]="i"
-            class="example-margin"
-            >{{ semestre.libelle }}</mat-checkbox
-          >
-        </div>
-      </div>
-    </div>
-    <div class="row" style="margin-bottom: 4%">
-      <div
-        class="col-md-offset-2 col-lg-offset-2 col-md-4 col-lg-4 col-sm-12 col-xs-12"
-      >
-        <h3>Choisir les documents à fournir :</h3>
-        <table class="table table-striped table-responsive">
-          <thead>
-            <tr>
-              <th>Document</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let doc of listDocument | paginate: { itemsPerPage: 5, currentPage: page }">
-              <td>
-                <mat-checkbox
-                  (change)="onCheckedDocumentAFournir($event, doc)"
-                  color="primary"
-                  class="example-margin"
-                  >{{ doc.libelle }}</mat-checkbox
-                >
-              </td>
-            </tr>
-          </tbody>
-          <pagination-controls previousLabel="Précédent"
-          nextLabel="Suivant" (pageChange)="page = $event"></pagination-controls>
-        </table>
-      </div>
-      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <h3>Choisir les documents à donner :</h3>
-        <table class="table table-striped table-responsive">
-          <thead>
-            <tr>
-              <th>Document</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let doc of listDocument | paginate: { itemsPerPage: 5, currentPage: page2 }">
+  <div class="row">
+    <button matTooltip="Ajouter niveau" *ngIf="!onAdd" mat-fab (click)="onAdd = true" type="button" color="primary">
+      <em class="fa fa-plus fa-lg"></em>
+    </button>
+    <button matTooltip="Liste des niveaux" *ngIf="onAdd" (click)="onAdd = false; loadListNiveau()" mat-fab type="button" color="primary">
+      <em class="fa fa-list fa-lg"></em>
+    </button>
+  </div>
 
-              <td>
-                <mat-checkbox
-                  (change)="onCheckedDocumentADonner($event, doc)"
-                  color="primary"
-                  class="example-margin"
-                  >{{ doc.libelle }}</mat-checkbox
-                >
-              </td>
-            </tr>
-          </tbody>
-          <pagination-controls previousLabel="Précédent"
-          nextLabel="Suivant" (pageChange)="page2 = $event"></pagination-controls>
-        </table>
-      </div>
-    </div>
-    <div class="row" style="margin-bottom: 7%">
-      <div
-        class="col-md-offset-2 col-lg-offset-2 col-md-8 col-lg-8 col-sm-12 col-xs-12"
-      >
-        <button
-          mat-raised-button
-          color="primary"
-          [disabled]="!addForm.valid"
-          type="submit"
-        >
-          Enregistrer
-          <em class="fa fa-save fa-lg"></em>
-        </button>
-      </div>
-    </div>
-  </form>
+  <app-niveau-add [cycleModel]="cycleModel" [parcoursModel]="parcoursModel"
+  [niveauModel]="niveauModel" *ngIf="onAdd"></app-niveau-add>
 
-  <table class="table table-striped table-responsive">
+  <table class="table table-striped table-responsive" *ngIf="!onAdd" style="margin-top: 3%;">
     <thead>
       <tr>
         <th>N°</th>
         <th>Niveau</th>
         <th>Cycle</th>
         <th>Parcours</th>
-        <th>Semestre</th>
-        <th>Document</th>
+        <th>Semestres du niveau</th>
+        <th>Documents à fournir</th>
+        <th>Documents à donner</th>
         <th>Statut</th>
         <th class="text-center">Actions</th>
       </tr>
@@ -181,18 +41,58 @@
           <mat-accordion>
             <mat-expansion-panel>
               <mat-expansion-panel-header>
-                Liste des semestres du niveau
+                <em class="fa fa-list fa-lg"></em>
               </mat-expansion-panel-header>
 
               <ng-template matExpansionPanelContent>
-                <ul>
-                  <li *ngFor="let s of niveau.semestreNiveaus">
-                    {{s.semestre.libelle}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <mat-slide-toggle checked color="primary">
-                      En cours
-                    </mat-slide-toggle>
-                  </li>
-                </ul>
+                <div class="row">
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <button type="button" (click)="onAddSemestreNiveau()" matTooltip="Ajouter semestre" mat-mini-fab color="primary">
+                      <em class="fa fa-plus fa-lg"> </em>
+                    </button>
+                  </div>
+                </div>
+                <div class="row" *ngIf="onNewSemestreNiveau === true">
+                  <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-label>Semestres</mat-label>
+                      <mat-select multiple required name="semestre" [(ngModel)]="listSelectedSemestre">
+                        <mat-option *ngFor="let semestre of listSemestre" [value]="semestre">
+                          {{ semestre?.libelle }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    <button (click)="saveSemestreNiveau(niveau)" type="button" mat-mini-fab color="primary">
+                      <em class="fa fa-save fa-lg"></em>
+                    </button>
+                  </div>
+                </div>
+                <table class="table table-striped table-responsive" *ngIf="niveau.semestreNiveaus && niveau.semestreNiveaus.length > 0">
+                  <thead>
+                    <tr>
+                      <th>Semestre</th>
+                      <th>Encours</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let s of niveau.semestreNiveaus">
+                      <td>{{s ? s.semestre ? s.semestre.libelle ? s.semestre.libelle : '' : '' : ''}}</td>
+                      <td>{{s ? s.enCours ? 'Oui' : 'Non' : ''}}</td>
+                      <td>
+                        <mat-slide-toggle (change)="onChangeStatusSemestre($event, s)"
+                          [ngModel]="s.enCours" checked color="primary">
+                        </mat-slide-toggle>
+                        &nbsp;&nbsp;&nbsp;
+                        <button type="button" (click)="openDialog(s, 'semestre')" matTooltip="Supprimer" mat-mini-fab color="warn">
+                          <em class="fa fa-trash fa-lg"> </em>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </ng-template>
             </mat-expansion-panel>
           </mat-accordion>
@@ -201,15 +101,106 @@
           <mat-accordion>
             <mat-expansion-panel>
               <mat-expansion-panel-header>
-                Liste documents du niveau
+                <em class="fa fa-list fa-lg"></em>
               </mat-expansion-panel-header>
 
               <ng-template matExpansionPanelContent>
-                <ul>
-                  <li *ngFor="let d of niveau.documentParNiveaus">
-                    {{d.document.libelle}}
-                  </li>
-                </ul>
+                <div class="row">
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <button type="button" (click)="onAddDocumentAFournirNiveau()" matTooltip="Ajouter semestre" mat-mini-fab color="primary">
+                      <em class="fa fa-plus fa-lg"> </em>
+                    </button>
+                  </div>
+                </div>
+                <div class="row" *ngIf="onNewDocumentFournirNiveau === true">
+                  <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-label>Document à fournir</mat-label>
+                      <mat-select multiple required name="doc" [(ngModel)]="listSelectedDocument">
+                        <mat-option *ngFor="let doc of listDocument" [value]="doc">
+                          {{ doc?.libelle }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    <button (click)="saveDocumentNiveauAFournir(niveau)" type="button" mat-mini-fab color="primary">
+                      <em class="fa fa-save fa-lg"></em>
+                    </button>
+                  </div>
+                </div>
+                <table class="table table-striped table-responsive" *ngIf="niveau.documentAFournir && niveau.documentAFournir.length > 0">
+                  <thead>
+                    <tr>
+                      <th>Document</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let d of niveau.documentAFournir">
+                      <td>{{d ? d.document ? d.document.libelle ? d.document.libelle : '' : '' : ''}}</td>
+                      <td>
+                        <button type="button" (click)="openDialog(d, 'document')" matTooltip="Supprimer" mat-mini-fab color="warn">
+                          <em class="fa fa-trash fa-lg"> </em>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </td>
+        <td>
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <em class="fa fa-list fa-lg"></em>
+              </mat-expansion-panel-header>
+
+              <ng-template matExpansionPanelContent>
+                <div class="row">
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <button type="button" (click)="onAddDocumentDonnerNiveau()" matTooltip="Ajouter semestre" mat-mini-fab color="primary">
+                      <em class="fa fa-plus fa-lg"> </em>
+                    </button>
+                  </div>
+                </div>
+                <div class="row" *ngIf="onNewDocumentDonnerNiveau === true">
+                  <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-label>Document à donner</mat-label>
+                      <mat-select multiple required name="document" [(ngModel)]="listSelectedDocument">
+                        <mat-option *ngFor="let doc of listDocument" [value]="doc">
+                          {{ doc?.libelle }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    <button (click)="saveDocumentNiveauADonner(niveau)" type="button" mat-mini-fab color="primary">
+                      <em class="fa fa-save fa-lg"></em>
+                    </button>
+                  </div>
+                </div>
+                <table class="table table-striped table-responsive" *ngIf="niveau.documentADonner && niveau.documentADonner.length > 0">
+                  <thead>
+                    <tr>
+                      <th>Document</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let d of niveau.documentADonner">
+                      <td>{{d ? d.document ? d.document.libelle ? d.document.libelle : '' : '' : ''}}</td>
+                      <td>
+                        <button type="button" (click)="openDialog(d, 'document')" matTooltip="Supprimer" mat-mini-fab color="warn">
+                          <em class="fa fa-trash fa-lg"> </em>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </ng-template>
             </mat-expansion-panel>
           </mat-accordion>
@@ -228,13 +219,13 @@
               class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
             >
               <button type="button"
-              (click)="onEdit(niveau)" matTooltip="Modifier" mat-mini-fab color="primary">
+              (click)="onEdit(niveau); onAdd=true" matTooltip="Modifier" mat-mini-fab color="primary">
                 <em class="fa fa-edit fa-lg"> </em>
               </button>
             </div>
             <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
               <button type="button"
-              (click)="openDialog(niveau)" matTooltip="Supprimer" mat-mini-fab color="warn">
+              (click)="openDialog(niveau, 'niveau')" matTooltip="Supprimer" mat-mini-fab color="warn">
                 <em class="fa fa-trash fa-lg"> </em>
               </button>
             </div>

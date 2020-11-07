@@ -33,6 +33,7 @@ import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.
 import { ClasseComponent } from './components/classe/classe.component';
 import { SousClasseComponent } from './components/sous-classe/sous-classe.component';
 import { AffectationClasseReferentielComponent } from './components/affectation-classe-referentiel/affectation-classe-referentiel.component';
+import { NiveauAddComponent } from './components/niveau-add/niveau-add.component';
 
 
 
@@ -56,7 +57,8 @@ import { AffectationClasseReferentielComponent } from './components/affectation-
     DeleteDialogComponent,
     ClasseComponent,
     SousClasseComponent,
-    AffectationClasseReferentielComponent
+    AffectationClasseReferentielComponent,
+    NiveauAddComponent
   ],
   imports: [
     ParametrageRoutingModule,

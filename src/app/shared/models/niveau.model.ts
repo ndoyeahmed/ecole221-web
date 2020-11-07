@@ -14,5 +14,6 @@ export class NiveauModel {
   public semestre: SemestreModel;
   public parcours: ParcoursModel;
   public semestreNiveaus: SemestreNiveauModel[];
-  public documentParNiveaus: DocumentParNiveauModel[];
+  public documentAFournir: DocumentParNiveauModel[];
+  public documentADonner: DocumentParNiveauModel[];
 }
