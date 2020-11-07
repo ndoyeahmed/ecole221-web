@@ -27,12 +27,15 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as SpecialiteModel[];
   listSelectedNiveau = [] as NiveauSpecialiteModel[];
+  listSelectedNiveauUpdate = [] as NiveauModel[];
   listMention = [] as MentionModel[];
 
   specialiteModel = new SpecialiteModel();
   mentionModel = new MentionModel();
 
   page = 1;
+
+  onNewNiveauSpecialite = false;
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
@@ -49,6 +52,11 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
     this.loadListSpecialite();
     this.loadListMention();
     this.loadListNiveau();
+  }
+
+  onAddNiveauSpecialite() {
+    this.onNewNiveauSpecialite = true;
+    this.listSelectedNiveauUpdate = [];
   }
 
   loadListSpecialite() {
@@ -182,12 +190,45 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
       )
     );
   }
+
+  saveNiveauSpecialite2(specialite: SpecialiteModel) {
+    this.listSelectedNiveau = [];
+    if (this.listSelectedNiveauUpdate && this.listSelectedNiveauUpdate.length > 0) {
+      this.listSelectedNiveauUpdate.forEach(x => {
+        const niveauSpec = new NiveauSpecialiteModel();
+        niveauSpec.niveau = x;
+        niveauSpec.specialite = specialite;
+        this.listSelectedNiveau.push(niveauSpec);
+      });
+      this.subscription.push(
+        this.paramSpecialiteService.addNiveauSpecialite(this.listSelectedNiveau).subscribe(
+          (data) => {
+            console.log(data);
+          }, (error) => {
+            this.onNewNiveauSpecialite = false;
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.onNewNiveauSpecialite = false;
+            this.listSelectedNiveauUpdate = [];
+            this.listSelectedNiveau = [];
+            this.notif.success();
+            this.loadListSpecialite();
+            this.ngxService.hide(this.LOADERID);
+          }
+        )
+      );
+    } else {
+      this.notif.error('Veuillez remplir tout le formulaire SVP');
+    }
+  }
+
   onEdit(item) {
     this.specialiteModel = item as SpecialiteModel;
     this.mentionModel = this.specialiteModel.mention;
   }
 
-  archive(id) {
+  archiveSpecialite(id) {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramSpecialiteService.archiveSpecialite(id).subscribe(
@@ -205,7 +246,25 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
     );
   }
 
-  openDialog(item): void {
+  archiveNiveauSpecialite(id) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramSpecialiteService.archiveNiveauSpecialite(id).subscribe(
+        (data) => {
+          this.loadListSpecialite();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  openDialog(item, modelToArchive: string): void {
     this.dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '20%',
       data: item
@@ -213,7 +272,11 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
 
     this.dialogRef.afterClosed().subscribe(result => {
       if (result.rep === true) {
-        this.archive(result.item.id);
+        if (modelToArchive === 'niveau') {
+          this.archiveNiveauSpecialite(result.item.id);
+        } else {
+          this.archiveSpecialite(result.item.id);
+        }
       }
     });
   }
