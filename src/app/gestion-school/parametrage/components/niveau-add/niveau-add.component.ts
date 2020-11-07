@@ -165,8 +165,8 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
     if (this.niveauModel.libelle && this.niveauModel.libelle.trim() !== ''
       && this.parcoursModel.libelle && this.parcoursModel.libelle.trim() !== ''
       && this.cycleModel.cycle && this.cycleModel.cycle.trim() !== '') {
-      if (this.listSemestreNiveau && this.listSemestreNiveau.length > 0
-        && this.listSelectedDocumentsAFournir && this.listSelectedDocumentsAFournir.length > 0) {
+      if ((this.listSemestreNiveau && this.listSemestreNiveau.length > 0
+        && this.listSelectedDocumentsAFournir && this.listSelectedDocumentsAFournir.length > 0) || this.niveauModel.id) {
         this.ngxService.show(this.LOADERID);
         this.niveauModel.parcours = this.parcoursModel;
         this.niveauModel.cycle = this.cycleModel;
@@ -177,10 +177,12 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
             this.paramSpecialiteService.addNiveau(this.niveauModel)).subscribe(
               (data) => {
                 console.log(data);
-                if (data && data.id) {
-                  this.niveauModel = data as NiveauModel;
-                  this.saveDocumentParNiveau(this.listSelectedDocumentsAFournir, this.niveauModel);
-                  this.saveSemestreNiveau(this.listSemestreNiveau, this.niveauModel);
+                if(!this.niveauModel.id) {
+                  if (data && data.id) {
+                    this.niveauModel = data as NiveauModel;
+                    this.saveDocumentParNiveau(this.listSelectedDocumentsAFournir, this.niveauModel);
+                    this.saveSemestreNiveau(this.listSemestreNiveau, this.niveauModel);
+                  }
                 }
               }, (error) => {
                 this.notif.error();
@@ -189,6 +191,7 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
                 addForm.resetForm();
                 this.clear();
                 this.notif.success();
+                this.ngxService.hide(this.LOADERID);
               }
             )
         );
