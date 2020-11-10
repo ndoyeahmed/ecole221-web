@@ -1,3 +1,4 @@
+import { SemestreNiveauModel } from './../../../../shared/models/semestre-niveau.model';
 import { ModuleModel } from './../../../../shared/models/module.model';
 import { ParametrageModuleUeService } from './../../services/parametrage-module-ue.service';
 import { SemestreModel } from './../../../../shared/models/semestre.model';
@@ -22,15 +23,10 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
   styleUrls: ['./referentiel.component.css'],
   animations: [
     trigger('flyInOut', [
-      state('in', style({ transform: 'translateX(0)' })),
-      transition('void => *', [
-        style({ transform: 'translateX(-100%)' }),
-        animate(500)
-      ]),
-      transition('* => void', [
-        animate(500, style({ transform: 'translateX(100%)' }))
-      ])
-    ])
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
   ]
 })
 export class ReferentielComponent implements OnInit, OnDestroy {
@@ -38,6 +34,11 @@ export class ReferentielComponent implements OnInit, OnDestroy {
   LOADERID = 'referentiel-loader';
   LOADERPROGRAMMEUE = 'programme-ue-loader';
   dialogRef: any;
+
+  referentielColumnsToDisplay = ['annee', 'credit', 'vht', 'actions'];
+  programmeUEColumnsToDisplay = ['designation', 'creditProgrammeUe', 'fondamental', 'nbrHeureUE', 'actionsProgrammeUE'];
+  expandedReferentiel: ReferentielModel | null;
+  expandedProgrammeUE: ProgrammeUEModel | null;
 
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as SpecialiteModel[];
@@ -50,6 +51,8 @@ export class ReferentielComponent implements OnInit, OnDestroy {
   referentielModel = new ReferentielModel();
   programmeUEModel = new ProgrammeUEModel();
   programmeModuleModel = new ProgrammeModuleModel();
+
+  listSemestreNiveau: SemestreNiveauModel[] = [];
 
   ueModel = new UeModel();
   listUe = [] as UeModel[];
@@ -96,6 +99,16 @@ export class ReferentielComponent implements OnInit, OnDestroy {
         () => {
           this.ngxService.hide(this.LOADERID);
         }
+      )
+    );
+  }
+
+  loadSemestreNiveauList(niveau) {
+    this.subscription.push(
+      this.paramSpecialiteService.getAllSemestreNiveauByNiveau(niveau.id).subscribe(
+        (data) => {
+          this.listSemestreNiveau = data;
+        }, (error) => console.log(error)
       )
     );
   }
@@ -196,10 +209,28 @@ export class ReferentielComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadListProgrammeUE(referentiel: ReferentielModel) {
+  /* loadListProgrammeUE(referentiel: ReferentielModel) {
     this.ngxService.show(this.LOADERPROGRAMMEUE);
     this.subscription.push(
       this.paramReferentielService.getAllProgrammeUEByReferentiel(referentiel.id).subscribe(
+        (data) => {
+          this.listProgrammeUE = data;
+        },
+        (error) => {
+          this.notif.error('Echec de chargement des données');
+          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+        },
+        () => {
+          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+        }
+      )
+    );
+  } */
+
+  loadListProgrammeUE(referentiel: ReferentielModel, semestre: SemestreModel) {
+    this.ngxService.show(this.LOADERPROGRAMMEUE);
+    this.subscription.push(
+      this.paramReferentielService.getAllProgrammeUEByReferentielAndSemestre(referentiel.id, semestre.id).subscribe(
         (data) => {
           this.listProgrammeUE = data;
         },
@@ -265,13 +296,13 @@ export class ReferentielComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveProgrammeUE(referentiel) {
+  saveProgrammeUE(referentiel, semestre) {
     if (this.programmeUEModel.fondamental && this.programmeUEModel.credit
       && this.programmeUEModel.nbreHeureUE) {
-      if (this.ueModel && this.ueModel.id && this.semestreModel && this.semestreModel.id) {
+      if (this.ueModel && this.ueModel.id ) {
         this.ngxService.show(this.LOADERPROGRAMMEUE);
         this.programmeUEModel.ue = this.ueModel;
-        this.programmeUEModel.semestre = this.semestreModel;
+        this.programmeUEModel.semestre = semestre;
         this.programmeUEModel.referentiel = referentiel;
         this.subscription.push(
           (this.programmeUEModel.id ?
@@ -283,7 +314,7 @@ export class ReferentielComponent implements OnInit, OnDestroy {
                 this.notif.error();
                 this.ngxService.hide(this.LOADERPROGRAMMEUE);
               }, () => {
-                this.loadListProgrammeUE(this.programmeUEModel.referentiel);
+                this.loadListProgrammeUE(this.programmeUEModel.referentiel, semestre);
                 this.semestreModel = new SemestreModel();
                 this.ueModel = new UeModel();
                 this.programmeUEModel = new ProgrammeUEModel();
@@ -294,7 +325,7 @@ export class ReferentielComponent implements OnInit, OnDestroy {
             )
         );
       } else {
-        this.notif.error('Niveau et spécialité obligatoire');
+        this.notif.error('UE obligatoire');
       }
     } else {
       this.notif.error('Veuillez remplir tout le formulaire SVP');
@@ -330,7 +361,7 @@ export class ReferentielComponent implements OnInit, OnDestroy {
             )
         );
       } else {
-        this.notif.error('Niveau et spécialité obligatoire');
+        this.notif.error('Module obligatoire');
       }
     } else {
       this.notif.error('Veuillez remplir tout le formulaire SVP');

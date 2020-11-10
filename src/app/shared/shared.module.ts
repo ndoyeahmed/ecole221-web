@@ -13,6 +13,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatTableModule} from '@angular/material/table';
 
 
 
@@ -35,7 +36,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatSnackBarModule,
     NgxSpinnerModule,
     NgxPaginationModule,
-    DragDropModule
+    DragDropModule,
+    MatTableModule
   ],
   providers: [
     {
