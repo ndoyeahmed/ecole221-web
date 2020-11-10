@@ -591,6 +591,7 @@
   </ng-container>
 
   <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <!--Programme UE -->
   <ng-container matColumnDef="expandedDetail">
     <td mat-cell *matCellDef="let element" [attr.colspan]="referentielColumnsToDisplay.length">
       <div class="example-element-detail"
@@ -681,16 +682,173 @@
                         <button type="button" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg"></em></button>
                         &nbsp;&nbsp;
                         <button type="button" mat-flat-button class="action-button"
-                          (click)="expandedProgrammeUE = expandedProgrammeUE === programmeUe ? null : programmeUe"
+                          (click)="expandedProgrammeUE = expandedProgrammeUE === programmeUe ? null : programmeUe; loadListProgrammeModule(programmeUe)"
                           [class.example-expanded-row]="expandedProgrammeUE === programmeUe">
                           <em class="fa fa-list fa-lg"></em>
                         </button>
                       </td>
                     </ng-container>
 
+                    <!-- programme module -->
+                    <ng-container matColumnDef="expandedDetailsProgrammeUE">
+                      <td mat-cell *matCellDef="let element" [attr.colspan]="programmeUEColumnsToDisplay.length">
+                        <div class="example-element-detail" [@flyInOut]="element == expandedProgrammeUE ? 'expanded' : 'collapsed'">
+
+                          <!-- formulaire add programme module -->
+                          <ng-container *ngIf="expandedNewProgrammeModule" [@flyInOut]>
+                            <div class="row text-center">
+                              <h3>Nouveau programme module</h3>
+                            </div>
+                            <div class="row">
+                              <div class=" col-lg-offset-1 col-md-offset-1 col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                  <mat-select required name="module" [(ngModel)]="moduleModel" [placeholder]="  moduleModel ? moduleModel.libelle ? moduleModel.libelle : 'Selectionnez le module' : 'Selectionnez le module' " >
+                                    <mat-option *ngFor="let module of listModule" [value]="module" >{{ module?.libelle }}</mat-option >
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                  <mat-label>Budget : </mat-label>
+                                  <input [(ngModel)]="programmeModuleModel.budget" required name="budget"  matInput />
+                                </mat-form-field>
+                              </div>
+                              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                  <mat-label>Coef : </mat-label>
+                                  <input [(ngModel)]="programmeModuleModel.coef" required name="coef"  matInput />
+                                </mat-form-field>
+                              </div>
+                              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12"  >
+                                  <mat-label>Nbre credit module : </mat-label>
+                                  <input [(ngModel)]="programmeModuleModel.nbreCreditModule" required name="nbreCreditModule" matInput />
+                                </mat-form-field>
+                              </div>
+                              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field
+                                  class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                  <mat-label>TD : </mat-label>
+                                  <input [(ngModel)]="programmeModuleModel.td" required name="td" matInput />
+                                </mat-form-field>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-lg-offset-1 col-md-offset-1 col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field
+                                  class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                  <mat-label>TP : </mat-label>
+                                  <input [(ngModel)]="programmeModuleModel.tp" required name="tp" matInput />
+                                </mat-form-field>
+                              </div>
+                              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field
+                                  class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                  <mat-label>TPE : </mat-label>
+                                  <input [(ngModel)]="programmeModuleModel.tpe" required name="tpe" matInput />
+                                </mat-form-field>
+                              </div>
+                              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field
+                                  class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                  <mat-label>VH : </mat-label>
+                                  <input [(ngModel)]="programmeModuleModel.vh" required name="vh" matInput />
+                                </mat-form-field>
+                              </div>
+                              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                  <mat-label>VHT : </mat-label>
+                                  <input [(ngModel)]="programmeModuleModel.vht" required name="vht" matInput />
+                                </mat-form-field>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-lg-offset-1 col-md-offset-1 col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                <button mat-raised-button class="action-button" type="button" (click)="saveProgrammeModule(element)" >
+                                  Enregistrer
+                                  <em class="fa fa-save fa-lg"></em>
+                                </button>
+                              </div>
+                            </div>
+                          </ng-container>
+                          <!-- End formulaire add programme module -->
+
+                          <!-- tableau pour afficher la liste de programme module -->
+                          <table mat-table [dataSource]="listProgrammeModule" multiTemplateDataRows>
+
+                            <ng-container matColumnDef="nomModule">
+                              <th mat-header-cell *matHeaderCellDef> Nom </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.module.libelle}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="budget">
+                              <th mat-header-cell *matHeaderCellDef> Budget </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.budget}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="coef">
+                              <th mat-header-cell *matHeaderCellDef> Coef </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.coef}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="nbrCreditModule">
+                              <th mat-header-cell *matHeaderCellDef> Nombre crédit module </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.nbreCreditModule}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="td">
+                              <th mat-header-cell *matHeaderCellDef> TD </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.td}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="tp">
+                              <th mat-header-cell *matHeaderCellDef> TP </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.tp}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="tpe">
+                              <th mat-header-cell *matHeaderCellDef> TPE </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.tpe}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="vhModule">
+                              <th mat-header-cell *matHeaderCellDef> VH </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.vh}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="vhtModule">
+                              <th mat-header-cell *matHeaderCellDef> VHT </th>
+                              <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.vht}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actionsProgrammeModule">
+                              <th mat-header-cell *matHeaderCellDef>
+                                Actions &nbsp;&nbsp;
+                                <button class="action-button" type="button" (click)="expandedNewProgrammeModule = !expandedNewProgrammeModule; onAddNewProgrammeModule()" mat-flat-button matTooltip="Ajouter">
+                                  <em class="fa fa-plus fa-lg"></em>
+                                </button>
+                              </th>
+                              <td mat-cell *matCellDef="let programmeModule">
+                                <button type="button" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg"></em></button>
+                                &nbsp;&nbsp;
+                                <button type="button" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg"></em></button>
+                              </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="programmeModuleColumnsToDisplay"></tr>
+                            <tr mat-row *matRowDef="let element; columns: programmeModuleColumnsToDisplay;"
+                              class="example-element-row"></tr>
+                          </table>
+
+                        </div>
+                      </td>
+                    </ng-container>
+                    <!-- END programme module -->
+
                     <tr mat-header-row *matHeaderRowDef="programmeUEColumnsToDisplay"></tr>
                     <tr mat-row *matRowDef="let element; columns: programmeUEColumnsToDisplay;"
-                      class="example-element-row">
+                      class="example-element-row"></tr>
+                      <tr mat-row *matRowDef="let row; columns: ['expandedDetailsProgrammeUE']" class="example-detail-row"></tr>
                   </table>
                   <!-- END tableau pour afficher la liste de programme UE -->
                 </ng-template>
@@ -699,6 +857,7 @@
       </div>
     </td>
   </ng-container>
+  <!-- END Programme UE -->
 
   <tr mat-header-row *matHeaderRowDef="referentielColumnsToDisplay"></tr>
   <tr mat-row *matRowDef="let element; columns: referentielColumnsToDisplay;"

@@ -37,6 +37,7 @@ export class ReferentielComponent implements OnInit, OnDestroy {
 
   referentielColumnsToDisplay = ['annee', 'credit', 'vht', 'actions'];
   programmeUEColumnsToDisplay = ['designation', 'creditProgrammeUe', 'fondamental', 'nbrHeureUE', 'actionsProgrammeUE'];
+  programmeModuleColumnsToDisplay = ['nomModule', 'budget', 'coef', 'nbrCreditModule', 'td', 'tp', 'tpe', 'vhModule', 'vhtModule', 'actionsProgrammeModule'];
   expandedReferentiel: ReferentielModel | null;
   expandedProgrammeUE: ProgrammeUEModel | null;
 
@@ -250,6 +251,7 @@ export class ReferentielComponent implements OnInit, OnDestroy {
     this.subscription.push(
       this.paramReferentielService.getAllProgrammeModuleByProgrammeUE(programmeUE.id).subscribe(
         (data) => {
+          console.log(data);
           this.listProgrammeModule = data;
         },
         (error) => {
