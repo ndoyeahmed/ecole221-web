@@ -1,3 +1,4 @@
+import { NiveauSpecialiteModel } from './../../../../shared/models/niveau-specialite.model';
 import { SemestreNiveauModel } from './../../../../shared/models/semestre-niveau.model';
 import { ModuleModel } from './../../../../shared/models/module.model';
 import { ParametrageModuleUeService } from './../../services/parametrage-module-ue.service';
@@ -42,8 +43,9 @@ export class ReferentielComponent implements OnInit, OnDestroy {
   expandedProgrammeUE: ProgrammeUEModel | null;
 
   listNiveau = [] as NiveauModel[];
-  listSpecialite = [] as SpecialiteModel[];
+  listSpecialite = [] as NiveauSpecialiteModel[];
   listReferentiel = [] as ReferentielModel[];
+  listReferentielFiltered = [] as ReferentielModel[];
   listProgrammeUE = [] as ProgrammeUEModel[];
   listProgrammeModule = [] as ProgrammeModuleModel[];
 
@@ -83,7 +85,6 @@ export class ReferentielComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.ngxService.show(this.LOADERID);
     this.loadListNiveau();
-    this.loadListSpecialite();
     this.loadListReferentiel();
   }
 
@@ -159,9 +160,46 @@ export class ReferentielComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadListSpecialite() {
+  loadReferentielByNiveau(niveauId) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.niveau.id) === Number(niveauId)
+    );
+  }
+
+  loadReferentielBySpecialite(specialiteId) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.specialite.id) === Number(specialiteId)
+    );
+  }
+
+  loadReferentielByNiveauAndSpecialite(niveauId, specialiteId) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.niveau.id) === Number(niveauId) && Number(x.specialite.id) === Number(specialiteId)
+    );
+  }
+
+  searchReferentielByNiveauAndSpecialite() {
+    if (this.niveauModel && this.niveauModel.id
+      && this.specialiteModel && this.specialiteModel.id) {
+        this.loadReferentielByNiveauAndSpecialite(this.niveauModel.id, this.specialiteModel.id);
+      } else if (this.niveauModel && this.niveauModel.id) {
+        this.loadReferentielByNiveau(this.niveauModel.id);
+      } else if (this.specialiteModel && this.specialiteModel.id) {
+        this.loadReferentielBySpecialite(this.specialiteModel.id);
+      }
+  }
+
+  cancelSearchReferentielByNiveauAndSpecialite(searchForm) {
+    searchForm.resetForm();
+    this.niveauModel = new NiveauModel();
+    this.specialiteModel = new SpecialiteModel();
+    this.listSpecialite = [];
+    this.listReferentielFiltered = [];
+  }
+
+  loadListSpecialite(niveauId) {
     this.subscription.push(
-      this.paramSpecialiteService.getAllSpecialite().subscribe(
+      this.paramSpecialiteService.getAllNiveauSpecialiteByNiveau(niveauId).subscribe(
         (data) => {
           this.listSpecialite = data;
         },
