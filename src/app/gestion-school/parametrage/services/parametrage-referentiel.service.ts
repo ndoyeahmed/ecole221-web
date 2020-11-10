@@ -40,6 +40,10 @@ export class ParametrageReferentielService {
     return this.http.put<any>(this.api + '/referentiel/' + id, referentiel);
   }
 
+  getReferentielByNiveauAndSpecialiteAndAnnee(body: any): Observable<any> {
+    return this.http.put<any>(this.api + '/referentiel/niveau/specialite/annee', body);
+  }
+
   // ------------------ PROGRAMME UE service
   addProgrammeUE(programmeUE: any): Observable<any> {
     return this.http.post<any>(this.api + '/programme-ue', programmeUE);

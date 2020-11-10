@@ -116,6 +116,10 @@ export class ParametragesSpecialiteService {
     return this.http.get(this.api + '/niveau-specialite/specialite/' + specialiteId);
   }
 
+  getAllNiveauSpecialiteByNiveau(niveauId: number): Observable<any> {
+    return this.http.get(this.api + '/niveau-specialite/niveau/' + niveauId);
+  }
+
   archiveNiveauSpecialite(id: any): Observable<any> {
     return this.http.delete<any>(this.api + '/niveau-specialite/' + id);
   }

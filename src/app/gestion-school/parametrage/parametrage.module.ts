@@ -34,6 +34,7 @@ import { ClasseComponent } from './components/classe/classe.component';
 import { SousClasseComponent } from './components/sous-classe/sous-classe.component';
 import { AffectationClasseReferentielComponent } from './components/affectation-classe-referentiel/affectation-classe-referentiel.component';
 import { NiveauAddComponent } from './components/niveau-add/niveau-add.component';
+import { ReferentielAddComponent } from './components/referentiel-add/referentiel-add.component';
 
 
 
@@ -58,7 +59,8 @@ import { NiveauAddComponent } from './components/niveau-add/niveau-add.component
     ClasseComponent,
     SousClasseComponent,
     AffectationClasseReferentielComponent,
-    NiveauAddComponent
+    NiveauAddComponent,
+    ReferentielAddComponent
   ],
   imports: [
     ParametrageRoutingModule,

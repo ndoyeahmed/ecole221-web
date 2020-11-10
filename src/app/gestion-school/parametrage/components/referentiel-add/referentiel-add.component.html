@@ -1,0 +1,123 @@
+<div>
+  <div class="row" style="margin-top: 3%">
+    <mat-card>
+      <div class="text-center">
+        <h3>Créer référentiel</h3>
+      </div>
+      <form #addForm="ngForm" (submit)="save(addForm)">
+        <div class="row" style="margin-bottom: 2%">
+          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <div class="form-group row">
+              <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <mat-select
+                    required
+                    name="niveau"
+                    [(ngModel)]="niveauModel"
+                    [placeholder]="
+                      niveauModel
+                        ? niveauModel.libelle
+                          ? niveauModel.libelle
+                          : 'Selectionnez le niveau'
+                        : 'Selectionnez le niveau'
+                    "
+                    (selectionChange)="loadListSpecialite(niveauModel.id)"
+                  >
+                    <mat-option
+                      *ngFor="let niveau of listNiveau"
+                      [value]="niveau"
+                      >{{ niveau?.libelle }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <mat-select
+                    required
+                    name="specialite"
+                    [(ngModel)]="specialiteModel"
+                    [placeholder]="
+                      specialiteModel
+                        ? specialiteModel.libelle
+                          ? specialiteModel.libelle
+                          : 'Selectionnez la spécialité'
+                        : 'Selectionnez la spécialité'
+                    "
+                  >
+                    <mat-option
+                      *ngFor="let nivSpecialite of listSpecialite"
+                      [value]="nivSpecialite.specialite"
+                      >{{ nivSpecialite.specialite?.libelle }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <mat-label>Année : </mat-label>
+                  <input
+                    [(ngModel)]="referentielModel.annee"
+                    required
+                    name="annee"
+                    matInput (blur)="onCheckIfReferentielExist()"
+                  />
+                </mat-form-field>
+              </div>
+              <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <mat-label>Crédit : </mat-label>
+                  <input
+                    [(ngModel)]="referentielModel.credit"
+                    required
+                    name="credit"
+                    matInput
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <mat-label>Volume heure total : </mat-label>
+                  <input
+                    [(ngModel)]="referentielModel.volumeHeureTotal"
+                    required
+                    name="libelle"
+                    matInput
+                  />
+                </mat-form-field>
+              </div>
+              <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <mat-label>Description : </mat-label>
+                  <textarea
+                    rows="4"
+                    cols="12"
+                    [(ngModel)]="referentielModel.description"
+                    required
+                    name="libelle"
+                    matInput
+                  ></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="!addForm.valid"
+              type="submit"
+            >
+              Enregistrer
+              <em class="fa fa-save fa-lg"></em>
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>

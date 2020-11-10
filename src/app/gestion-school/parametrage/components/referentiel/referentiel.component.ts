@@ -64,6 +64,8 @@ export class ReferentielComponent implements OnInit, OnDestroy {
   expandedNewProgrammeUE = false;
   expandedNewProgrammeModule = false;
 
+  onAdd = false;
+
   constructor(
     private dialog: MatDialog, private paramSpecialiteService: ParametragesSpecialiteService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
