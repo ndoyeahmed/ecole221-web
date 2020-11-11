@@ -9,4 +9,5 @@ export class ClasseModel {
   public horaire: HoraireModel;
   public niveau: NiveauModel;
   public specialite: SpecialiteModel;
+  public affected: boolean;
 }

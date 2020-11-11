@@ -14,6 +14,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatTableModule} from '@angular/material/table';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatChipsModule} from '@angular/material/chips';
 
 
 
@@ -37,7 +39,9 @@ import {MatTableModule} from '@angular/material/table';
     NgxSpinnerModule,
     NgxPaginationModule,
     DragDropModule,
-    MatTableModule
+    MatTableModule,
+    MatRadioModule,
+    MatChipsModule
   ],
   providers: [
     {

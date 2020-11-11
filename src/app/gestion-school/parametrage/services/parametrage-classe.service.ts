@@ -66,4 +66,13 @@ export class ParametrageClasseService {
   updateSousClasse(id: any, classe: any): Observable<any> {
     return this.http.put<any>(this.api + '/sous-classe/' + id, classe);
   }
+
+  // ------------------ CLASSE REFERENTIEL service
+  addClasseReferentiel(classeReferentiel: any[]): Observable<any> {
+    return this.http.post<any>(this.api + '/classe-referentiel', classeReferentiel);
+  }
+
+  getClasseReferentielByClasseAndReferentiel(classeId: number, referentielId: number): Observable<any> {
+    return this.http.get(this.api + '/classe-referentiel/classe/' + classeId + '/referentiel/' + referentielId);
+  }
 }

@@ -1,25 +1,89 @@
-<div cdkDropListGroup>
-  <div class="example-container">
-    <h2>Referentiel</h2>
-
-    <div
-      cdkDropList
-      [cdkDropListData]="todo"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+<div class="row" style="margin-bottom: 2%;">
+  <form #searchForm="ngForm">
+  <div class="text-center" style="margin-bottom: 2%">
+    <h3>Liste référentiels</h3>
+  </div>
+  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12">
+      <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <mat-label>Niveau :</mat-label>
+            <mat-select required name="niveau" [(ngModel)]="niveauModel" (selectionChange)="loadListSpecialite(niveauModel.id)">
+                  <mat-option *ngFor="let niveau of listNiveau" [value]="niveau" >{{ niveau?.libelle }}</mat-option >
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12">
+      <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <mat-label>Spécialité :</mat-label>
+            <mat-select required name="specialite" [(ngModel)]="specialiteModel"
+                  [placeholder]="specialiteModel ? specialiteModel.libelle ? specialiteModel.libelle : 'Selectionnez la spécialité' : 'Selectionnez la spécialité' " >
+                  <mat-option *ngFor="let nivSpecialite of listSpecialite" [value]="nivSpecialite.specialite" >{{ nivSpecialite.specialite?.libelle }}</mat-option >
+                </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12">
+      <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+            <mat-label>Annee : </mat-label>
+            <input [(ngModel)]="annee" required  name="annee" matInput />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12">
+      <button mat-mini-fab style="background-color: whitesmoke; color: black;" (click)="searchByNiveauAndSpecialite()" >
+        <em class="fa fa-search fa-lg"></em>
+      </button>
+      &nbsp;&nbsp;
+      <button mat-mini-fab style="background-color: whitesmoke; color: black;" (click)="cancelSearchByNiveauAndSpecialite(searchForm)" >
+        <em class="fa fa-remove fa-lg"></em>
+      </button>
     </div>
   </div>
-
-  <div class="example-container">
-    <h2>Classes</h2>
-
-    <div
-      cdkDropList
-      [cdkDropListData]="done"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
-    </div>
-  </div>
+</form>
 </div>
+
+<mat-card>
+  <form #affectForm="ngForm" (submit)="saveAffectation(affectForm)">
+  <div class="row">
+    <div class="col-md-6 col-lg-4 col-sm-12 col-xs-12">
+      <label id="example-radio-group-label">Choisir votre referentiel</label>
+      <mat-radio-group (change)="onSelectedReferentiel($event)" aria-labelledby="example-radio-group-label" class="example-radio-group"
+        [(ngModel)]="referentielModel" name="referentiel">
+        <mat-radio-button class="example-radio-button" color="primary"
+          *ngFor="let referentiel of (listReferentielFiltered && listReferentielFiltered.length > 0 ? listReferentielFiltered : listReferentiel)" [value]="referentiel">
+          Referentiel {{referentiel.annee}}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="col-md-6 col-lg-8 col-sm-12 col-xs-12">
+      <div class="row"><label>Choisir les classes</label></div>
+      <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12" *ngFor="let classe of (listClasseFiltered && listClasseFiltered.length > 0 ? listClasseFiltered : listClasse); let i = index">
+        <mat-checkbox (change)="onCheckedClasse($event, classe)"
+            color="primary" [checked]="classe.affected"
+            [name]="i" [disabled]="classe.affected"
+            class="example-margin"
+            >{{ classe.libelle }} {{classe.affected ? 'Affecté' : ''}} </mat-checkbox>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-lg-4 col-sm-12 col-xs-12">
+      <button mat-raised-button color="primary"
+          [disabled]="!affectForm.valid" type="submit" >
+          Enregistrer
+          <em class="fa fa-save fa-lg"></em>
+        </button>
+    </div>
+  </div>
+</form>
+</mat-card>
