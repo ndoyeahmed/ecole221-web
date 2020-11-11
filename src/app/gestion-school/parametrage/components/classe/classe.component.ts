@@ -12,6 +12,7 @@ import { NiveauModel } from 'src/app/shared/models/niveau.model';
 import { SpecialiteModel } from 'src/app/shared/models/specialite.model';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.model';
 
 @Component({
   selector: 'app-classe',
@@ -24,7 +25,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
   dialogRef: any;
 
   listNiveau = [] as NiveauModel[];
-  listSpecialite = [] as SpecialiteModel[];
+  listSpecialite = [] as NiveauSpecialiteModel[];
   listClasse = [] as ClasseModel[];
   listHoraire = [] as HoraireModel[];
 
@@ -48,7 +49,6 @@ export class ClasseComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadListClasse();
     this.loadListNiveau();
-    this.loadListSpecialite();
     this.loadListHoraire();
   }
 
@@ -86,9 +86,9 @@ export class ClasseComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadListSpecialite() {
+  loadListSpecialite(niveauId) {
     this.subscription.push(
-      this.paramSpecialiteService.getAllSpecialite().subscribe(
+      this.paramSpecialiteService.getAllNiveauSpecialiteByNiveau(niveauId).subscribe(
         (data) => {
           this.listSpecialite = data;
         },

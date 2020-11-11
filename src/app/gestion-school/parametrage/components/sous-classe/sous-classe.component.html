@@ -9,14 +9,14 @@
   <div class="row" style="margin-bottom: 2%">
     <div class="col-md-offset-2 col-lg-offset-2 col-md-8 col-lg-8 col-sm-12 col-xs-12">
       <div class="form-group row">
-        <div class="col-md-4">
+        <div class="col-md-6">
           <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <mat-select required
                   name="niveau"
                   [(ngModel)]="niveauModel"
                   [placeholder]=" niveauModel ?
                     niveauModel.libelle ? niveauModel.libelle : 'Selectionnez le niveau' : 'Selectionnez le niveau'
-                  "
+                  " (selectionChange)="loadListSpecialite(niveauModel.id)"
                 >
                   <mat-option *ngFor="let niveau of listNiveau" [value]="niveau">{{
                     niveau?.libelle
@@ -24,7 +24,7 @@
                 </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
           <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <mat-select required
                   name="specialite"
@@ -34,12 +34,29 @@
                   "
                 >
                   <mat-option *ngFor="let specialite of listSpecialite" [value]="specialite">{{
-                    specialite?.libelle
+                    specialite?.specialite.libelle
                   }}</mat-option>
                 </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-md-4">
+      </div>
+      <div class="form-group row">
+        <div class="col-md-6">
+          <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <mat-select required
+                  name="horaire"
+                  [(ngModel)]="horaireModel"
+                  [placeholder]=" horaireModel ?
+                  horaireModel.libelle ? horaireModel.libelle : 'Selectionnez l\'horaire' : 'Selectionnez l\'horaire'
+                  "
+                >
+                  <mat-option *ngFor="let horaire of listHoraire" [value]="horaire">{{
+                    horaire?.libelle
+                  }}</mat-option>
+                </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
           <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <mat-label>Libellé : </mat-label>
             <input [(ngModel)]="sousClasseModel.libelle"
@@ -69,6 +86,7 @@
         <th>Sous Classe</th>
         <th>Niveau</th>
         <th>Spécialité</th>
+        <th>Horaire</th>
         <th>Statut</th>
         <th class="text-center">Actions</th>
       </tr>
@@ -81,6 +99,7 @@
           {{sousClasse ? sousClasse.niveau ? sousClasse.niveau.libelle ? sousClasse.niveau.libelle : '' : '' : ''}}
         </td>
         <td>{{sousClasse ? sousClasse.specialite ? sousClasse.specialite.libelle ? sousClasse.specialite.libelle : '' : '' : ''}}</td>
+        <td>{{sousClasse ? sousClasse.horaire ? sousClasse.horaire.libelle ? sousClasse.horaire.libelle : '' : '' : ''}}</td>
         <td>
           <mat-slide-toggle
           [ngModel]="sousClasse.etat"

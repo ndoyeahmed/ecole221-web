@@ -2,11 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
+import { HoraireModel } from 'src/app/shared/models/horaire.model';
+import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.model';
 import { NiveauModel } from 'src/app/shared/models/niveau.model';
 import { SousClasseModel } from 'src/app/shared/models/sous-classe.model';
 import { SpecialiteModel } from 'src/app/shared/models/specialite.model';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametrageClasseService } from '../../services/parametrage-classe.service';
+import { ParametragesBaseService } from '../../services/parametrages-base.service';
 import { ParametragesSpecialiteService } from '../../services/parametrages-specialite.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 
@@ -21,19 +24,21 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   dialogRef: any;
 
   listNiveau = [] as NiveauModel[];
-  listSpecialite = [] as SpecialiteModel[];
+  listSpecialite = [] as NiveauSpecialiteModel[];
   listSousClasse = [] as SousClasseModel[];
+  listHoraire = [] as HoraireModel[];
 
   niveauModel = new NiveauModel();
   specialiteModel = new SpecialiteModel();
   sousClasseModel = new SousClasseModel();
+  horaireModel = new HoraireModel();
 
   page = 1;
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
-    private paramClasseService: ParametrageClasseService
+    private paramClasseService: ParametrageClasseService, private paramBaseService: ParametragesBaseService
   ) { }
 
   ngOnDestroy(): void {
@@ -43,7 +48,24 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadListSousClasse();
     this.loadListNiveau();
-    this.loadListSpecialite();
+    this.loadListHoraire();
+  }
+
+  loadListHoraire() {
+    this.subscription.push(
+      this.paramBaseService.getAllHoraire().subscribe(
+        (data) => {
+          this.listHoraire = data;
+        },
+        (error) => {
+          this.notif.error('Echec de chargement des données');
+          this.ngxService.hide(this.LOADERID);
+        },
+        () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
   }
 
   loadListSousClasse() {
@@ -80,9 +102,9 @@ export class SousClasseComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadListSpecialite() {
+  loadListSpecialite(niveauId) {
     this.subscription.push(
-      this.paramSpecialiteService.getAllSpecialite().subscribe(
+      this.paramSpecialiteService.getAllNiveauSpecialiteByNiveau(niveauId).subscribe(
         (data) => {
           this.listSpecialite = data;
         },
@@ -99,10 +121,11 @@ export class SousClasseComponent implements OnInit, OnDestroy {
 
   save(addForm) {
     if (this.sousClasseModel.libelle && this.sousClasseModel.libelle.trim() !== ''
-      && this.niveauModel.id && this.specialiteModel.id) {
+      && this.niveauModel.id && this.specialiteModel.id && this.horaireModel.id) {
       this.ngxService.show(this.LOADERID);
       this.sousClasseModel.niveau = this.niveauModel;
       this.sousClasseModel.specialite = this.specialiteModel;
+      this.sousClasseModel.horaire = this.horaireModel;
       this.subscription.push(
         (this.sousClasseModel.id ?
           this.paramClasseService.updateSousClasse(this.sousClasseModel.id, this.sousClasseModel) :

@@ -16,7 +16,7 @@
                   [(ngModel)]="niveauModel"
                   [placeholder]=" niveauModel ?
                     niveauModel.libelle ? niveauModel.libelle : 'Selectionnez le niveau' : 'Selectionnez le niveau'
-                  "
+                  " (selectionChange)="loadListSpecialite(niveauModel.id)"
                 >
                   <mat-option *ngFor="let niveau of listNiveau" [value]="niveau">{{
                     niveau?.libelle
@@ -34,7 +34,7 @@
                   "
                 >
                   <mat-option *ngFor="let specialite of listSpecialite" [value]="specialite">{{
-                    specialite?.libelle
+                    specialite?.specialite.libelle
                   }}</mat-option>
                 </mat-select>
           </mat-form-field>
