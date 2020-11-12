@@ -11,12 +11,14 @@ import { SpecialiteModel } from './../../../../shared/models/specialite.model';
 import { NiveauModel } from './../../../../shared/models/niveau.model';
 import { ParametrageReferentielService } from './../../services/parametrage-referentiel.service';
 import { ParametragesSpecialiteService } from './../../services/parametrages-specialite.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-referentiel',
@@ -30,11 +32,13 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
     ]),
   ]
 })
-export class ReferentielComponent implements OnInit, OnDestroy {
+export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   subscription = [] as Subscription[];
   LOADERID = 'referentiel-loader';
   LOADERPROGRAMMEUE = 'programme-ue-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<ReferentielModel>;
 
   referentielColumnsToDisplay = ['annee', 'credit', 'vht', 'actions'];
   programmeUEColumnsToDisplay = ['designation', 'creditProgrammeUe', 'fondamental', 'nbrHeureUE', 'actionsProgrammeUE'];
@@ -71,12 +75,20 @@ export class ReferentielComponent implements OnInit, OnDestroy {
   expandedNewProgrammeModule = false;
 
   onAdd = false;
+  etat = 'add';
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private dialog: MatDialog, private paramSpecialiteService: ParametragesSpecialiteService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
     private paramReferentielService: ParametrageReferentielService, private paramModuleUEService: ParametrageModuleUeService
   ) { }
+
+
+  ngAfterViewInit() {
+    // this.dataSource.paginator = this.paginator;
+  }
 
   ngOnDestroy(): void {
     this.subscription.forEach(x => x.unsubscribe());
@@ -86,6 +98,22 @@ export class ReferentielComponent implements OnInit, OnDestroy {
     this.ngxService.show(this.LOADERID);
     this.loadListNiveau();
     this.loadListReferentiel();
+  }
+
+  onDuplicateReferentiel(referentiel) {
+    this.etat = 'clone';
+    this.onAdd = true;
+    this.referentielModel = referentiel;
+    this.niveauModel = referentiel.niveau;
+    this.specialiteModel = referentiel.specialite;
+  }
+
+  onEditReferentiel(referentiel) {
+    this.etat = 'edit';
+    this.onAdd = true;
+    this.referentielModel = referentiel;
+    this.niveauModel = referentiel.niveau;
+    this.specialiteModel = referentiel.specialite;
   }
 
   loadListNiveau() {
@@ -164,18 +192,21 @@ export class ReferentielComponent implements OnInit, OnDestroy {
     this.listReferentielFiltered = this.listReferentiel.filter(
       x => Number(x.niveau.id) === Number(niveauId)
     );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
   }
 
   loadReferentielBySpecialite(specialiteId) {
     this.listReferentielFiltered = this.listReferentiel.filter(
       x => Number(x.specialite.id) === Number(specialiteId)
     );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
   }
 
   loadReferentielByNiveauAndSpecialite(niveauId, specialiteId) {
     this.listReferentielFiltered = this.listReferentiel.filter(
       x => Number(x.niveau.id) === Number(niveauId) && Number(x.specialite.id) === Number(specialiteId)
     );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
   }
 
   searchReferentielByNiveauAndSpecialite() {
@@ -219,6 +250,8 @@ export class ReferentielComponent implements OnInit, OnDestroy {
       this.paramReferentielService.getAllReferentiel().subscribe(
         (data) => {
           this.listReferentiel = data;
+          this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentiel);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');

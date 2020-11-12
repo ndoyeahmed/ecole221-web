@@ -6,7 +6,7 @@
     size="medium"
   ></ngx-spinner>
   <div class="row">
-    <button matTooltip="Ajouter niveau" *ngIf="!onAdd" mat-fab (click)="onAdd = true" type="button" color="primary">
+    <button matTooltip="Ajouter niveau" *ngIf="!onAdd" mat-fab (click)="onAdd = true;clear()" type="button" color="primary">
       <em class="fa fa-plus fa-lg"></em>
     </button>
     <button matTooltip="Liste des niveaux" *ngIf="onAdd" (click)="onAdd = false; loadListNiveau()" mat-fab type="button" color="primary">
@@ -32,7 +32,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let niveau of listNiveau; let i = index">
+      <tr *ngFor="let niveau of listNiveau | paginate: { itemsPerPage: 5, currentPage: page }; let i = index">
         <td>{{i + 1}}</td>
         <td>{{niveau ? niveau.libelle ? niveau.libelle : '' : ''}}</td>
         <td>{{niveau ? niveau.cycle ? niveau.cycle.cycle ? niveau.cycle.cycle : '' : '' : ''}}</td>
@@ -238,5 +238,7 @@
         </td>
       </tr>
     </tbody>
+    <pagination-controls previousLabel="Précédent"
+          nextLabel="Suivant" (pageChange)="page = $event"></pagination-controls>
   </table>
 </div>

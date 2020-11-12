@@ -221,6 +221,7 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
           this.ngxService.hide(this.LOADERID);
         }, () => {
           docParNiveau = [];
+          this.listSelectedDocumentsAFournir = [];
           this.loadListDocument();
           this.ngxService.hide(this.LOADERID);
         }
@@ -239,6 +240,7 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
           this.ngxService.hide(this.LOADERID);
         }, () => {
           semestreNiveau = [];
+          this.listSemestreNiveau = [];
           this.loadListSemestre();
           this.ngxService.hide(this.LOADERID);
         }

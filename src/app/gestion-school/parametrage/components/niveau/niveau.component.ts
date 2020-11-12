@@ -65,6 +65,12 @@ export class NiveauComponent implements OnInit, OnDestroy {
     this.loadListNiveau();
   }
 
+  clear() {
+    this.niveauModel = new NiveauModel();
+    this.parcoursModel = new ParcoursModel();
+    this.cycleModel = new CycleModel();
+  }
+
   onAddSemestreNiveau() {
     this.onNewSemestreNiveau = true;
     this.loadListSemestre();
@@ -339,18 +345,18 @@ export class NiveauComponent implements OnInit, OnDestroy {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramSpecialiteService.updateNiveauStatus(value.checked, item.id)
-      .subscribe(
-        (data) => {
-          this.loadListNiveau();
-          this.notif.success();
-        },
-        (error) => {
-          this.notif.error();
-          this.ngxService.hide(this.LOADERID);
-        }, () => {
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
+        .subscribe(
+          (data) => {
+            this.loadListNiveau();
+            this.notif.success();
+          },
+          (error) => {
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.ngxService.hide(this.LOADERID);
+          }
+        )
     );
   }
 
@@ -358,18 +364,18 @@ export class NiveauComponent implements OnInit, OnDestroy {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramSpecialiteService.updateSemestreNiveauEncours(value.checked, item.id)
-      .subscribe(
-        (data) => {
-          this.loadListNiveau();
-          this.notif.success();
-        },
-        (error) => {
-          this.notif.error();
-          this.ngxService.hide(this.LOADERID);
-        }, () => {
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
+        .subscribe(
+          (data) => {
+            this.loadListNiveau();
+            this.notif.success();
+          },
+          (error) => {
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.ngxService.hide(this.LOADERID);
+          }
+        )
     );
   }
 

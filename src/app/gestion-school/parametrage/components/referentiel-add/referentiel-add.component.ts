@@ -1,5 +1,5 @@
 import { NiveauSpecialiteModel } from './../../../../shared/models/niveau-specialite.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { NiveauModel } from 'src/app/shared/models/niveau.model';
@@ -24,9 +24,15 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as NiveauSpecialiteModel[];
 
+  @Input()
   niveauModel: NiveauModel;
+  @Input()
   specialiteModel: SpecialiteModel;
-  referentielModel = new ReferentielModel();
+  @Input()
+  referentielModel: ReferentielModel;
+
+  @Input()
+  status: string;
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService,
@@ -106,6 +112,9 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
         this.ngxService.show(this.LOADERID);
         this.referentielModel.niveau = this.niveauModel;
         this.referentielModel.specialite = this.specialiteModel;
+        if(this.status === 'clone') {
+          this.referentielModel.id = null;
+        }
         this.subscription.push(
           (this.referentielModel.id ?
             this.paramReferentielService.updateReferentiel(this.referentielModel.id, this.referentielModel) :
