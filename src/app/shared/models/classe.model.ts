@@ -1,3 +1,4 @@
+import { ReferentielModel } from 'src/app/shared/models/referentiel.model';
 import { SpecialiteModel } from './specialite.model';
 import { NiveauModel } from './niveau.model';
 import { HoraireModel } from './horaire.model';
@@ -10,4 +11,5 @@ export class ClasseModel {
   public niveau: NiveauModel;
   public specialite: SpecialiteModel;
   public affected: boolean;
+  public ref: ReferentielModel;
 }

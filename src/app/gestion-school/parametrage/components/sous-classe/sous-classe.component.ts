@@ -1,3 +1,5 @@
+import { ClasseModel } from './../../../../shared/models/classe.model';
+import { ConfirmDialogComponent } from './../confirm-dialog/confirm-dialog.component';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -34,12 +36,14 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as NiveauSpecialiteModel[];
   listSousClasse = [] as SousClasseModel[];
+  listSousClasseFilter = [] as SousClasseModel[];
   listHoraire = [] as HoraireModel[];
 
   niveauModel = new NiveauModel();
   specialiteModel = new NiveauSpecialiteModel();
   sousClasseModel = new SousClasseModel();
   horaireModel = new HoraireModel();
+  horaireSearch = new HoraireModel();
 
   page = 1;
 
@@ -57,6 +61,21 @@ export class SousClasseComponent implements OnInit, OnDestroy {
     this.loadListSousClasse();
     this.loadListNiveau();
     this.loadListHoraire();
+  }
+
+  search() {
+    if (this.horaireSearch && this.horaireSearch.id) {
+      this.listSousClasseFilter = this.listSousClasse.filter(x => x.horaire.id === this.horaireSearch.id);
+      this.dataSource = new MatTableDataSource<SousClasseModel>(this.listSousClasseFilter);
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+
+  cancelSearch(searchForm) {
+    searchForm.resetForm();
+    this.horaireSearch = new HoraireModel();
+    this.listSousClasseFilter = [];
+    this.loadListSousClasse();
   }
 
   loadListHoraire() {
@@ -143,8 +162,17 @@ export class SousClasseComponent implements OnInit, OnDestroy {
             (data) => {
               console.log(data);
             }, (error) => {
-              this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+              if (error.error.message === 'can not bind to any existing classe') {
+                const classe = new ClasseModel();
+                classe.libelle = this.sousClasseModel.libelle;
+                classe.horaire = this.sousClasseModel.horaire;
+                classe.niveau = this.sousClasseModel.niveau;
+                classe.specialite = this.sousClasseModel.specialite;
+                this.onClasseNotExist(classe);
+              } else {
+                this.notif.error();
+                this.ngxService.hide(this.LOADERID);
+              }
             }, () => {
               addForm.resetForm();
               this.clear();
@@ -192,6 +220,35 @@ export class SousClasseComponent implements OnInit, OnDestroy {
     );
   }
 
+  createClasseAndSousClasse(item) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramClasseService.addClasse(item).subscribe(
+        (data) => {
+          console.log(data);
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.paramClasseService.addSousClasse(this.sousClasseModel).subscribe(
+            (result) => {
+              console.log(result);
+            }, (error) => {
+              console.log(error);
+              this.notif.error();
+            }, () => {
+              this.loadListSousClasse();
+              this.notif.success();
+              this.ngxService.hide(this.LOADERID);
+            }
+          );
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
   openDialog(item): void {
     this.dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '20%',
@@ -201,6 +258,19 @@ export class SousClasseComponent implements OnInit, OnDestroy {
     this.dialogRef.afterClosed().subscribe(result => {
       if (result.rep === true) {
         this.archive(result.item.id);
+      }
+    });
+  }
+
+  onClasseNotExist(item) {
+    this.dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '20%',
+      data: item
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (result.rep === true) {
+        this.createClasseAndSousClasse(result.item);
       }
     });
   }

@@ -100,4 +100,12 @@ export class ParametrageClasseService {
   getFirstClasseReferentielByReferentiel(referentielId: number): Observable<any> {
     return this.http.get(this.api + '/classe-referentiel/referentiel/' + referentielId);
   }
+
+  getAllClasseReferentielByClasse(classeId: number): Observable<any> {
+    return this.http.get(this.api + '/classe-referentiel/classe/' + classeId);
+  }
+
+  getAllClasseReferentiel(): Observable<any> {
+    return this.http.get(this.api + '/classe-referentiel');
+  }
 }

@@ -35,6 +35,7 @@ import { SousClasseComponent } from './components/sous-classe/sous-classe.compon
 import { AffectationClasseReferentielComponent } from './components/affectation-classe-referentiel/affectation-classe-referentiel.component';
 import { NiveauAddComponent } from './components/niveau-add/niveau-add.component';
 import { ReferentielAddComponent } from './components/referentiel-add/referentiel-add.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -60,7 +61,8 @@ import { ReferentielAddComponent } from './components/referentiel-add/referentie
     SousClasseComponent,
     AffectationClasseReferentielComponent,
     NiveauAddComponent,
-    ReferentielAddComponent
+    ReferentielAddComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     ParametrageRoutingModule,

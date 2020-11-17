@@ -290,6 +290,8 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
             },
             () => {
               affectForm.resetForm();
+              this.referentielModel = new ReferentielModel();
+              this.listClasseReferentiel = [];
               this.notif.success();
             }
           )

@@ -15,6 +15,7 @@ import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component'
 import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ClasseReferentielModel } from 'src/app/shared/models/classe-referentiel.model';
 
 @Component({
   selector: 'app-classe',
@@ -29,16 +30,19 @@ export class ClasseComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<ClasseModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  classeColumnsToDisplay = ['classe', 'niveau', 'specialite', 'horaire', 'status', 'actions'];
+  classeColumnsToDisplay = ['classe', 'niveau', 'specialite', 'horaire', 'referentiel', 'status', 'actions'];
 
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as NiveauSpecialiteModel[];
   listClasse = [] as ClasseModel[];
+  listClasseReferentiel = [] as ClasseReferentielModel[];
+  listClasseFilter = [] as ClasseModel[];
   listHoraire = [] as HoraireModel[];
 
   niveauModel = new NiveauModel();
   specialiteModel = new NiveauSpecialiteModel();
   horaireModel = new HoraireModel();
+  horaireSearch = new HoraireModel();
   classeModel = new ClasseModel();
 
   page = 1;
@@ -59,20 +63,49 @@ export class ClasseComponent implements OnInit, OnDestroy {
     this.loadListHoraire();
   }
 
+  search() {
+    if (this.horaireSearch && this.horaireSearch.id) {
+      this.listClasseFilter = this.listClasse.filter(x => x.horaire.id === this.horaireSearch.id);
+      this.dataSource = new MatTableDataSource<ClasseModel>(this.listClasseFilter);
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+
+  cancelSearch(searchForm) {
+    searchForm.resetForm();
+    this.horaireSearch = new HoraireModel();
+    this.listClasseFilter = [];
+    this.loadListClasse();
+  }
+
   loadListClasse() {
     this.subscription.push(
-      this.paramClasseService.getAllClasse().subscribe(
-        (data) => {
-          this.listClasse = data;
-          this.dataSource = new MatTableDataSource<ClasseModel>(this.listClasse);
-          this.dataSource.paginator = this.paginator;
-        },
-        (error) => {
-          this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
-        },
+      this.paramClasseService.getAllClasseReferentiel().subscribe(
+        (classeref) => {
+          this.listClasseReferentiel = classeref;
+        }, (error) => console.log(error),
         () => {
-          this.ngxService.hide(this.LOADERID);
+          this.paramClasseService.getAllClasse().subscribe(
+            (data) => {
+              this.listClasse = data;
+            },
+            (error) => {
+              this.notif.error('Echec de chargement des données');
+              this.ngxService.hide(this.LOADERID);
+            },
+            () => {
+              this.listClasse.forEach(x => {
+                this.listClasseReferentiel.forEach(s => {
+                  if (s.classe.id === x.id) {
+                    x.ref = s.referentiel;
+                  }
+                });
+              });
+              this.dataSource = new MatTableDataSource<ClasseModel>(this.listClasse);
+              this.dataSource.paginator = this.paginator;
+              this.ngxService.hide(this.LOADERID);
+            }
+          )
         }
       )
     );
@@ -131,7 +164,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
 
   save(addForm) {
     if (this.classeModel.libelle && this.classeModel.libelle.trim() !== ''
-      && this.niveauModel.id && this.specialiteModel.id && this.horaireModel.id) {
+      && this.niveauModel.id && this.specialiteModel.specialite && this.horaireModel.id) {
       this.ngxService.show(this.LOADERID);
       this.classeModel.niveau = this.niveauModel;
       this.classeModel.specialite = this.specialiteModel.specialite;
