@@ -2,11 +2,13 @@ import { MycustomNotificationService } from '../../services/mycustom-notificatio
 import { DeleteDialogComponent } from './../delete-dialog/delete-dialog.component';
 import { ParametragesBaseService } from './../../services/parametrages-base.service';
 import { AnneeScolaireModel } from './../../../../shared/models/annee-scolaire.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { NgxSpinnerService } from "ngx-spinner";
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-anneescolaire',
@@ -18,6 +20,10 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   listAnneeScolaire = [] as AnneeScolaireModel[];
   anneeScolaire = new AnneeScolaireModel();
+  dataSource: MatTableDataSource<AnneeScolaireModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  anneeColumnsToDisplay = ['anneescolaire', 'encours', 'status', 'actions'];
 
   LOADERID = 'annee-scolaire-loader';
 
@@ -40,6 +46,8 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
       this.paramBaseService.getAllAnneeScolaire().subscribe(
         (data) => {
           this.listAnneeScolaire = data;
+          this.dataSource = new MatTableDataSource<AnneeScolaireModel>(this.listAnneeScolaire);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec chargement des données');

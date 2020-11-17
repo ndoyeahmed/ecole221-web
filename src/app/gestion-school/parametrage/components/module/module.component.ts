@@ -1,7 +1,7 @@
 import { ParametrageModuleUeService } from './../../services/parametrage-module-ue.service';
 import { MentionModuleModel } from './../../../../shared/models/mention-module.model';
 import { ModuleModel } from './../../../../shared/models/module.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,8 @@ import { MycustomNotificationService } from '../../services/mycustom-notificatio
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-module',
@@ -22,8 +24,14 @@ export class ModuleComponent implements OnInit, OnDestroy {
   LOADERID = 'module-loader';
   dialogRef: any;
 
+  dataSource: MatTableDataSource<ModuleModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  moduleColumnsToDisplay = ['code', 'module', 'mention', 'status', 'actions'];
+
   listMention = [] as MentionModel[];
   listMentionModule = [] as MentionModuleModel[];
+  listSelectedMentionUpdate = [] as MentionModel[];
   listSelectedMention = [] as MentionModel[];
   listModule = [] as ModuleModel[];
 
@@ -31,6 +39,8 @@ export class ModuleComponent implements OnInit, OnDestroy {
   mentionModel = new MentionModel();
 
   page = 1;
+
+  onNewModuleMention = false;
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
@@ -46,6 +56,43 @@ export class ModuleComponent implements OnInit, OnDestroy {
     this.ngxService.show(this.LOADERID);
     this.loadListModule();
     this.loadListMention();
+  }
+
+  onAddModuleMention() {
+    this.onNewModuleMention = true;
+    this.listSelectedMentionUpdate = [];
+  }
+
+  saveModuleMention2(module: ModuleModel) {
+    this.listMentionModule = [];
+    if (this.listSelectedMentionUpdate && this.listSelectedMentionUpdate.length > 0) {
+      this.listSelectedMentionUpdate.forEach(x => {
+        const moduleMention = new MentionModuleModel();
+        moduleMention.mention = x;
+        moduleMention.module = module;
+        this.listMentionModule.push(moduleMention);
+      });
+      this.subscription.push(
+        this.paramModuleUE.addMentionModule(this.listMentionModule).subscribe(
+          (data) => {
+            console.log(data);
+          }, (error) => {
+            this.onNewModuleMention = false;
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.onNewModuleMention = false;
+            this.listSelectedMentionUpdate = [];
+            this.listMentionModule = [];
+            this.notif.success();
+            this.loadListModule();
+            this.ngxService.hide(this.LOADERID);
+          }
+        )
+      );
+    } else {
+      this.notif.error('Veuillez remplir tout le formulaire SVP');
+    }
   }
 
   loadListModule() {
@@ -67,6 +114,8 @@ export class ModuleComponent implements OnInit, OnDestroy {
                 }
               )
             );
+            this.dataSource = new MatTableDataSource<ModuleModel>(this.listModule);
+            this.dataSource.paginator = this.paginator;
             this.ngxService.hide(this.LOADERID);
           }
           );
@@ -100,14 +149,19 @@ export class ModuleComponent implements OnInit, OnDestroy {
           mentionModule.mention = x;
           this.listMentionModule.push(mentionModule);
         });
+        console.log(this.moduleModel);
         this.subscription.push(
           (this.moduleModel.id ?
             this.paramModuleUE.updateModule(this.moduleModel.id, this.moduleModel) :
             this.paramModuleUE.addModule(this.moduleModel)).subscribe(
               (data) => {
-                if (data && data.id) {
-                  this.moduleModel = data as ModuleModel;
-                  this.saveMentionModule(this.listMentionModule, this.moduleModel);
+                if (!this.moduleModel.id) {
+                  if (data && data.id) {
+                    this.moduleModel = data as ModuleModel;
+                    this.saveMentionModule(this.listMentionModule, this.moduleModel);
+                  } else {
+                    this.listSelectedMention = [];
+                  }
                 }
               }, (error) => {
                 this.notif.error();
@@ -152,10 +206,16 @@ export class ModuleComponent implements OnInit, OnDestroy {
     );
   }
   onEdit(item) {
+    this.listSelectedMention = [];
     this.moduleModel = item as ModuleModel;
+    item.mentionModule.forEach(x => this.listSelectedMention.push(x.mention));
   }
 
-  archive(id) {
+  comparer(o1: any, o2: any): boolean {
+    return o1 && o2 ? o1.id === o2.id : o2 === o2;
+  }
+
+  archiveModule(id) {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramModuleUE.archiveModule(id).subscribe(
@@ -173,7 +233,25 @@ export class ModuleComponent implements OnInit, OnDestroy {
     );
   }
 
-  openDialog(item): void {
+  archiveMentionModule(id) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramModuleUE.archiveMentionModule(id).subscribe(
+        (data) => {
+          this.loadListModule();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  openDialog(item, modelToArchive: string): void {
     this.dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '20%',
       data: item
@@ -181,7 +259,11 @@ export class ModuleComponent implements OnInit, OnDestroy {
 
     this.dialogRef.afterClosed().subscribe(result => {
       if (result.rep === true) {
-        this.archive(result.item.id);
+        if (modelToArchive === 'mention') {
+          this.archiveMentionModule(result.item.id);
+        } else {
+          this.archiveModule(result.item.id);
+        }
       }
     });
   }

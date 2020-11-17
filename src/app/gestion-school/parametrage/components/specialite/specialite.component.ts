@@ -2,7 +2,7 @@ import { MentionModel } from './../../../../shared/models/mention.model';
 import { NiveauSpecialiteModel } from './../../../../shared/models/niveau-specialite.model';
 import { SpecialiteModel } from './../../../../shared/models/specialite.model';
 import { NiveauModel } from './../../../../shared/models/niveau.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -12,6 +12,8 @@ import { ParametragesBaseService } from '../../services/parametrages-base.servic
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-specialite',
@@ -23,6 +25,11 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'specialite-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<SpecialiteModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  specialiteColumnsToDisplay = ['specialite', 'mention', 'niveau', 'status', 'actions'];
 
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as SpecialiteModel[];
@@ -78,6 +85,8 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
                 }
               )
             );
+            this.dataSource = new MatTableDataSource<SpecialiteModel>(this.listSpecialite);
+            this.dataSource.paginator = this.paginator;
             this.ngxService.hide(this.LOADERID);
           }
           );
@@ -285,18 +294,18 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramSpecialiteService.updateSpecialiteStatus(value.checked, item.id)
-      .subscribe(
-        (data) => {
-          this.loadListSpecialite();
-          this.notif.success();
-        },
-        (error) => {
-          this.notif.error();
-          this.ngxService.hide(this.LOADERID);
-        }, () => {
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
+        .subscribe(
+          (data) => {
+            this.loadListSpecialite();
+            this.notif.success();
+          },
+          (error) => {
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.ngxService.hide(this.LOADERID);
+          }
+        )
     );
   }
 

@@ -1,6 +1,6 @@
 import { UeModel } from './../../../../shared/models/ue.model';
 import { MentionUEModel } from './../../../../shared/models/mention-ue.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MentionModel } from 'src/app/shared/models/mention.model';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
@@ -10,6 +10,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametrageModuleUeService } from '../../services/parametrage-module-ue.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-ue',
@@ -22,15 +24,23 @@ export class UeComponent implements OnInit, OnDestroy {
   LOADERID = 'ue-loader';
   dialogRef: any;
 
+  dataSource: MatTableDataSource<UeModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  ueColumnsToDisplay = ['code', 'ue', 'mention', 'status', 'actions'];
+
   listMention = [] as MentionModel[];
   listMentionUE = [] as MentionUEModel[];
   listSelectedMention = [] as MentionModel[];
+  listSelectedMentionUpdate = [] as MentionModel[];
   listUE = [] as UeModel[];
 
   ueModel = new UeModel();
   mentionModel = new MentionModel();
 
   page = 1;
+
+  onNewUEMention = false;
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
@@ -46,6 +56,43 @@ export class UeComponent implements OnInit, OnDestroy {
     this.ngxService.show(this.LOADERID);
     this.loadListUE();
     this.loadListMention();
+  }
+
+  onAddMentionUE() {
+    this.onNewUEMention = true;
+    this.listSelectedMentionUpdate = [];
+  }
+
+  saveMentionUE2(ue: UeModel) {
+    this.listMentionUE = [];
+    if (this.listSelectedMentionUpdate && this.listSelectedMentionUpdate.length > 0) {
+      this.listSelectedMentionUpdate.forEach(x => {
+        const mentionUE = new MentionUEModel();
+        mentionUE.mention = x;
+        mentionUE.ue = ue;
+        this.listMentionUE.push(mentionUE);
+      });
+      this.subscription.push(
+        this.paramModuleUE.addMentionUE(this.listMentionUE).subscribe(
+          (data) => {
+            console.log(data);
+          }, (error) => {
+            this.onNewUEMention = false;
+            this.notif.error();
+            this.ngxService.hide(this.LOADERID);
+          }, () => {
+            this.onNewUEMention = false;
+            this.listSelectedMentionUpdate = [];
+            this.listMentionUE = [];
+            this.notif.success();
+            this.loadListUE();
+            this.ngxService.hide(this.LOADERID);
+          }
+        )
+      );
+    } else {
+      this.notif.error('Veuillez remplir tout le formulaire SVP');
+    }
   }
 
   loadListUE() {
@@ -67,6 +114,8 @@ export class UeComponent implements OnInit, OnDestroy {
                 }
               )
             );
+            this.dataSource = new MatTableDataSource<UeModel>(this.listUE);
+            this.dataSource.paginator = this.paginator;
             this.ngxService.hide(this.LOADERID);
           }
           );
@@ -105,9 +154,13 @@ export class UeComponent implements OnInit, OnDestroy {
             this.paramModuleUE.updateUE(this.ueModel.id, this.ueModel) :
             this.paramModuleUE.addUE(this.ueModel)).subscribe(
               (data) => {
-                if (data && data.id) {
-                  this.ueModel = data as UeModel;
-                  this.saveMentionUE(this.listMentionUE, this.ueModel);
+                if (!this.ueModel.id) {
+                  if (data && data.id) {
+                    this.ueModel = data as UeModel;
+                    this.saveMentionUE(this.listMentionUE, this.ueModel);
+                  } else {
+                    this.listSelectedMention = [];
+                  }
                 }
               }, (error) => {
                 this.notif.error();
@@ -152,10 +205,16 @@ export class UeComponent implements OnInit, OnDestroy {
     );
   }
   onEdit(item) {
+    this.listSelectedMention = [];
     this.ueModel = item as UeModel;
+    item.mentionUE.forEach(x => this.listSelectedMention.push(x.mention));
   }
 
-  archive(id) {
+  comparer(o1: any, o2: any): boolean {
+    return o1 && o2 ? o1.id === o2.id : o2 === o2;
+  }
+
+  archiveUE(id) {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
       this.paramModuleUE.archiveUE(id).subscribe(
@@ -173,7 +232,25 @@ export class UeComponent implements OnInit, OnDestroy {
     );
   }
 
-  openDialog(item): void {
+  archiveMentionModule(id) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramModuleUE.archiveMentionModule(id).subscribe(
+        (data) => {
+          this.loadListUE();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  openDialog(item, modelToArchive: string): void {
     this.dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '20%',
       data: item
@@ -181,7 +258,11 @@ export class UeComponent implements OnInit, OnDestroy {
 
     this.dialogRef.afterClosed().subscribe(result => {
       if (result.rep === true) {
-        this.archive(result.item.id);
+        if (modelToArchive === 'mention') {
+          this.archiveMentionModule(result.item.id);
+        } else {
+          this.archiveUE(result.item.id);
+        }
       }
     });
   }

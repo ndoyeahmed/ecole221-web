@@ -67,25 +67,31 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
   }
 
   onCheckIfReferentielExist() {
-    if (this.niveauModel && this.niveauModel.id && this.specialiteModel
-      && this.specialiteModel.id && this.referentielModel && this.referentielModel.annee) {
-        const body = {
-          niveauId: this.niveauModel.id + '',
-          specialiteId: this.specialiteModel.id + '',
-          annee: this.referentielModel.annee + ''
-        };
-        this.subscription.push(
-          this.paramReferentielService.getReferentielByNiveauAndSpecialiteAndAnnee(body).subscribe(
-            (data) => {
-              if (data) {
-                this.referentielModel = data;
+    if (this.status === 'add') {
+      if (this.niveauModel && this.niveauModel.id && this.specialiteModel
+        && this.specialiteModel.id && this.referentielModel && this.referentielModel.annee) {
+          const body = {
+            niveauId: this.niveauModel.id + '',
+            specialiteId: this.specialiteModel.id + '',
+            annee: this.referentielModel.annee + ''
+          };
+          this.subscription.push(
+            this.paramReferentielService.getReferentielByNiveauAndSpecialiteAndAnnee(body).subscribe(
+              (data) => {
+                if (data) {
+                  this.referentielModel = data;
+                } else {
+                  this.referentielModel.credit = null;
+                  this.referentielModel.volumeHeureTotal = null;
+                  this.referentielModel.description = null;
+                }
+              }, (error) => {
+                this.notif.error('Erreur de chargement des données');
               }
-            }, (error) => {
-              this.notif.error('Erreur de chargement des données');
-            }
-          )
-        );
-      }
+            )
+          );
+        }
+    }
   }
 
   loadListSpecialite(niveauId) {
@@ -112,13 +118,11 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
         this.ngxService.show(this.LOADERID);
         this.referentielModel.niveau = this.niveauModel;
         this.referentielModel.specialite = this.specialiteModel;
-        if(this.status === 'clone') {
+        if (this.status === 'clone') {
+          const oldReferentielId = this.referentielModel.id;
           this.referentielModel.id = null;
-        }
-        this.subscription.push(
-          (this.referentielModel.id ?
-            this.paramReferentielService.updateReferentiel(this.referentielModel.id, this.referentielModel) :
-            this.paramReferentielService.addReferentiel(this.referentielModel)).subscribe(
+          this.subscription.push(
+            this.paramReferentielService.cloneReferentiel(oldReferentielId, this.referentielModel).subscribe(
               (data) => {
                 console.log(data);
               }, (error) => {
@@ -131,7 +135,26 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
                 this.ngxService.hide(this.LOADERID);
               }
             )
-        );
+          );
+        } else {
+          this.subscription.push(
+            (this.referentielModel.id ?
+              this.paramReferentielService.updateReferentiel(this.referentielModel.id, this.referentielModel) :
+              this.paramReferentielService.addReferentiel(this.referentielModel)).subscribe(
+                (data) => {
+                  console.log(data);
+                }, (error) => {
+                  this.notif.error();
+                  this.ngxService.hide(this.LOADERID);
+                }, () => {
+                  addForm.resetForm();
+                  this.clear();
+                  this.notif.success();
+                  this.ngxService.hide(this.LOADERID);
+                }
+              )
+          );
+        }
       } else {
         this.notif.error('Niveau et spécialité obligatoire');
       }

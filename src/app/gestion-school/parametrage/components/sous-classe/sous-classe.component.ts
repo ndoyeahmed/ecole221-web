@@ -1,5 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatTableDataSource } from '@angular/material/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { HoraireModel } from 'src/app/shared/models/horaire.model';
@@ -20,8 +23,13 @@ import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component'
 })
 export class SousClasseComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
-  LOADERID = 'specialite-loader';
+  LOADERID = 'sous-classe-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<SousClasseModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  sousclasseColumnsToDisplay = ['sousclasse', 'niveau', 'specialite', 'horaire', 'status', 'actions'];
 
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as NiveauSpecialiteModel[];
@@ -29,7 +37,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   listHoraire = [] as HoraireModel[];
 
   niveauModel = new NiveauModel();
-  specialiteModel = new SpecialiteModel();
+  specialiteModel = new NiveauSpecialiteModel();
   sousClasseModel = new SousClasseModel();
   horaireModel = new HoraireModel();
 
@@ -73,6 +81,8 @@ export class SousClasseComponent implements OnInit, OnDestroy {
       this.paramClasseService.getAllSousClasse().subscribe(
         (data) => {
           this.listSousClasse = data;
+          this.dataSource = new MatTableDataSource<SousClasseModel>(this.listSousClasse);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
@@ -124,7 +134,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
       && this.niveauModel.id && this.specialiteModel.id && this.horaireModel.id) {
       this.ngxService.show(this.LOADERID);
       this.sousClasseModel.niveau = this.niveauModel;
-      this.sousClasseModel.specialite = this.specialiteModel;
+      this.sousClasseModel.specialite = this.specialiteModel.specialite;
       this.sousClasseModel.horaire = this.horaireModel;
       this.subscription.push(
         (this.sousClasseModel.id ?
@@ -149,15 +159,19 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   }
 
   clear() {
-    this.specialiteModel = new SpecialiteModel();
+    this.specialiteModel = new NiveauSpecialiteModel();
     this.niveauModel = new NiveauModel();
     this.sousClasseModel = new SousClasseModel();
   }
 
   onEdit(item) {
     this.sousClasseModel = item as SousClasseModel;
-    this.specialiteModel = this.sousClasseModel.specialite;
+    this.specialiteModel = new NiveauSpecialiteModel();
+    this.specialiteModel.specialite = this.sousClasseModel.specialite;
+    this.specialiteModel.niveau = this.sousClasseModel.niveau;
     this.niveauModel = this.sousClasseModel.niveau;
+    this.horaireModel = this.sousClasseModel.horaire;
+    this.loadListSpecialite(this.niveauModel.id);
   }
 
   archive(id) {
@@ -191,23 +205,23 @@ export class SousClasseComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* onChangeStatus(value: MatSlideToggleChange, item) {
+  onChangeStatus(value: MatSlideToggleChange, item) {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
-      this.paramSpecialiteService.updateSpecialiteStatus(value.checked, item.id)
-        .subscribe(
-          (data) => {
-            this.loadListSpecialite();
-            this.notif.success();
-          },
-          (error) => {
-            this.notif.error();
-            this.ngxService.hide(this.LOADERID);
-          }, () => {
-            this.ngxService.hide(this.LOADERID);
-          }
-        )
+      this.paramClasseService.updateSousClasseStatus(value.checked, item.id)
+      .subscribe(
+        (data) => {
+          this.loadListSousClasse();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
     );
-  } */
+  }
 
 }

@@ -5,7 +5,7 @@ import { ParcoursModel } from './../../../../shared/models/parcours.model';
 import { CycleModel } from './../../../../shared/models/cycle.model';
 import { DocumentModel } from './../../../../shared/models/document.model';
 import { NiveauModel } from './../../../../shared/models/niveau.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,8 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SemestreNiveauModel } from 'src/app/shared/models/semestre-niveau.model';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-niveau',
@@ -26,6 +28,11 @@ export class NiveauComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'niveau-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<NiveauModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  niveauColumnsToDisplay = ['niveau', 'cycle', 'parcours', 'semestreniveau', 'documentafournir', 'documentadonner', 'status', 'actions'];
 
   listNiveau = [] as NiveauModel[];
   listDocument = [] as DocumentModel[];
@@ -256,6 +263,8 @@ export class NiveauComponent implements OnInit, OnDestroy {
               )
             );
           });
+          this.dataSource = new MatTableDataSource<NiveauModel>(this.listNiveau);
+          this.dataSource.paginator = this.paginator;
           this.ngxService.hide(this.LOADERID);
         }
       )

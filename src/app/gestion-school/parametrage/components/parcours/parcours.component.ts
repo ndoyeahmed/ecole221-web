@@ -1,5 +1,5 @@
 import { ParcoursModel } from './../../../../shared/models/parcours.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,8 @@ import { MycustomNotificationService } from '../../services/mycustom-notificatio
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-parcours',
@@ -18,6 +20,11 @@ export class ParcoursComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'parcours-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<ParcoursModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  parcoursColumnsToDisplay = ['parcours', 'status', 'actions'];
 
   listParcours = [] as ParcoursModel[];
   parcours = new ParcoursModel();
@@ -41,6 +48,8 @@ export class ParcoursComponent implements OnInit, OnDestroy {
       this.paramBaseService.getAllParcours().subscribe(
         (data) => {
           this.listParcours = data;
+          this.dataSource = new MatTableDataSource<ParcoursModel>(this.listParcours);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');

@@ -19,6 +19,10 @@ import { MycustomNotificationService } from '../../services/mycustom-notificatio
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MentionUEModel } from 'src/app/shared/models/mention-ue.model';
+import { MentionModuleModel } from 'src/app/shared/models/mention-module.model';
+import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { ParametrageClasseService } from '../../services/parametrage-classe.service';
 
 @Component({
   selector: 'app-referentiel',
@@ -40,9 +44,17 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
 
   dataSource: MatTableDataSource<ReferentielModel>;
 
-  referentielColumnsToDisplay = ['annee', 'credit', 'vht', 'actions'];
+  referentielColumnsToDisplay = ['annee', 'credit', 'vht', 'type', 'actions'];
   programmeUEColumnsToDisplay = ['designation', 'creditProgrammeUe', 'fondamental', 'nbrHeureUE', 'actionsProgrammeUE'];
   programmeModuleColumnsToDisplay = ['nomModule', 'budget', 'coef', 'nbrCreditModule', 'td', 'tp', 'tpe', 'vhModule', 'vhtModule', 'actionsProgrammeModule'];
+
+  listTypeReferentiel = [
+    {id: 1, name: 'Affecté'},
+    {id: 2, name: 'Non affecté'},
+    // {id: 3, name: 'Cloturé'},
+    // {id: 4, name: 'En cours'},
+  ];
+
   expandedReferentiel: ReferentielModel | null;
   expandedProgrammeUE: ProgrammeUEModel | null;
 
@@ -62,13 +74,13 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   listSemestreNiveau: SemestreNiveauModel[] = [];
 
   ueModel = new UeModel();
-  listUe = [] as UeModel[];
+  listUe = [] as MentionUEModel[];
 
   semestreModel = new SemestreModel();
   listSemestre = [] as SemestreModel[];
 
   moduleModel = new ModuleModel();
-  listModule = [] as ModuleModel[];
+  listModule = [] as MentionModuleModel[];
 
   page = 1;
   expandedNewProgrammeUE = false;
@@ -76,13 +88,16 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onAdd = false;
   etat = 'add';
+  annee = '';
+  typeReferentiel: number;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private dialog: MatDialog, private paramSpecialiteService: ParametragesSpecialiteService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
-    private paramReferentielService: ParametrageReferentielService, private paramModuleUEService: ParametrageModuleUeService
+    private paramReferentielService: ParametrageReferentielService, private paramModuleUEService: ParametrageModuleUeService,
+    private paramClasseService: ParametrageClasseService
   ) { }
 
 
@@ -92,6 +107,14 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.subscription.forEach(x => x.unsubscribe());
+  }
+
+  onAddReferentiel() {
+    this.onAdd = true;
+    this.etat = 'add';
+    this.referentielModel = new ReferentielModel();
+    this.niveauModel = new NiveauModel();
+    this.specialiteModel = new SpecialiteModel();
   }
 
   ngOnInit(): void {
@@ -143,20 +166,20 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  onAddNewProgrammeUE() {
+  onAddNewProgrammeUE(referentiel) {
     this.ngxService.show(this.LOADERPROGRAMMEUE);
-    this.loadListUe();
+    this.loadListUe(referentiel.specialite.id);
     this.loadListSemestre();
   }
 
-  onAddNewProgrammeModule() {
+  onAddNewProgrammeModule(referentiel) {
     this.ngxService.show(this.LOADERPROGRAMMEUE);
-    this.loadListModule();
+    this.loadListModule(referentiel.specialite.id);
   }
 
-  loadListUe() {
+  loadListUe(specialiteId) {
     this.subscription.push(
-      this.paramModuleUEService.getAllUE().subscribe(
+      this.paramModuleUEService.getAllMentionUEByMentionWithSpecialiteId(specialiteId).subscribe(
         (data) => {
           this.listUe = data;
         },
@@ -193,6 +216,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
       x => Number(x.niveau.id) === Number(niveauId)
     );
     this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
   }
 
   loadReferentielBySpecialite(specialiteId) {
@@ -200,6 +224,23 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
       x => Number(x.specialite.id) === Number(specialiteId)
     );
     this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielByAnnee(annee) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.annee) === Number(annee)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielByType(type) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.affected) === Number(type)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
   }
 
   loadReferentielByNiveauAndSpecialite(niveauId, specialiteId) {
@@ -207,17 +248,127 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
       x => Number(x.niveau.id) === Number(niveauId) && Number(x.specialite.id) === Number(specialiteId)
     );
     this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
   }
 
-  searchReferentielByNiveauAndSpecialite() {
-    if (this.niveauModel && this.niveauModel.id
+  loadReferentielByNiveauAndSpecialiteAndType(niveauId, specialiteId, type) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.niveau.id) === Number(niveauId) && Number(x.specialite.id) === Number(specialiteId)
+      && Number(x.affected) === Number(type)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielByNiveauAndSpecialiteAndAnnee(niveauId, specialiteId, annee) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.niveau.id) === Number(niveauId) && Number(x.specialite.id) === Number(specialiteId) && Number(x.annee) === Number(annee)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielByNiveauAndSpecialiteAndAnneeAndType(niveauId, specialiteId, annee, type) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.niveau.id) === Number(niveauId) && Number(x.specialite.id) === Number(specialiteId) && Number(x.annee) === Number(annee)
+      && Number(x.affected) === Number(type)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielByNiveauAndAnnee(niveauId, annee) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.niveau.id) === Number(niveauId) && Number(x.annee) === Number(annee)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielByNiveauAndType(niveauId, type) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.niveau.id) === Number(niveauId) && Number(x.affected) === Number(type)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielByNiveauAndAnneeAndType(niveauId, annee, type) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.niveau.id) === Number(niveauId) && Number(x.annee) === Number(annee) && Number(x.affected) === Number(type)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielBySpecialiteAndAnnee(specialiteId, annee) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.specialite.id) === Number(specialiteId) && Number(x.annee) === Number(annee)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielByTypeAndAnnee(type, annee) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.affected) === Number(type) && Number(x.annee) === Number(annee)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielBySpecialiteAndType(specialiteId, type) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.specialite.id) === Number(specialiteId) && Number(x.affected) === Number(type)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  loadReferentielBySpecialiteAndAnneeAndType(specialiteId, annee, type) {
+    this.listReferentielFiltered = this.listReferentiel.filter(
+      x => Number(x.specialite.id) === Number(specialiteId) && Number(x.annee) === Number(annee) && Number(x.affected) === Number(type)
+    );
+    this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  searchByNiveauAndSpecialite() {
+    if (this.niveauModel && this.niveauModel.id && Number(this.annee) !== 0
+    && this.specialiteModel && this.specialiteModel.id && this.typeReferentiel) {
+      this.loadReferentielByNiveauAndSpecialiteAndAnneeAndType(this.niveauModel.id, this.specialiteModel.id, this.annee,
+        this.typeReferentiel);
+    } else if (this.niveauModel && this.niveauModel.id && Number(this.annee) !== 0
       && this.specialiteModel && this.specialiteModel.id) {
-        this.loadReferentielByNiveauAndSpecialite(this.niveauModel.id, this.specialiteModel.id);
-      } else if (this.niveauModel && this.niveauModel.id) {
-        this.loadReferentielByNiveau(this.niveauModel.id);
-      } else if (this.specialiteModel && this.specialiteModel.id) {
-        this.loadReferentielBySpecialite(this.specialiteModel.id);
-      }
+
+      this.loadReferentielByNiveauAndSpecialiteAndAnnee(this.niveauModel.id, this.specialiteModel.id, this.annee);
+
+    } else if (this.niveauModel && this.niveauModel.id && Number(this.annee) !== 0) {
+
+      this.loadReferentielByNiveauAndAnnee(this.niveauModel.id, this.annee);
+
+    } else if (this.specialiteModel && this.specialiteModel.id && Number(this.annee) !== 0) {
+
+      this.loadReferentielBySpecialiteAndAnnee(this.specialiteModel.id, this.annee);
+
+    } else if (this.specialiteModel && this.specialiteModel.id && this.niveauModel && this.niveauModel.id) {
+
+      this.loadReferentielByNiveauAndSpecialite(this.niveauModel.id, this.specialiteModel.id);
+
+    } else if (this.niveauModel && this.niveauModel.id) {
+
+      this.loadReferentielByNiveau(this.niveauModel.id);
+
+    } else if (this.specialiteModel && this.specialiteModel.id) {
+
+      this.loadReferentielBySpecialite(this.specialiteModel.id);
+    } else if (Number(this.annee) !== 0) {
+
+      this.loadReferentielByAnnee(this.annee);
+    } else if (this.typeReferentiel) {
+
+      this.loadReferentielByType(this.typeReferentiel);
+    }
   }
 
   cancelSearchReferentielByNiveauAndSpecialite(searchForm) {
@@ -226,6 +377,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     this.specialiteModel = new SpecialiteModel();
     this.listSpecialite = [];
     this.listReferentielFiltered = [];
+    this.loadListReferentiel();
   }
 
   loadListSpecialite(niveauId) {
@@ -250,6 +402,19 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
       this.paramReferentielService.getAllReferentiel().subscribe(
         (data) => {
           this.listReferentiel = data;
+          this.listReferentiel.forEach(x => {
+            this.subscription.push(
+              this.paramClasseService.getFirstClasseReferentielByReferentiel(x.id).subscribe(
+                (classeref) => {
+                  if (classeref) {
+                    x.affected = 1;
+                  } else {
+                    x.affected = 2;
+                  }
+                }, (error) => console.log(error)
+              )
+            );
+          });
           this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentiel);
           this.dataSource.paginator = this.paginator;
         },
@@ -264,9 +429,9 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  loadListModule() {
+  loadListModule(specialiteId) {
     this.subscription.push(
-      this.paramModuleUEService.getAllModule().subscribe(
+      this.paramModuleUEService.getAllMentionModuleByMentionWithSpecialiteId(specialiteId).subscribe(
         (data) => {
           this.listModule = data;
         },
@@ -445,6 +610,37 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     this.specialiteModel = new SpecialiteModel();
     this.niveauModel = new NiveauModel();
     this.referentielModel = new ReferentielModel();
+  }
+
+  archive(id) {
+    this.ngxService.show(this.LOADERID);
+    this.subscription.push(
+      this.paramReferentielService.archiveReferentiel(id).subscribe(
+        (data) => {
+          this.loadListReferentiel();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+  }
+
+  openDialog(item): void {
+    this.dialogRef = this.dialog.open(DeleteDialogComponent, {
+      width: '20%',
+      data: item
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (result.rep === true) {
+        this.archive(result.item.id);
+      }
+    });
   }
 
 }

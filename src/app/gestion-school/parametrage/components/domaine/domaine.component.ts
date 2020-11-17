@@ -1,5 +1,5 @@
 import { DomaineModel } from './../../../../shared/models/domaine.model';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,8 @@ import { MycustomNotificationService } from '../../services/mycustom-notificatio
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-domaine',
@@ -18,6 +20,11 @@ export class DomaineComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'domaine-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<DomaineModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  domaineColumnsToDisplay = ['domaine', 'status', 'actions'];
 
   listDomaine = [] as DomaineModel[];
   domaineModel = new DomaineModel();
@@ -41,6 +48,8 @@ export class DomaineComponent implements OnInit, OnDestroy {
       this.paramBaseService.getAllDomaine().subscribe(
         (data) => {
           this.listDomaine = data;
+          this.dataSource = new MatTableDataSource<DomaineModel>(this.listDomaine);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');

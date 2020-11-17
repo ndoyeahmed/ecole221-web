@@ -2,7 +2,7 @@ import { ParametragesBaseService } from './../../services/parametrages-base.serv
 import { HoraireModel } from './../../../../shared/models/horaire.model';
 import { ClasseModel } from './../../../../shared/models/classe.model';
 import { ParametrageClasseService } from './../../services/parametrage-classe.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -13,6 +13,8 @@ import { SpecialiteModel } from 'src/app/shared/models/specialite.model';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.model';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-classe',
@@ -21,8 +23,13 @@ import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.m
 })
 export class ClasseComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
-  LOADERID = 'specialite-loader';
+  LOADERID = 'classe-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<ClasseModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  classeColumnsToDisplay = ['classe', 'niveau', 'specialite', 'horaire', 'status', 'actions'];
 
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as NiveauSpecialiteModel[];
@@ -30,7 +37,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
   listHoraire = [] as HoraireModel[];
 
   niveauModel = new NiveauModel();
-  specialiteModel = new SpecialiteModel();
+  specialiteModel = new NiveauSpecialiteModel();
   horaireModel = new HoraireModel();
   classeModel = new ClasseModel();
 
@@ -57,6 +64,8 @@ export class ClasseComponent implements OnInit, OnDestroy {
       this.paramClasseService.getAllClasse().subscribe(
         (data) => {
           this.listClasse = data;
+          this.dataSource = new MatTableDataSource<ClasseModel>(this.listClasse);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
@@ -125,8 +134,9 @@ export class ClasseComponent implements OnInit, OnDestroy {
       && this.niveauModel.id && this.specialiteModel.id && this.horaireModel.id) {
       this.ngxService.show(this.LOADERID);
       this.classeModel.niveau = this.niveauModel;
-      this.classeModel.specialite = this.specialiteModel;
+      this.classeModel.specialite = this.specialiteModel.specialite;
       this.classeModel.horaire = this.horaireModel;
+      console.log(this.specialiteModel);
       this.subscription.push(
         (this.classeModel.id ?
           this.paramClasseService.updateClasse(this.classeModel.id, this.classeModel) :
@@ -150,7 +160,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
   }
 
   clear() {
-    this.specialiteModel = new SpecialiteModel();
+    this.specialiteModel = new NiveauSpecialiteModel();
     this.niveauModel = new NiveauModel();
     this.classeModel = new ClasseModel();
     this.horaireModel = new HoraireModel();
@@ -158,9 +168,12 @@ export class ClasseComponent implements OnInit, OnDestroy {
 
   onEdit(item) {
     this.classeModel = item as ClasseModel;
-    this.specialiteModel = this.classeModel.specialite;
+    this.specialiteModel = new NiveauSpecialiteModel();
+    this.specialiteModel.specialite = this.classeModel.specialite;
+    this.specialiteModel.niveau = this.classeModel.niveau;
     this.niveauModel = this.classeModel.niveau;
     this.horaireModel = this.classeModel.horaire;
+    this.loadListSpecialite(this.niveauModel.id);
   }
 
   archive(id) {
@@ -194,23 +207,23 @@ export class ClasseComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* onChangeStatus(value: MatSlideToggleChange, item) {
+  onChangeStatus(value: MatSlideToggleChange, item) {
     this.ngxService.show(this.LOADERID);
     this.subscription.push(
-      this.paramSpecialiteService.updateSpecialiteStatus(value.checked, item.id)
-        .subscribe(
-          (data) => {
-            this.loadListSpecialite();
-            this.notif.success();
-          },
-          (error) => {
-            this.notif.error();
-            this.ngxService.hide(this.LOADERID);
-          }, () => {
-            this.ngxService.hide(this.LOADERID);
-          }
-        )
+      this.paramClasseService.updateClasseStatus(value.checked, item.id)
+      .subscribe(
+        (data) => {
+          this.loadListClasse();
+          this.notif.success();
+        },
+        (error) => {
+          this.notif.error();
+          this.ngxService.hide(this.LOADERID);
+        }, () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
     );
-  } */
+  }
 
 }

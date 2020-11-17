@@ -1,11 +1,13 @@
 import { HoraireModel } from './../../../../shared/models/horaire.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-horaire',
@@ -17,6 +19,11 @@ export class HoraireComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'horaire-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<HoraireModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  horaireColumnsToDisplay = ['horaire', 'actions'];
 
   listHoraire = [] as HoraireModel[];
   horaireModel = new HoraireModel();
@@ -40,6 +47,8 @@ export class HoraireComponent implements OnInit, OnDestroy {
       this.paramBaseService.getAllHoraire().subscribe(
         (data) => {
           this.listHoraire = data;
+          this.dataSource = new MatTableDataSource<HoraireModel>(this.listHoraire);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');

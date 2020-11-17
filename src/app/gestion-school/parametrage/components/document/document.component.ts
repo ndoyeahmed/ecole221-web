@@ -1,11 +1,13 @@
 import { DocumentModel } from './../../../../shared/models/document.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-document',
@@ -16,6 +18,11 @@ export class DocumentComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'document-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<DocumentModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  documentColumnsToDisplay = ['document', 'actions'];
 
   listDocument = [] as DocumentModel[];
   documentModel = new DocumentModel();
@@ -39,6 +46,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
       this.paramBaseService.getAllDocument().subscribe(
         (data) => {
           this.listDocument = data;
+          this.dataSource = new MatTableDataSource<DocumentModel>(this.listDocument);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');

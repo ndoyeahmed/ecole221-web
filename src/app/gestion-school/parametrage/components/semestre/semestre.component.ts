@@ -1,12 +1,14 @@
 import { ParametragesSpecialiteService } from './../../services/parametrages-specialite.service';
 import { SemestreModel } from './../../../../shared/models/semestre.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-semestre',
@@ -17,6 +19,11 @@ export class SemestreComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'semestre-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<SemestreModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  semestreColumnsToDisplay = ['semestre', 'status', 'actions'];
 
   listSemestre = [] as SemestreModel[];
   semestreModel = new SemestreModel();
@@ -40,6 +47,8 @@ export class SemestreComponent implements OnInit, OnDestroy {
       this.paramSpecialiteService.getAllSemestre().subscribe(
         (data) => {
           this.listSemestre = data;
+          this.dataSource = new MatTableDataSource<SemestreModel>(this.listSemestre);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');

@@ -30,7 +30,7 @@
                   name="specialite"
                   [(ngModel)]="specialiteModel"
                   [placeholder]=" specialiteModel ?
-                    specialiteModel.libelle ? specialiteModel.libelle : 'Selectionnez la specialite' : 'Selectionnez la specialite'
+                    specialiteModel.specialite ? specialiteModel.specialite.libelle ? specialiteModel.specialite.libelle : 'Selectionnez la specialite' : 'Selectionnez la specialite' : 'Selectionnez la specialite'
                   "
                 >
                   <mat-option *ngFor="let specialite of listSpecialite" [value]="specialite">{{
@@ -79,54 +79,76 @@
   </div>
 </form>
 
-  <table class="table table-striped table-responsive">
-    <thead>
-      <tr>
-        <th>N°</th>
-        <th>Sous Classe</th>
-        <th>Niveau</th>
-        <th>Spécialité</th>
-        <th>Horaire</th>
-        <th>Statut</th>
-        <th class="text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let sousClasse of listSousClasse | paginate: { itemsPerPage: 5, currentPage: page };let i=index">
-        <td>{{i + 1}}</td>
-        <td>{{sousClasse ? sousClasse.libelle ? sousClasse.libelle : '' : ''}}</td>
-        <td>
-          {{sousClasse ? sousClasse.niveau ? sousClasse.niveau.libelle ? sousClasse.niveau.libelle : '' : '' : ''}}
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+      <!-- Sous Classe column -->
+      <ng-container matColumnDef="sousclasse">
+        <th mat-header-cell *matHeaderCellDef> Sous Classe</th>
+        <td mat-cell *matCellDef="let sousClasse">
+          {{sousClasse ? sousClasse.libelle ? sousClasse.libelle : '' : ''}}
         </td>
-        <td>{{sousClasse ? sousClasse.specialite ? sousClasse.specialite.libelle ? sousClasse.specialite.libelle : '' : '' : ''}}</td>
-        <td>{{sousClasse ? sousClasse.horaire ? sousClasse.horaire.libelle ? sousClasse.horaire.libelle : '' : '' : ''}}</td>
-        <td>
+      </ng-container>
+
+      <!-- Niveau column -->
+      <ng-container matColumnDef="niveau">
+        <th mat-header-cell *matHeaderCellDef> Niveau</th>
+        <td mat-cell *matCellDef="let sousClasse">
+          {{ sousClasse ? (sousClasse.niveau ? sousClasse.niveau.libelle : "") : "" }}
+        </td>
+      </ng-container>
+
+      <!-- Specialite column -->
+      <ng-container matColumnDef="specialite">
+        <th mat-header-cell *matHeaderCellDef> Specialite</th>
+        <td mat-cell *matCellDef="let sousClasse">
+          {{ sousClasse ? (sousClasse.specialite ? sousClasse.specialite.libelle : "") : "" }}
+        </td>
+      </ng-container>
+
+      <!-- Horaire column -->
+      <ng-container matColumnDef="horaire">
+        <th mat-header-cell *matHeaderCellDef> Horaire</th>
+        <td mat-cell *matCellDef="let sousClasse">
+          {{ sousClasse ? (sousClasse.horaire ? sousClasse.horaire.libelle : "") : "" }}
+        </td>
+      </ng-container>
+
+      <!-- Status column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Statut</th>
+        <td mat-cell *matCellDef="let sousClasse">
           <mat-slide-toggle
+          (change)="onChangeStatus($event, sousClasse)"
           [ngModel]="sousClasse.etat"
-          color="primary"
-        >
-        </mat-slide-toggle>
+           color="primary">
+          </mat-slide-toggle>
         </td>
-        <td>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let sousClasse">
           <div class="row">
             <div
               class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
             >
-              <button type="button"
-              (click)="onEdit(sousClasse)" matTooltip="Modifier" mat-mini-fab color="primary">
-                <em class="fa fa-edit fa-lg"> </em>
-              </button>
+              <button type="button" (click)="onEdit(sousClasse)" matTooltip="Modifier" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg">
+              </em></button>
             </div>
             <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-              <button type="button"
-              (click)="openDialog(sousClasse)" matTooltip="Supprimer" mat-mini-fab color="warn">
-                <em class="fa fa-trash fa-lg"> </em>
-              </button>
+              <button type="button" (click)="openDialog(sousClasse)" matTooltip="Supprimer" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg">
+              </em></button>
             </div>
           </div>
         </td>
-      </tr>
-    </tbody>
-  </table>
+      </ng-container>
 
+      <tr mat-header-row *matHeaderRowDef="sousclasseColumnsToDisplay"></tr>
+      <tr mat-row *matRowDef="let element; columns: sousclasseColumnsToDisplay;"
+        class="example-element-row">
+      </tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

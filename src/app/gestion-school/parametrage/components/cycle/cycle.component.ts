@@ -1,5 +1,5 @@
 import { CycleModel } from './../../../../shared/models/cycle.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,8 @@ import { MycustomNotificationService } from '../../services/mycustom-notificatio
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-cycle',
@@ -18,6 +20,11 @@ export class CycleComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'cycle-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<CycleModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  cycleColumnsToDisplay = ['cycle', 'status', 'actions'];
 
   listCycle = [] as CycleModel[];
   cycleModel = new CycleModel();
@@ -40,6 +47,8 @@ export class CycleComponent implements OnInit, OnDestroy {
       this.paramBaseService.getAllCycle().subscribe(
         (data) => {
           this.listCycle = data;
+          this.dataSource = new MatTableDataSource<CycleModel>(this.listCycle);
+          this.dataSource.paginator = this.paginator;
         }, (error) => {
           this.notif.error('Echec de chargement des données');
           this.ngxService.hide(this.LOADERID);

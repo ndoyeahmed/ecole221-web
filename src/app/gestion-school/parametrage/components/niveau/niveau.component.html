@@ -17,29 +17,38 @@
   <app-niveau-add [cycleModel]="cycleModel" [parcoursModel]="parcoursModel"
   [niveauModel]="niveauModel" *ngIf="onAdd"></app-niveau-add>
 
-  <table class="table table-striped table-responsive" *ngIf="!onAdd" style="margin-top: 3%;">
-    <thead>
-      <tr>
-        <th>N°</th>
-        <th>Niveau</th>
-        <th>Cycle</th>
-        <th>Parcours</th>
-        <th>Semestres du niveau</th>
-        <th>Documents à fournir</th>
-        <th>Documents à donner</th>
-        <th>Statut</th>
-        <th class="text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let niveau of listNiveau | paginate: { itemsPerPage: 5, currentPage: page }; let i = index">
-        <td>{{i + 1}}</td>
-        <td>{{niveau ? niveau.libelle ? niveau.libelle : '' : ''}}</td>
-        <td>{{niveau ? niveau.cycle ? niveau.cycle.cycle ? niveau.cycle.cycle : '' : '' : ''}}</td>
-        <td>{{niveau ? niveau.parcours ? niveau.parcours.libelle ? niveau.parcours.libelle : '' : '' : ''}}</td>
-        <td>
+  <div class="example-container mat-elevation-z8" *ngIf="!onAdd" style="margin-top: 3%;">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+      <!-- Niveau column -->
+      <ng-container matColumnDef="niveau">
+        <th mat-header-cell *matHeaderCellDef> Niveau</th>
+        <td mat-cell *matCellDef="let niveau">
+          {{niveau ? niveau.libelle ? niveau.libelle : '' : ''}}
+        </td>
+      </ng-container>
+
+      <!-- Cycle column -->
+      <ng-container matColumnDef="cycle">
+        <th mat-header-cell *matHeaderCellDef> Cycle</th>
+        <td mat-cell *matCellDef="let niveau">
+          {{ niveau ? (niveau.cycle ? niveau.cycle.cycle : "") : "" }}
+        </td>
+      </ng-container>
+
+      <!-- Parcours column -->
+      <ng-container matColumnDef="parcours">
+        <th mat-header-cell *matHeaderCellDef> Parcours</th>
+        <td mat-cell *matCellDef="let niveau">
+          {{ niveau ? (niveau.parcours ? niveau.parcours.libelle : "") : "" }}
+        </td>
+      </ng-container>
+
+      <!-- Semestre niveau column -->
+      <ng-container matColumnDef="semestreniveau">
+        <th mat-header-cell *matHeaderCellDef> Semestre Niveau </th>
+        <td mat-cell *matCellDef="let niveau">
           <mat-accordion>
-            <mat-expansion-panel>
+            <mat-expansion-panel style="margin-right: 10%">
               <mat-expansion-panel-header>
                 <em class="fa fa-list fa-lg"></em>
               </mat-expansion-panel-header>
@@ -88,7 +97,7 @@
                           [ngModel]="s.enCours" checked color="primary">
                         </mat-slide-toggle>
                         &nbsp;&nbsp;&nbsp;
-                        <button type="button" (click)="openDialog(s, 'semestre')" matTooltip="Supprimer" mat-mini-fab color="warn">
+                        <button type="button" (click)="openDialog(s, 'semestre')" matTooltip="Supprimer" mat-flat-button class="action-button">
                           <em class="fa fa-trash fa-lg"> </em>
                         </button>
                       </td>
@@ -99,9 +108,14 @@
             </mat-expansion-panel>
           </mat-accordion>
         </td>
-        <td>
+      </ng-container>
+
+      <!-- Document a fournir column -->
+      <ng-container matColumnDef="documentafournir">
+        <th mat-header-cell *matHeaderCellDef> Document à fournir</th>
+        <td mat-cell *matCellDef="let niveau">
           <mat-accordion>
-            <mat-expansion-panel>
+            <mat-expansion-panel style="margin-right: 10%">
               <mat-expansion-panel-header>
                 <em class="fa fa-list fa-lg"></em>
               </mat-expansion-panel-header>
@@ -144,7 +158,7 @@
                     <tr *ngFor="let d of niveau.documentAFournir">
                       <td>{{d ? d.document ? d.document.libelle ? d.document.libelle : '' : '' : ''}}</td>
                       <td>
-                        <button type="button" (click)="openDialog(d, 'document')" matTooltip="Supprimer" mat-mini-fab color="warn">
+                        <button type="button" (click)="openDialog(d, 'document')" matTooltip="Supprimer" mat-flat-button class="action-button">
                           <em class="fa fa-trash fa-lg"> </em>
                         </button>
                       </td>
@@ -155,9 +169,14 @@
             </mat-expansion-panel>
           </mat-accordion>
         </td>
-        <td>
+      </ng-container>
+
+      <!-- Document a donner column -->
+      <ng-container matColumnDef="documentadonner">
+        <th mat-header-cell *matHeaderCellDef> Document à donner</th>
+        <td mat-cell *matCellDef="let niveau">
           <mat-accordion>
-            <mat-expansion-panel>
+            <mat-expansion-panel style="margin-right: 10%">
               <mat-expansion-panel-header>
                 <em class="fa fa-list fa-lg"></em>
               </mat-expansion-panel-header>
@@ -199,7 +218,7 @@
                     <tr *ngFor="let d of niveau.documentADonner">
                       <td>{{d ? d.document ? d.document.libelle ? d.document.libelle : '' : '' : ''}}</td>
                       <td>
-                        <button type="button" (click)="openDialog(d, 'document')" matTooltip="Supprimer" mat-mini-fab color="warn">
+                        <button type="button" (click)="openDialog(d, 'document')" matTooltip="Supprimer" mat-flat-button class="action-button">
                           <em class="fa fa-trash fa-lg"> </em>
                         </button>
                       </td>
@@ -210,35 +229,37 @@
             </mat-expansion-panel>
           </mat-accordion>
         </td>
-        <td>
+      </ng-container>
+
+      <!-- Status column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Statut</th>
+        <td mat-cell *matCellDef="let niveau">
           <mat-slide-toggle
-            (change)="onChangeStatus($event, niveau)"
-            [ngModel]="niveau.etat"
-            color="primary"
-          >
+          (change)="onChangeStatus($event, niveau)"
+          [ngModel]="niveau.etat"
+           color="primary">
           </mat-slide-toggle>
         </td>
-        <td>
-          <div class="row">
-            <div
-              class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
-            >
-              <button type="button"
-              (click)="onEdit(niveau); onAdd=true" matTooltip="Modifier" mat-mini-fab color="primary">
-                <em class="fa fa-edit fa-lg"> </em>
-              </button>
-            </div>
-            <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-              <button type="button"
-              (click)="openDialog(niveau, 'niveau')" matTooltip="Supprimer" mat-mini-fab color="warn">
-                <em class="fa fa-trash fa-lg"> </em>
-              </button>
-            </div>
-          </div>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let niveau">
+          <button type="button" (click)="onEdit(niveau); onAdd=true" matTooltip="Modifier" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg">
+          </em></button>
+          &nbsp;&nbsp;
+          <button type="button" (click)="openDialog(niveau, 'niveau')" matTooltip="Supprimer" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg">
+          </em></button>
         </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="niveauColumnsToDisplay"></tr>
+      <tr mat-row *matRowDef="let element; columns: niveauColumnsToDisplay;"
+        class="example-element-row">
       </tr>
-    </tbody>
-    <pagination-controls previousLabel="Précédent"
-          nextLabel="Suivant" (pageChange)="page = $event"></pagination-controls>
-  </table>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

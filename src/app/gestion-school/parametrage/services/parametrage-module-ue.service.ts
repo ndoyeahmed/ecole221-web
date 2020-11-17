@@ -25,7 +25,7 @@ export class ParametrageModuleUeService {
   }
 
   updateModule(id: number, module: any): Observable<any> {
-    return this.http.put<any>(this.api + '/modules/' + id, module);
+    return this.http.put<any>(this.api + '/modules/' + id, {libelle: module.libelle});
   }
 
   archiveModule(id: any): Observable<any> {
@@ -39,6 +39,14 @@ export class ParametrageModuleUeService {
 
   getAllMentionModuleByModule(moduleId: number): Observable<any> {
     return this.http.get(this.api + '/mention-module/module/' + moduleId);
+  }
+
+  getAllMentionModuleByMentionWithSpecialiteId(specialiteId: number): Observable<any> {
+    return this.http.get(this.api + '/mention-module/mention/' + specialiteId);
+  }
+
+  archiveMentionModule(id: any): Observable<any> {
+    return this.http.delete<any>(this.api + '/mention-module/' + id);
   }
 
   // ------------------ UE service
@@ -55,7 +63,7 @@ export class ParametrageModuleUeService {
   }
 
   updateUE(id: number, ue: any): Observable<any> {
-    return this.http.put<any>(this.api + '/ue/' + id, ue);
+    return this.http.put<any>(this.api + '/ue/' + id, {libelle: ue.libelle});
   }
 
   archiveUE(id: any): Observable<any> {
@@ -69,6 +77,14 @@ export class ParametrageModuleUeService {
 
   getAllMentionUEByUE(ueId: number): Observable<any> {
     return this.http.get(this.api + '/mention-ue/ue/' + ueId);
+  }
+
+  getAllMentionUEByMentionWithSpecialiteId(specialiteId: number): Observable<any> {
+    return this.http.get(this.api + '/mention-ue/mention/' + specialiteId);
+  }
+
+  archiveMentionUE(id: any): Observable<any> {
+    return this.http.delete<any>(this.api + '/mention-ue/' + id);
   }
 
 }

@@ -12,4 +12,5 @@ export class ReferentielModel {
   public archive: boolean;
   public niveau: NiveauModel;
   public specialite: SpecialiteModel;
+  public affected: number;
 }

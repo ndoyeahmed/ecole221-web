@@ -32,42 +32,52 @@
     </div>
   </form>
 
-  <table class="table table-striped table-responsive">
-    <thead>
-      <tr>
-        <th>N°</th>
-        <th>Parcours</th>
-        <th>Statut</th>
-        <th class="text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let parc of listParcours">
-        <td>{{listParcours.indexOf(parc) + 1}}</td>
-        <td>{{ parc ? (parc.libelle ? parc.libelle : "") : "" }}</td>
-        <td>
-          <mat-slide-toggle (change)="onChangeStatus($event, parc)"
-          [ngModel]="parc.etat" color="primary"> </mat-slide-toggle>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+      <!-- Domaine column -->
+      <ng-container matColumnDef="parcours">
+        <th mat-header-cell *matHeaderCellDef> Parcours</th>
+        <td mat-cell *matCellDef="let parcours">
+          {{parcours ? parcours.libelle ? parcours.libelle : '' : ''}}
         </td>
-        <td>
+      </ng-container>
+
+      <!-- Status column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Statut</th>
+        <td mat-cell *matCellDef="let parcours">
+          <mat-slide-toggle
+          (change)="onChangeStatus($event, parcours)"
+          [ngModel]="parcours.etat"
+           color="primary">
+          </mat-slide-toggle>
+        </td>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let parcours">
           <div class="row">
             <div
               class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
             >
-              <button type="button"
-              (click)="onEdit(parc)" matTooltip="Modifier" mat-mini-fab color="primary">
-                <em class="fa fa-edit fa-lg"> </em>
-              </button>
+              <button type="button" (click)="onEdit(parcours)" matTooltip="Modifier" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg">
+              </em></button>
             </div>
             <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-              <button type="button"
-              (click)="openDialog(parc)" matTooltip="Supprimer" mat-mini-fab color="warn">
-                <em class="fa fa-trash fa-lg"> </em>
-              </button>
+              <button type="button" (click)="openDialog(parcours)" matTooltip="Supprimer" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg">
+              </em></button>
             </div>
           </div>
         </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="parcoursColumnsToDisplay"></tr>
+      <tr mat-row *matRowDef="let element; columns: parcoursColumnsToDisplay;"
+        class="example-element-row">
       </tr>
-    </tbody>
-  </table>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

@@ -28,36 +28,40 @@
     </div>
   </form>
 
-  <table class="table table-striped table-responsive">
-    <thead>
-      <tr>
-        <th>N°</th>
-        <th>Horaire</th>
-        <th class="text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let horaire of listHoraire">
-        <td>{{listHoraire.indexOf(horaire) + 1}}</td>
-        <td>{{horaire ? horaire.libelle ? horaire.libelle : '' : ''}}</td>
-        <td>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+      <!-- Horaire column -->
+      <ng-container matColumnDef="horaire">
+        <th mat-header-cell *matHeaderCellDef> Horaire</th>
+        <td mat-cell *matCellDef="let horaire">
+          {{horaire ? horaire.libelle ? horaire.libelle : '' : ''}}
+        </td>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let horaire">
           <div class="row">
             <div
               class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
             >
-              <button type="button"
-              (click)="onEdit(horaire)" matTooltip="Modifier" mat-mini-fab color="primary"><em class="fa fa-edit fa-lg">
+              <button type="button" (click)="onEdit(horaire)" matTooltip="Modifier" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg">
               </em></button>
             </div>
             <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-              <button type="button"
-              (click)="openDialog(horaire)" matTooltip="Supprimer" mat-mini-fab color="warn"><em class="fa fa-trash fa-lg">
+              <button type="button" (click)="openDialog(horaire)" matTooltip="Supprimer" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg">
               </em></button>
             </div>
           </div>
         </td>
-      </tr>
-    </tbody>
-  </table>
+      </ng-container>
 
+      <tr mat-header-row *matHeaderRowDef="horaireColumnsToDisplay"></tr>
+      <tr mat-row *matRowDef="let element; columns: horaireColumnsToDisplay;"
+        class="example-element-row">
+      </tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

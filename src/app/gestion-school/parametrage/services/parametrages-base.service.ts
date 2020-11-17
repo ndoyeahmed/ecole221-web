@@ -18,6 +18,10 @@ export class ParametragesBaseService {
     return this.http.get(this.api + '/annee-scolaire');
   }
 
+  getAnneeScolaireEnCours(): Observable<any> {
+    return this.http.get(this.api + '/annee-scolaire/encours');
+  }
+
   addAnneeScolaire(anneeScolaire: AnneeScolaireModel): Observable<any> {
     return this.http.post<any>(this.api + '/annee-scolaire', anneeScolaire);
   }

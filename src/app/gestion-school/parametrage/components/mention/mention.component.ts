@@ -1,6 +1,6 @@
 import { DomaineModel } from './../../../../shared/models/domaine.model';
 import { MentionModel } from './../../../../shared/models/mention.model';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -8,6 +8,8 @@ import { MycustomNotificationService } from '../../services/mycustom-notificatio
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-mention',
@@ -19,6 +21,11 @@ export class MentionComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   LOADERID = 'mention-loader';
   dialogRef: any;
+
+  dataSource: MatTableDataSource<MentionModel>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  mentionColumnsToDisplay = ['mention', 'domaine', 'status', 'actions'];
 
   listMention = [] as MentionModel[];
   listDomaine = [] as DomaineModel[];
@@ -62,6 +69,8 @@ export class MentionComponent implements OnInit, OnDestroy {
       this.paramBaseService.getAllMention().subscribe(
         (data) => {
           this.listMention = data;
+          this.dataSource = new MatTableDataSource<MentionModel>(this.listMention);
+          this.dataSource.paginator = this.paginator;
         },
         (error) => {
           this.notif.error('Echec de chargement des données');

@@ -16,6 +16,17 @@ export class ParametrageReferentielService {
     return this.http.post<any>(this.api + '/referentiel', referentiel);
   }
 
+  cloneReferentiel(oldReferenrielId: any, referentiel: any): Observable<any> {
+    return this.http.post<any>(this.api + '/referentiel/' + oldReferenrielId, {
+      description: referentiel.description,
+      annee: referentiel.annee + '',
+      credit: referentiel.credit + '',
+      volumeHeureTotal: referentiel.volumeHeureTotal + '',
+      niveau: referentiel.niveau.id + '',
+      specialite: referentiel.specialite.id + '',
+    });
+  }
+
   getAllReferentiel(): Observable<any> {
     return this.http.get(this.api + '/referentiel');
   }

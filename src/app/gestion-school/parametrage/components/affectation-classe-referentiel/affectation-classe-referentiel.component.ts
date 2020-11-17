@@ -1,3 +1,5 @@
+import { AnneeScolaireModel } from './../../../../shared/models/annee-scolaire.model';
+import { ParametragesBaseService } from './../../services/parametrages-base.service';
 import { ClasseReferentielModel } from './../../../../shared/models/classe-referentiel.model';
 import { ClasseModel } from './../../../../shared/models/classe.model';
 import { ParametrageClasseService } from './../../services/parametrage-classe.service';
@@ -38,8 +40,10 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
   annee = '';
   referentielModel: ReferentielModel;
 
+  anneScolaireEncours: AnneeScolaireModel;
+
   constructor(
-    private paramSpecialiteService: ParametragesSpecialiteService,
+    private paramSpecialiteService: ParametragesSpecialiteService, private paramBaseService: ParametragesBaseService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
     private paramReferentielService: ParametrageReferentielService, private paramClasseService: ParametrageClasseService
   ) { }
@@ -53,6 +57,19 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
     this.loadListClasse();
     this.loadListNiveau();
     this.loadListReferentiel();
+    this.loadAnneeScolaireEnCours();
+  }
+
+  loadAnneeScolaireEnCours() {
+    this.subscription.push(
+      this.paramBaseService.getAnneeScolaireEnCours().subscribe(
+        (data) => {
+          this.anneScolaireEncours = data;
+        }, (error) => {
+          console.log(error);
+        }
+      )
+    );
   }
 
   loadListNiveau() {
@@ -257,7 +274,12 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
   saveAffectation(affectForm) {
     if (this.referentielModel && this.referentielModel.id) {
       if (this.listClasseReferentiel && this.listClasseReferentiel.length > 0) {
-        this.listClasseReferentiel.forEach(x => x.referentiel = this.referentielModel);
+        this.listClasseReferentiel.forEach(x => {
+          x.referentiel = this.referentielModel;
+          x.anneeDebut = this.referentielModel.annee;
+          x.anneeFin = 999999;
+          x.anneeScolaire = this.anneScolaireEncours;
+        });
         this.subscription.push(
           this.paramClasseService.addClasseReferentiel(this.listClasseReferentiel).subscribe(
             (data) => {

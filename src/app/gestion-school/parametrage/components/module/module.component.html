@@ -12,8 +12,8 @@
           <div class="col-md-6">
             <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
               <mat-label>Selectionnez la mention</mat-label>
-              <mat-select multiple
-                required
+              <mat-select multiple [disabled]="moduleModel && moduleModel.id"
+                required [compareWith]="comparer"
                 name="mention"
                 [(ngModel)]="listSelectedMention">
                 <mat-option
@@ -47,68 +47,120 @@
     </div>
   </form>
 
-  <table class="table table-striped table-responsive">
-    <thead>
-      <tr>
-        <th>N°</th>
-        <th>Code</th>
-        <th>Module</th>
-        <th>Mention</th>
-        <th>Statut</th>
-        <th class="text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let module of listModule | paginate: { itemsPerPage: 5, currentPage: page };let i=index">
-        <td>{{i + 1}}</td>
-        <td>{{module ? module.code ? module.code : '' : ''}}</td>
-        <td>{{module ? module.libelle ? module.libelle : '' : ''}}</td>
-        <td>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+      <!-- Code column -->
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef> Code </th>
+        <td mat-cell *matCellDef="let module">
+          {{module ? module.code ? module.code : '' : ''}}
+        </td>
+      </ng-container>
+
+      <!-- Module column -->
+      <ng-container matColumnDef="module">
+        <th mat-header-cell *matHeaderCellDef> Module</th>
+        <td mat-cell *matCellDef="let module">
+          {{ module ? (module.libelle ? module.libelle : "") : "" }}
+        </td>
+      </ng-container>
+
+      <!-- Mention column -->
+      <ng-container matColumnDef="mention">
+        <th mat-header-cell *matHeaderCellDef> Mentions</th>
+        <td mat-cell *matCellDef="let module">
           <mat-accordion>
-            <mat-expansion-panel>
+            <mat-expansion-panel style="margin-right: 10%">
               <mat-expansion-panel-header>
-                Liste mentions
+                Liste des Mentions
               </mat-expansion-panel-header>
 
               <ng-template matExpansionPanelContent>
-                <ul>
-                  <li *ngFor="let s of module.mentionModule">
-                    {{s.mention.libelle}}
-                  </li>
-                </ul>
+                <div class="row">
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <button type="button" (click)="onAddModuleMention()" matTooltip="Ajouter semestre"
+                    mat-flat-button color="primary" style="background-color: white; color: grey">
+                      <em class="fa fa-plus fa-lg"> </em>
+                    </button>
+                  </div>
+                </div>
+                <div class="row" *ngIf="onNewModuleMention === true">
+                  <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-label>Mentions</mat-label>
+                      <mat-select multiple required name="document" [(ngModel)]="listSelectedMentionUpdate">
+                        <mat-option *ngFor="let mention of listMention" [value]="mention">
+                          {{ mention?.libelle }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    <button (click)="saveModuleMention2(module)" type="button" mat-flat-button color="primary">
+                      <em class="fa fa-save fa-lg"></em>
+                    </button>
+                  </div>
+                </div>
+                <table class="table table-striped table-responsive" *ngIf="module.mentionModule && module.mentionModule.length > 0">
+                  <thead>
+                    <tr>
+                      <th>Mentions</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let s of module.mentionModule">
+                      <td>{{s ? s.mention ? s.mention.libelle ? s.mention.libelle : '' : '' : ''}}</td>
+                      <td>
+                        <button type="button" (click)="openDialog(s, 'mention')" matTooltip="Supprimer" mat-flat-button class="action-button">
+                          <em class="fa fa-trash fa-lg"> </em>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </ng-template>
             </mat-expansion-panel>
           </mat-accordion>
         </td>
-        <td>
+      </ng-container>
+
+      <!-- Status column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Statut</th>
+        <td mat-cell *matCellDef="let module">
           <mat-slide-toggle
           (change)="onChangeStatus($event, module)"
           [ngModel]="module.etat"
-          color="primary"
-        >
-        </mat-slide-toggle>
+           color="primary">
+          </mat-slide-toggle>
         </td>
-        <td>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let module">
           <div class="row">
             <div
               class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
             >
-              <button type="button"
-              (click)="onEdit(module)" matTooltip="Modifier" mat-mini-fab color="primary">
-                <em class="fa fa-edit fa-lg"> </em>
-              </button>
+              <button type="button" (click)="onEdit(module)" matTooltip="Modifier" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg">
+              </em></button>
             </div>
             <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-              <button type="button"
-              (click)="openDialog(module)" matTooltip="Supprimer" mat-mini-fab color="warn">
-                <em class="fa fa-trash fa-lg"> </em>
-              </button>
+              <button type="button" (click)="openDialog(module, 'module')" matTooltip="Supprimer" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg">
+              </em></button>
             </div>
           </div>
         </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="moduleColumnsToDisplay"></tr>
+      <tr mat-row *matRowDef="let element; columns: moduleColumnsToDisplay;"
+        class="example-element-row">
       </tr>
-    </tbody>
-    <pagination-controls previousLabel="Précédent"
-          nextLabel="Suivant" (pageChange)="page = $event"></pagination-controls>
-  </table>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

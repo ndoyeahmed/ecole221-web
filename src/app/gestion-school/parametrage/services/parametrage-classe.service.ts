@@ -35,7 +35,18 @@ export class ParametrageClasseService {
   }
 
   updateClasse(id: any, classe: any): Observable<any> {
-    return this.http.put<any>(this.api + '/classe/' + id, classe);
+    console.log(classe);
+    return this.http.put<any>(this.api + '/classe/' + id,
+    {
+      libelle: classe.libelle,
+      niveauId: classe.niveau.id + '',
+      specialiteId: classe.specialite.id + '',
+      horaireId: classe.horaire.id + ''
+    });
+  }
+
+  updateClasseStatus(statut: any, id: any): Observable<any> {
+    return this.http.put<any>(this.api + '/classe/etat/' + id, {status: statut + ''});
   }
 
   // ------------------ SOUS CLASSE service
@@ -63,8 +74,18 @@ export class ParametrageClasseService {
     return this.http.delete<any>(this.api + '/sous-classe/' + id);
   }
 
-  updateSousClasse(id: any, classe: any): Observable<any> {
-    return this.http.put<any>(this.api + '/sous-classe/' + id, classe);
+  updateSousClasse(id: any, sousclasse: any): Observable<any> {
+    return this.http.put<any>(this.api + '/sous-classe/' + id,
+    {
+      libelle: sousclasse.libelle,
+      niveauId: sousclasse.niveau.id + '',
+      specialiteId: sousclasse.specialite.id + '',
+      horaireId: sousclasse.horaire.id + ''
+    });
+  }
+
+  updateSousClasseStatus(statut: any, id: any): Observable<any> {
+    return this.http.put<any>(this.api + '/sous-classe/etat/' + id, {status: statut + ''});
   }
 
   // ------------------ CLASSE REFERENTIEL service
@@ -74,5 +95,9 @@ export class ParametrageClasseService {
 
   getClasseReferentielByClasseAndReferentiel(classeId: number, referentielId: number): Observable<any> {
     return this.http.get(this.api + '/classe-referentiel/classe/' + classeId + '/referentiel/' + referentielId);
+  }
+
+  getFirstClasseReferentielByReferentiel(referentielId: number): Observable<any> {
+    return this.http.get(this.api + '/classe-referentiel/referentiel/' + referentielId);
   }
 }

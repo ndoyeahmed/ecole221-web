@@ -55,8 +55,8 @@ tr.example-element-row:not(.example-expanded-row):active {
 .mat-column-annee {
   word-wrap: break-word !important;
   white-space: unset !important;
-  flex: 0 0 25% !important;
-  width: 25% !important;
+  flex: 0 0 20% !important;
+  width: 20% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
 
@@ -71,8 +71,8 @@ tr.example-element-row:not(.example-expanded-row):active {
 .mat-column-credit {
   word-wrap: break-word !important;
   white-space: unset !important;
-  flex: 0 0 25% !important;
-  width: 25% !important;
+  flex: 0 0 20% !important;
+  width: 20% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
 
@@ -87,8 +87,24 @@ tr.example-element-row:not(.example-expanded-row):active {
 .mat-column-vht {
   word-wrap: break-word !important;
   white-space: unset !important;
-  flex: 0 0 25% !important;
-  width: 25% !important;
+  flex: 0 0 15% !important;
+  width: 15% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  word-break: break-word;
+
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+.mat-column-type {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 15% !important;
+  width: 15% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
 
@@ -103,8 +119,8 @@ tr.example-element-row:not(.example-expanded-row):active {
 .mat-column-actions {
   word-wrap: break-word !important;
   white-space: unset !important;
-  flex: 0 0 25% !important;
-  width: 25% !important;
+  flex: 0 0 30% !important;
+  width: 30% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
 
