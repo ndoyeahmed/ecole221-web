@@ -88,6 +88,10 @@ export class ParametrageClasseService {
     return this.http.put<any>(this.api + '/sous-classe/etat/' + id, {status: statut + ''});
   }
 
+  getSousClasseAInscrire(body: any): Observable<any> {
+    return this.http.put<any>(this.api + '/sous-classe/a-inscrire', body);
+  }
+
   // ------------------ CLASSE REFERENTIEL service
   addClasseReferentiel(classeReferentiel: any[]): Observable<any> {
     return this.http.post<any>(this.api + '/classe-referentiel', classeReferentiel);
@@ -107,5 +111,15 @@ export class ParametrageClasseService {
 
   getAllClasseReferentiel(): Observable<any> {
     return this.http.get(this.api + '/classe-referentiel');
+  }
+
+  // ------------------ CLASSE SOUS CLASSE service
+  getAllClasseSousClasseByNiveauSpecialiteHoraire(niveau, specialite, horaire): Observable<any> {
+    return this.http.put(this.api + '/classe-sous-classe/classe',
+    {
+      niveau,
+      specialite,
+      horaire
+    });
   }
 }

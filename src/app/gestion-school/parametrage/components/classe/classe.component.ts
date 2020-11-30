@@ -105,7 +105,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
               this.dataSource.paginator = this.paginator;
               this.ngxService.hide(this.LOADERID);
             }
-          )
+          );
         }
       )
     );

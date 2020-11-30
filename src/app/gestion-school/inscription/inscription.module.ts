@@ -1,3 +1,4 @@
+import { InscriptionService } from './services/inscription.service';
 import { SharedModule } from './../../shared/shared.module';
 import { NgModule } from '@angular/core';
 import { InscriptionComponent } from './components/inscription/inscription.component';
@@ -9,11 +10,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { FicheRenseignementComponent } from './components/fiche-renseignement/fiche-renseignement.component';
+import { EtudiantListComponent } from './components/etudiant-list/etudiant-list.component';
 
 
 
 @NgModule({
-  declarations: [InscriptionComponent, FicheRenseignementComponent],
+  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent],
   imports: [
     SharedModule,
     MatCardModule,
@@ -23,6 +25,9 @@ import { FicheRenseignementComponent } from './components/fiche-renseignement/fi
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+  ],
+  providers: [
+    InscriptionService
   ]
 })
 export class InscriptionModule { }

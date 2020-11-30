@@ -1,3 +1,4 @@
+import { EtudiantListComponent } from './inscription/components/etudiant-list/etudiant-list.component';
 import { InscriptionComponent } from './inscription/components/inscription/inscription.component';
 import { ParametragesComponent } from './parametrage/components/parametrages/parametrages.component';
 import { NgModule } from '@angular/core';
@@ -19,12 +20,16 @@ import { RouterModule } from '@angular/router';
       {
         path: 'inscription',
         component: InscriptionComponent,
-        children: [
+        /* children: [
           {
             path: 'inscription',
             loadChildren: () => import('./inscription/inscription.module').then(m => m.InscriptionModule)
           }
-        ]
+        ] */
+      },
+      {
+        path: 'list-etudiant',
+        component: EtudiantListComponent
       }
     ])
   ],

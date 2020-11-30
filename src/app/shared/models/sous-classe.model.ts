@@ -5,6 +5,7 @@ import { SpecialiteModel } from './specialite.model';
 export class SousClasseModel {
   public id: number;
   public libelle: string;
+  public nbrEleve: number;
   public etat: boolean;
   public archive: boolean;
   public niveau: NiveauModel;

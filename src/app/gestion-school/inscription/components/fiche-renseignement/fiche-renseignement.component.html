@@ -1,86 +1,518 @@
-<div class="row">
-  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-
-    <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-      <mat-card>
-        <img src="../../../../../assets/images/avatar.png" mat-card-mat-card-sm-image />
-      </mat-card>
+<form #addForm="ngForm" (submit)="saveInscription(addForm)">
+  <ngx-spinner
+    [name]="LOADERID"
+    [fullScreen]="false"
+    type="square-jelly-box"
+    size="medium"
+  ></ngx-spinner>
+  <div class="row">
+    <div class="col-md-offset-10 col-lg-offset-10 col-md-2 col-lg-2 col-sm-12 col-xs-12" style="margin-top: 1%;margin-bottom: 2%;">
+      <button type="submit" mat-raised-button color="primary" [disabled]="!addForm.valid">
+        Enregistrer &nbsp;&nbsp;
+        <em class="fa fa-save fa-lg"></em>
+      </button>
     </div>
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
 
-    <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+      <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+        <mat-card>
+          <div class="row">
+            <div class="col-md-6">
+              <img  [src]="url ? url : '../../../../../assets/images/avatar.png'" mat-card-lg-image alt="photo profil"
+              onclick="document.getElementById('singleFile').click()"/>
+            </div>
+
+              <input name="photoprofil" style="display:none;" id="singleFile" type="file" (change)="onSelectFile($event)"/>
+
+          </div>
+          <!-- <img src="../../../../../assets/images/avatar.png" mat-card-mat-card-sm-image /> -->
+        </mat-card>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>IDENTIFICATION</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+           <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Matricule : </strong>
+              {{inscriptionPOJOModel ? inscriptionPOJOModel.etudiant ?
+                 inscriptionPOJOModel.etudiant.matricule ?
+                 inscriptionPOJOModel.etudiant.matricule : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Nom : </strong>
+              {{inscriptionPOJOModel ? inscriptionPOJOModel.etudiant ?
+                inscriptionPOJOModel.etudiant.nom ?
+                inscriptionPOJOModel.etudiant.nom : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Prenom : </strong>
+              {{inscriptionPOJOModel ? inscriptionPOJOModel.etudiant ?
+                inscriptionPOJOModel.etudiant.prenom ?
+                inscriptionPOJOModel.etudiant.prenom : '' : '' : '' }}
+            </div>
+           </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>GENRE / NAISSANCE</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+           <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Genre : </strong>
+              {{inscriptionPOJOModel ? inscriptionPOJOModel.etudiant ?
+                inscriptionPOJOModel.etudiant.genre ?
+                inscriptionPOJOModel.etudiant.genre : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Date naissance : </strong>
+              {{inscriptionPOJOModel ? inscriptionPOJOModel.etudiant ?
+                inscriptionPOJOModel.etudiant.dateNaissance ?
+                inscriptionPOJOModel.etudiant.dateNaissance : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Lieu naissance : </strong>
+              {{inscriptionPOJOModel ? inscriptionPOJOModel.etudiant ?
+                inscriptionPOJOModel.etudiant.lieuNaissance ?
+                inscriptionPOJOModel.etudiant.lieuNaissance : '' : '' : '' }}
+            </div>
+           </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>CONTACT</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+           <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Téléphone : </strong>
+              {{inscriptionPOJOModel ? inscriptionPOJOModel.etudiant ?
+                inscriptionPOJOModel.etudiant.telephone ?
+                inscriptionPOJOModel.etudiant.telephone : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Email Pro : </strong>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Email : </strong>
+              {{inscriptionPOJOModel ? inscriptionPOJOModel.etudiant ?
+                inscriptionPOJOModel.etudiant.email ?
+                inscriptionPOJOModel.etudiant.email : '' : '' : '' }}
+            </div>
+           </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 2%;">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-subtitle>IDENTIFICATION</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Prénom : </mat-label>
+                <input required name="prenom" matInput [(ngModel)]="etudiantModel.prenom"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Nom : </mat-label>
+                <input required name="nom" matInput [(ngModel)]="etudiantModel.nom"/>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Date de naissance : </mat-label>
+                <input name="datenaissance" matInput [matDatepicker]="myDatepicker" [(ngModel)]="etudiantModel.dateNaissance">
+                <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                <mat-datepicker color="primary" #myDatepicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Lieu naissance : </mat-label>
+                <input required name="lieunaissance" matInput [(ngModel)]="etudiantModel.lieuNaissance"/>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>CIN : </mat-label>
+                <input required name="cin" matInput [(ngModel)]="etudiantModel.cin"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Pays :</mat-label>
+                <mat-select required name="pays" [(ngModel)]="paysModel">
+                      <mat-option *ngFor="let pays of listPays" [value]="pays" >{{ pays?.libelle }}</mat-option >
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <label id="example-radio-group-label">Genre :</label>
+              <mat-radio-group required name="genre" class="example-radio-group" [(ngModel)]="etudiantModel.genre">
+                <mat-radio-button value="M">M</mat-radio-button>&nbsp;
+                <mat-radio-button value="F">F</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="row" style="margin-top: 1%;">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-subtitle>Autres informations</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+
+          <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Email : </mat-label>
+                <input required name="email" matInput [(ngModel)]="etudiantModel.email"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Téléphone : </mat-label>
+                <input required name="telephone" matInput [(ngModel)]="etudiantModel.telephone"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Etablissement précédent : </mat-label>
+                <input name="etablissementPrecedent" matInput [(ngModel)]="etudiantModel.etablissementPrecedent"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Motif d'entrée : </mat-label>
+                <input name="motif" matInput [(ngModel)]="etudiantModel.motifEntree"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Niveau d'entrée : </mat-label>
+                <input name="niveauEntree" matInput [(ngModel)]="etudiantModel.niveauEntree"/>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Niveau :</mat-label>
+                <mat-select required name="niveau" [(ngModel)]="niveauModel" (selectionChange)="loadListSpecialite(niveauModel.id)">
+                      <mat-option *ngFor="let niveau of listNiveau" [value]="niveau" >{{ niveau?.libelle }}</mat-option >
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Spécialité :</mat-label>
+                <mat-select required name="specialite" [(ngModel)]="specialiteModel" (selectionChange)="getSousClasseAInscrire()">
+                      <mat-option *ngFor="let nivSpecialite of listSpecialite" [value]="nivSpecialite.specialite" >{{ nivSpecialite.specialite?.libelle }}</mat-option >
+                    </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Horaire :</mat-label>
+                <mat-select required (selectionChange)="getSousClasseAInscrire()"
+                      name="horaire"
+                      [(ngModel)]="horaireModel">
+                      <mat-option *ngFor="let horaire of listHoraire" [value]="horaire">{{
+                        horaire?.libelle
+                      }}</mat-option>
+                    </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Sous classe en cours : </mat-label>
+                <input disabled name="sousclasse" matInput [(ngModel)]="sousClasseModel.libelle"/>
+              </mat-form-field>
+            </div>
+            <!-- <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Nombre inscription restant : </mat-label>
+                <input disabled name="nbrInscriptionRestant" matInput/>
+              </mat-form-field>
+            </div> -->
+          </div>
+
+          <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Statut :</mat-label>
+                <mat-select name="statut" [(ngModel)]="inscriptionModel.passe">
+                      <mat-option [value]="1" >Passant</mat-option >
+                      <mat-option [value]="2" >Redoublant</mat-option >
+                    </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Métier : </mat-label>
+                <input name="metier" matInput [(ngModel)]="etudiantModel.metier"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Ambition : </mat-label>
+                <input name="ambition" matInput [(ngModel)]="etudiantModel.ambition"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Autres renseignements : </mat-label>
+                <textarea name="autresrenseignements" cols="12" rows="4" matInput [(ngModel)]="etudiantModel.autresRenseignements"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="row" style="margin-top: 1%;" *ngIf="listDocument && listDocument.length > 0">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
       <mat-card>
         <mat-card-header>
-          <mat-card-subtitle>IDENTIFICATION</mat-card-subtitle>
+          <mat-card-subtitle>Document à fournir</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-         <div class="row">
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Matricule : </strong> sjkdqkdnskqd
+          <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <h3>Choisir les document :</h3>
+              <div class="col-md-1" *ngFor="let doc of listDocument; let i = index">
+                <mat-checkbox (change)="onCheckedDocument($event, doc)"
+                  color="primary" [name]="i" class="example-margin" >
+                  {{ doc.document.libelle }}
+                </mat-checkbox>
+              </div>
+            </div>
           </div>
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Nom : </strong> CISSE
-          </div>
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Prenom : </strong> ABABACAR
-          </div>
-         </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-subtitle>GENRE / NAISSANCE</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-         <div class="row">
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Genre : </strong> M
-          </div>
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Date naissance : </strong> 07/03/2002
-          </div>
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Lieu naissance : </strong> TAMBACOUNDA
-          </div>
-         </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-subtitle>CONTACT</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-         <div class="row">
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Téléphone : </strong> 773383773
-          </div>
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Email Pro : </strong>
-          </div>
-          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-            <strong>Email : </strong> abacka@yahoo.fr
-          </div>
-         </div>
         </mat-card-content>
       </mat-card>
     </div>
   </div>
-</div>
 
-<div class="row" style="margin-top: 3%;">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-subtitle>IDENTIFICATION</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="row">
+  <div class="row" style="margin-top: 1%;">
+    <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+      <mat-card>
+        <mat-card-header>
+          <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-card-subtitle>IDENTIFICATION DU PERE</mat-card-subtitle>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-slide-toggle color="primary">Activation du compte du pere</mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card-header>
 
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>CIN : </mat-label>
+                <input name="cinpere" matInput [(ngModel)]="utilisateurPereModel.cin"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Prenom : </mat-label>
+                <input name="prenompere" matInput [(ngModel)]="utilisateurPereModel.prenom"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Nom : </mat-label>
+                <input name="nompere" matInput [(ngModel)]="utilisateurPereModel.nom"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Téléphone : </mat-label>
+                <input name="telephonepere" matInput [(ngModel)]="utilisateurPereModel.telephone"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Email : </mat-label>
+                <input name="emailpere" matInput [(ngModel)]="utilisateurPereModel.email"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Profession : </mat-label>
+                <input name="professionpere" matInput [(ngModel)]="utilisateurPereModel.profession"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Adresse : </mat-label>
+                <input name="adressepere" matInput [(ngModel)]="utilisateurPereModel.adresse"/>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+      <mat-card>
+        <mat-card-header>
+          <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-card-subtitle>IDENTIFICATION DE LA MERE</mat-card-subtitle>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-slide-toggle color="primary">Activation du compte de la mere</mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>CIN : </mat-label>
+                <input name="cinmere" matInput [(ngModel)]="utilisateurMereModel.cin"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Prenom : </mat-label>
+                <input name="prenommere" matInput [(ngModel)]="utilisateurMereModel.prenom"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Nom : </mat-label>
+                <input name="nommere" matInput [(ngModel)]="utilisateurMereModel.nom"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Téléphone : </mat-label>
+                <input name="telephonemere" matInput [(ngModel)]="utilisateurMereModel.telephone"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Email : </mat-label>
+                <input name="emailmere" matInput [(ngModel)]="utilisateurMereModel.email"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Profession : </mat-label>
+                <input name="professionmere" matInput [(ngModel)]="utilisateurMereModel.profession"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Adresse : </mat-label>
+                <input name="adressemere" matInput [(ngModel)]="utilisateurMereModel.adresse"/>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+      <mat-card>
+        <mat-card-header>
+          <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-card-subtitle>IDENTIFICATION DU TUTEUR</mat-card-subtitle>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-slide-toggle color="primary">Activation du compte du tuteur</mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>CIN : </mat-label>
+                <input name="cintuteur" matInput [(ngModel)]="utilisateurTuteurModel.cin"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Prenom : </mat-label>
+                <input name="prenomtuteur" matInput [(ngModel)]="utilisateurTuteurModel.prenom"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Nom : </mat-label>
+                <input name="nomtuteur" matInput [(ngModel)]="utilisateurTuteurModel.nom"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Téléphone : </mat-label>
+                <input name="teltuteur" matInput [(ngModel)]="utilisateurTuteurModel.telephone"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Email : </mat-label>
+                <input name="emailtuteur" matInput [(ngModel)]="utilisateurTuteurModel.email"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Profession : </mat-label>
+                <input name="professiontuteur" matInput [(ngModel)]="utilisateurTuteurModel.profession"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Adresse : </mat-label>
+                <input name="adressetuteur" matInput [(ngModel)]="utilisateurTuteurModel.adresse"/>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+</form>

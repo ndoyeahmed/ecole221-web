@@ -156,4 +156,10 @@ export class ParametragesBaseService {
     return this.http.put<any>(this.api + '/mention/etat/' + id, {status: status + ''});
   }
 
+  // ------------------ pays service
+
+  getAllPays(): Observable<any> {
+    return this.http.get(this.api + '/pays');
+  }
+
 }

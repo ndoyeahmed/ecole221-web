@@ -1,0 +1,179 @@
+<mat-card>
+  <h3>Liste étudiants</h3>
+  <ol class="breadcrumb text-right">
+    <li>
+      <a href="#"><em class="fa fa-home"></em> Accueil</a>
+    </li>
+    <li class="active">Liste étudiants</li>
+  </ol>
+</mat-card>
+<section class="content">
+  <div class="row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+      <mat-card>
+        <mat-card-header>
+          <button [routerLink]="'/gestion-school/inscription'" mat-raised-button color="primary">
+            Nouvelle inscription
+          </button>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="row" style="margin-top: 2%;">
+            <form #searchForm="ngForm">
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <div class="col-md-10 col-lg-2 col-sm-12 col-xs-12">
+                  <div class="form-group row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <mat-label>Niveau :</mat-label>
+                        <mat-select name="niveau" [(ngModel)]="niveauModel" (selectionChange)="loadListSpecialite(niveauModel.id)">
+                              <mat-option *ngFor="let niveau of listNiveau" [value]="niveau" >{{ niveau?.libelle }}</mat-option >
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-10 col-lg-2 col-sm-12 col-xs-12">
+                  <div class="form-group row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <mat-label>Spécialité :</mat-label>
+                        <mat-select name="specialite" [(ngModel)]="specialiteModel" (selectionChange)="loadListSousClasse()">
+                              <mat-option *ngFor="let nivSpecialite of listSpecialite" [value]="nivSpecialite.specialite" >{{ nivSpecialite.specialite?.libelle }}</mat-option >
+                            </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-10 col-lg-2 col-sm-12 col-xs-12">
+                  <div class="form-group row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <mat-label>Horaire :</mat-label>
+                        <mat-select name="horaire" [(ngModel)]="horaireModel" (selectionChange)="loadListSousClasse()">
+                              <mat-option *ngFor="let horaire of listHoraire" [value]="horaire" >{{ horaire?.libelle }}</mat-option >
+                            </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-10 col-lg-2 col-sm-12 col-xs-12">
+                  <div class="form-group row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <mat-label>Classe :</mat-label>
+                        <mat-select name="classe" [(ngModel)]="sousClasseModel">
+                              <mat-option *ngFor="let sousclasse of listSousClasse" [value]="sousclasse.sousClasse" >{{ sousclasse.sousClasse?.libelle }}</mat-option >
+                            </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12">
+                  <button mat-mini-fab style="background-color: whitesmoke; color: black;" (click)="search()" >
+                    <em class="fa fa-search fa-lg"></em>
+                  </button>
+                  &nbsp;&nbsp;
+                  <button mat-mini-fab style="background-color: whitesmoke; color: black;" (click)="cancelSearch(searchForm)" >
+                    <em class="fa fa-remove fa-lg"></em>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="row" style="margin-top: 2%;">
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+                <!-- Nom column -->
+                <ng-container matColumnDef="nom">
+                  <th mat-header-cell *matHeaderCellDef> Nom</th>
+                  <td mat-cell *matCellDef="let inscription">
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.nom ? inscription.etudiant.nom
+                      : '' : '' : ''}}
+                  </td>
+                </ng-container>
+
+                <!-- Prenom column -->
+                <ng-container matColumnDef="prenom">
+                  <th mat-header-cell *matHeaderCellDef> Prenom</th>
+                  <td mat-cell *matCellDef="let inscription">
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.prenom ? inscription.etudiant.prenom
+                      : '' : '' : ''}}
+                  </td>
+                </ng-container>
+
+                <!-- dateNaissance column -->
+                <ng-container matColumnDef="datenaissance">
+                  <th mat-header-cell *matHeaderCellDef> Date naissance</th>
+                  <td mat-cell *matCellDef="let inscription">
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.dateNaissance ? getFormatedDate(inscription.etudiant.dateNaissance)
+                      : '' : '' : ''}}
+                  </td>
+                </ng-container>
+
+                <!-- lieuNaissance column -->
+                <ng-container matColumnDef="lieunaissance">
+                  <th mat-header-cell *matHeaderCellDef> Lieu naissance</th>
+                  <td mat-cell *matCellDef="let inscription">
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.lieuNaissance ? inscription.etudiant.lieuNaissance
+                      : '' : '' : ''}}
+                  </td>
+                </ng-container>
+
+                <!-- telephone column -->
+                <ng-container matColumnDef="telephone">
+                  <th mat-header-cell *matHeaderCellDef> Telephone</th>
+                  <td mat-cell *matCellDef="let inscription">
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.telephone ? inscription.etudiant.telephone
+                      : '' : '' : ''}}
+                  </td>
+                </ng-container>
+
+                <!-- email column -->
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef> Email </th>
+                  <td mat-cell *matCellDef="let inscription">
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.email ? inscription.etudiant.email
+                      : '' : '' : ''}}
+                  </td>
+                </ng-container>
+
+                <!-- Actions column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef> Actions </th>
+                  <td mat-cell *matCellDef="let inscription">
+                    <div class="row">
+                      <div
+                        class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
+                      >
+                        <button type="button" matTooltip="Modifier" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg">
+                        </em></button>
+                      </div>
+                      <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
+                        <button type="button" matTooltip="Supprimer" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg">
+                        </em></button>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="inscriptionColumnsToDisplay"></tr>
+                <tr mat-row *matRowDef="let element; columns: inscriptionColumnsToDisplay;"
+                  class="example-element-row">
+                </tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</section>

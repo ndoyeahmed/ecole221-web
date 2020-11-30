@@ -17,6 +17,8 @@ import {MatTableModule} from '@angular/material/table';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 
 
 
@@ -43,14 +45,16 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatTableModule,
     MatRadioModule,
     MatChipsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
       multi: true
-    }
+    }, {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
