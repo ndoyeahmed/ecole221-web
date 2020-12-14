@@ -128,6 +128,23 @@
           <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
               <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>CIN : </mat-label>
+                <input required name="cin" matInput [(ngModel)]="etudiantModel.cin"
+                (blur)="onCheckEtudiantExist()"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <mat-label>Pays :</mat-label>
+                <mat-select required name="pays" [(ngModel)]="paysModel">
+                      <mat-option *ngFor="let pays of listPays" [value]="pays" >{{ pays?.libelle }}</mat-option >
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <mat-label>Prénom : </mat-label>
                 <input required name="prenom" matInput [(ngModel)]="etudiantModel.prenom"/>
               </mat-form-field>
@@ -152,22 +169,6 @@
               <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <mat-label>Lieu naissance : </mat-label>
                 <input required name="lieunaissance" matInput [(ngModel)]="etudiantModel.lieuNaissance"/>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
-            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <mat-label>CIN : </mat-label>
-                <input required name="cin" matInput [(ngModel)]="etudiantModel.cin"/>
-              </mat-form-field>
-            </div>
-            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-              <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <mat-label>Pays :</mat-label>
-                <mat-select required name="pays" [(ngModel)]="paysModel">
-                      <mat-option *ngFor="let pays of listPays" [value]="pays" >{{ pays?.libelle }}</mat-option >
-                </mat-select>
               </mat-form-field>
             </div>
           </div>
@@ -346,7 +347,7 @@
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
               <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <mat-label>CIN : </mat-label>
-                <input name="cinpere" matInput [(ngModel)]="utilisateurPereModel.cin"/>
+                <input name="cinpere" matInput [(ngModel)]="utilisateurPereModel.cin" (blur)="onCheckParentExist('PERE')"/>
               </mat-form-field>
             </div>
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
@@ -408,7 +409,7 @@
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
               <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <mat-label>CIN : </mat-label>
-                <input name="cinmere" matInput [(ngModel)]="utilisateurMereModel.cin"/>
+                <input name="cinmere" matInput [(ngModel)]="utilisateurMereModel.cin" (blur)="onCheckParentExist('MERE')"/>
               </mat-form-field>
             </div>
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
@@ -470,7 +471,7 @@
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
               <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <mat-label>CIN : </mat-label>
-                <input name="cintuteur" matInput [(ngModel)]="utilisateurTuteurModel.cin"/>
+                <input name="cintuteur" matInput [(ngModel)]="utilisateurTuteurModel.cin" (blur)="onCheckParentExist('TUTEUR')"/>
               </mat-form-field>
             </div>
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">

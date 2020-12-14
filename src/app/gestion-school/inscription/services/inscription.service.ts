@@ -18,4 +18,16 @@ export class InscriptionService {
   getAllInscription(): Observable<any> {
     return this.http.get<any>(this.api + '/inscription');
   }
+
+  getInscriptionByCinEtudiant(cin: string): Observable<any> {
+    return this.http.get<any>(this.api + '/etudiant/cin/' + cin);
+  }
+
+  getParentByCinAndProfil(cin: string, profil: string): Observable<any>{
+    return this.http.get<any>(this.api + '/utilisateur/parent/' + profil + '/' + cin);
+  }
+
+  changeEtudiantClasse(body: any): Observable<any>{
+    return this.http.put<any>(this.api + '/etudiant/change/classe', body);
+  }
 }

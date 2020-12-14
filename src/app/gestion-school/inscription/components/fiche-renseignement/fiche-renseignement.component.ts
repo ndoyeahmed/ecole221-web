@@ -263,4 +263,61 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
     this.listSelectedDocument = [];
     this.listDocument = [];
   }
+
+  onCheckEtudiantExist() {
+    const cin = this.etudiantModel.cin;
+    this.subscription.push(
+      this.inscriptionService.getInscriptionByCinEtudiant(this.etudiantModel.cin).subscribe(
+        (data) => {
+          if (data) {
+            this.etudiantModel = data as EtudiantModel;
+          } else {
+            this.etudiantModel = new EtudiantModel();
+            this.etudiantModel.cin = cin;
+          }
+        }, (error) => {
+          this.notif.error('Erreur de chargement des données');
+        }
+      )
+    );
+  }
+
+  onCheckParentExist(profil) {
+    let cin = '';
+    if (profil === 'PERE') {
+      cin = this.utilisateurPereModel.cin;
+    } else if (profil === 'MERE') {
+      cin = this.utilisateurMereModel.cin;
+    } else if (profil === 'TUTEUR') {
+      cin = this.utilisateurTuteurModel.cin;
+    }
+    this.subscription.push(
+      this.inscriptionService.getParentByCinAndProfil(cin, profil).subscribe(
+        (data) => {
+          if (data) {
+            if (profil === 'PERE') {
+              this.utilisateurPereModel = data;
+            } else if (profil === 'MERE') {
+              this.utilisateurMereModel = data;
+            } else if (profil === 'TUTEUR') {
+              this.utilisateurTuteurModel = data;
+            }
+          } else {
+            if (profil === 'PERE') {
+              this.utilisateurPereModel = new UtilisateurModel();
+              this.utilisateurPereModel.cin = cin;
+            } else if (profil === 'MERE') {
+              this.utilisateurMereModel = new UtilisateurModel();
+              this.utilisateurMereModel.cin = cin;
+            } else if (profil === 'TUTEUR') {
+              this.utilisateurTuteurModel = new UtilisateurModel();
+              this.utilisateurTuteurModel.cin = cin;
+            }
+          }
+        }, (error) => {
+          this.notif.error('Erreur de chargement des données');
+        }
+      )
+    );
+  }
 }

@@ -1,3 +1,4 @@
+import { ChangementClasseComponent } from './../changement-classe/changement-classe.component';
 import { ParametrageClasseService } from './../../../parametrage/services/parametrage-classe.service';
 import { ParametragesBaseService } from 'src/app/gestion-school/parametrage/services/parametrages-base.service';
 import { ParametragesSpecialiteService } from './../../../parametrage/services/parametrages-specialite.service';
@@ -244,6 +245,19 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
 
   getFormatedDate(date): string {
     return moment(date).format('DD/MM/YYYY');
+  }
+
+  onChangeClasseOrNiveau(item): void {
+    this.dialogRef = this.dialog.open(ChangementClasseComponent, {
+      width: '50%',
+      data: item
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (result && result.rep === true) {
+        this.loadListInscription()
+      }
+    });
   }
 
 }

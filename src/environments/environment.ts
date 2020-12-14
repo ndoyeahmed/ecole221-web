@@ -4,11 +4,11 @@
 
 export const environment = {
   production: false,
-  url: 'https://school221-api.herokuapp.com'
+  url: 'http://localhost:8090'
 };
 
 
-// https://school221-api.herokuapp.com/ deployed to Heroku
+// https://school221-api.herokuapp.com deployed to Heroku
 // http://localhost:8090
 /*
  * For easier debugging in development mode, you can import the following file

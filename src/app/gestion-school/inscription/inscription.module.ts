@@ -11,11 +11,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { FicheRenseignementComponent } from './components/fiche-renseignement/fiche-renseignement.component';
 import { EtudiantListComponent } from './components/etudiant-list/etudiant-list.component';
+import { ChangementClasseComponent } from './components/changement-classe/changement-classe.component';
 
 
 
 @NgModule({
-  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent],
+  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent, ChangementClasseComponent],
   imports: [
     SharedModule,
     MatCardModule,

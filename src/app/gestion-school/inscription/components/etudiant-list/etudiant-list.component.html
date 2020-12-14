@@ -149,18 +149,21 @@
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef> Actions </th>
                   <td mat-cell *matCellDef="let inscription">
-                    <div class="row">
-                      <div
-                        class="col-md-3 col-lg-3 col-sm-4 col-xs-4 col-md-offset-3 col-lg-offset-3 col-sm-offset-4 col-xs-offset-4"
-                      >
-                        <button type="button" matTooltip="Modifier" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg">
-                        </em></button>
-                      </div>
-                      <div class="col-md-4 col-lg-4 col-sm-4 col-xs-4">
-                        <button type="button" matTooltip="Supprimer" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg">
-                        </em></button>
-                      </div>
-                    </div>
+                    <button type="button" matTooltip="Parcours étudiant" mat-flat-button class="action-button"><em class="fa fa-list-alt fa-lg">
+                    </em>
+                  </button>
+                   &nbsp;&nbsp;
+                    <button type="button" (click)="onChangeClasseOrNiveau(inscription)" matTooltip="Changement classe ou niveau" mat-flat-button class="action-button"><em class="fa fa-exchange fa-lg">
+                    </em>
+                  </button>
+                   &nbsp;&nbsp;
+                    <button type="button" matTooltip="Modifier" mat-flat-button class="action-button"><em class="fa fa-edit fa-lg">
+                      </em>
+                    </button>
+                     &nbsp;&nbsp;
+                    <button type="button" matTooltip="Supprimer" mat-flat-button class="action-button"><em class="fa fa-trash fa-lg">
+                      </em>
+                    </button>
                   </td>
                 </ng-container>
 
