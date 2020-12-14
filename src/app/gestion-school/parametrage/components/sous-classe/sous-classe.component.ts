@@ -31,7 +31,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<SousClasseModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  sousclasseColumnsToDisplay = ['sousclasse', 'niveau', 'specialite', 'horaire', 'status', 'actions'];
+  sousclasseColumnsToDisplay = ['sousclasse', 'nbrEleve', 'niveau', 'specialite', 'horaire', 'status', 'actions'];
 
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as NiveauSpecialiteModel[];

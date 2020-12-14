@@ -1,0 +1,220 @@
+<mat-card>
+  <h3>Parcours etudiant</h3>
+  <ol class="breadcrumb text-right">
+    <li>
+      <a href="#"><em class="fa fa-home"></em> Accueil</a>
+    </li>
+    <li class="active">Parcours etudiant</li>
+  </ol>
+</mat-card>
+
+<section class="content">
+<mat-card>
+  <div class="row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 2%;">
+      <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+        <button type="button" [routerLink]="'/gestion-school/list-etudiant/'" matTooltip="Liste etudiants" mat-raised-button class="action-button"><em class="fa fa-list fa-lg">
+        </em> Liste etudiants
+      </button>
+      </div>
+      <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+        <h3>
+          Niveau : {{inscriptionModel ? inscriptionModel.sousClasse ?
+            inscriptionModel.sousClasse.niveau ? inscriptionModel.sousClasse.niveau.libelle ?
+            inscriptionModel.sousClasse.niveau.libelle : '' : '' : '' : '' }}
+        </h3>
+      </div>
+      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+        <h3>
+          Specialite : {{inscriptionModel ? inscriptionModel.sousClasse ?
+            inscriptionModel.sousClasse.specialite ? inscriptionModel.sousClasse.specialite.libelle ?
+            inscriptionModel.sousClasse.specialite.libelle : '' : '' : '' : '' }}
+        </h3>
+      </div>
+      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+        <h3>
+          Classe : {{inscriptionModel ? inscriptionModel.sousClasse ?
+            inscriptionModel.sousClasse.libelle ?
+            inscriptionModel.sousClasse.libelle : '' : '' : '' }}
+        </h3>
+      </div>
+    </div>
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="margin-top: 1%;">
+
+      <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+        <mat-card>
+          <div class="row">
+            <div class="col-md-6">
+              <img  [src]="url ? url : '../../../../../assets/images/avatar.png'" mat-card-lg-image alt="photo profil"
+              onclick="document.getElementById('singleFile').click()"/>
+            </div>
+
+              <input name="photoprofil" style="display:none;" id="singleFile" type="file" (change)="onSelectFile($event)"/>
+
+          </div>
+          <!-- <img src="../../../../../assets/images/avatar.png" mat-card-mat-card-sm-image /> -->
+        </mat-card>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>IDENTIFICATION</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+           <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Matricule : </strong>
+              {{inscriptionModel ? inscriptionModel.etudiant ?
+                 inscriptionModel.etudiant.matricule ?
+                 inscriptionModel.etudiant.matricule : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Nom : </strong>
+              {{inscriptionModel ? inscriptionModel.etudiant ?
+                inscriptionModel.etudiant.nom ?
+                inscriptionModel.etudiant.nom : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Prenom : </strong>
+              {{inscriptionModel ? inscriptionModel.etudiant ?
+                inscriptionModel.etudiant.prenom ?
+                inscriptionModel.etudiant.prenom : '' : '' : '' }}
+            </div>
+           </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>GENRE / NAISSANCE</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+           <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Genre : </strong>
+              {{inscriptionModel ? inscriptionModel.etudiant ?
+                inscriptionModel.etudiant.genre ?
+                inscriptionModel.etudiant.genre : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Date naissance : </strong>
+              {{inscriptionModel ? inscriptionModel.etudiant ?
+                inscriptionModel.etudiant.dateNaissance ?
+                getFormatedDate(inscriptionModel.etudiant.dateNaissance) : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Lieu naissance : </strong>
+              {{inscriptionModel ? inscriptionModel.etudiant ?
+                inscriptionModel.etudiant.lieuNaissance ?
+                inscriptionModel.etudiant.lieuNaissance : '' : '' : '' }}
+            </div>
+           </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>CONTACT</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+           <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Téléphone : </strong>
+              {{inscriptionModel ? inscriptionModel.etudiant ?
+                inscriptionModel.etudiant.telephone ?
+                inscriptionModel.etudiant.telephone : '' : '' : '' }}
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Email Pro : </strong>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <strong>Email : </strong>
+              {{inscriptionModel ? inscriptionModel.etudiant ?
+                inscriptionModel.etudiant.email ?
+                inscriptionModel.etudiant.email : '' : '' : '' }}
+            </div>
+           </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 2%;">
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+        <!-- Annee debut column -->
+        <ng-container matColumnDef="anneedebut">
+          <th mat-header-cell *matHeaderCellDef> Annee debut</th>
+          <td mat-cell *matCellDef="let inscription">
+            {{inscription ? inscription.anneeScolaire ?
+              inscription.anneeScolaire.annee ? inscription.anneeScolaire.annee
+              : '' : '' : ''}}
+          </td>
+        </ng-container>
+
+        <!-- Annee fin column -->
+        <ng-container matColumnDef="anneefin">
+          <th mat-header-cell *matHeaderCellDef> Annee fin</th>
+          <td mat-cell *matCellDef="let inscription">
+            A nos jours
+            <!-- {{inscription ? inscription.etudiant ?
+              inscription.etudiant.prenom ? inscription.etudiant.prenom
+              : '' : '' : ''}} -->
+          </td>
+        </ng-container>
+
+        <!-- etablissement column -->
+        <ng-container matColumnDef="etablissement">
+          <th mat-header-cell *matHeaderCellDef> Etablissement</th>
+          <td mat-cell *matCellDef="let inscription">
+            {{inscription ? inscription.etudiant ?
+              inscription.etudiant.etablissementPrecedent ? inscription.etudiant.etablissementPrecedent
+              : '' : '' : ''}}
+          </td>
+        </ng-container>
+
+        <!-- motif entree column -->
+        <ng-container matColumnDef="motifentree">
+          <th mat-header-cell *matHeaderCellDef> Motif entrée</th>
+          <td mat-cell *matCellDef="let inscription">
+            {{inscription ? inscription.etudiant ?
+              inscription.etudiant.motifEntree ? inscription.etudiant.motifEntree
+              : '' : '' : ''}}
+          </td>
+        </ng-container>
+
+        <!-- motif sortie column -->
+        <ng-container matColumnDef="motifsortie">
+          <th mat-header-cell *matHeaderCellDef> Motif sortie </th>
+          <td mat-cell *matCellDef="let inscription">
+            RAS
+          </td>
+        </ng-container>
+
+        <!-- dossier column -->
+        <ng-container matColumnDef="dossier">
+          <th mat-header-cell *matHeaderCellDef> Dossier </th>
+          <td mat-cell *matCellDef="let inscription">
+            <button type="button" matTooltip="dossier étudiant" [routerLink]="'/gestion-school/dossier-etudiant/' + inscription.id + '/' + inscription.anneeScolaire.id" mat-flat-button class="action-button"><em class="fa fa-folder fa-lg">
+            </em>
+          </button>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="parcoursColumnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: parcoursColumnsToDisplay;"
+          class="example-element-row">
+        </tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+</mat-card>
+</section>

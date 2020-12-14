@@ -19,6 +19,10 @@ export class InscriptionService {
     return this.http.get<any>(this.api + '/inscription');
   }
 
+  getInscriptionById(id): Observable<any> {
+    return this.http.get<any>(this.api + '/inscription/' + id);
+  }
+
   getInscriptionByCinEtudiant(cin: string): Observable<any> {
     return this.http.get<any>(this.api + '/etudiant/cin/' + cin);
   }
@@ -29,5 +33,9 @@ export class InscriptionService {
 
   changeEtudiantClasse(body: any): Observable<any>{
     return this.http.put<any>(this.api + '/etudiant/change/classe', body);
+  }
+
+  getAllEtudiantInscriptionByIdInscription(idInscription): Observable<any> {
+    return this.http.get<any>(this.api + '/etudiant/inscriptions/' + idInscription);
   }
 }

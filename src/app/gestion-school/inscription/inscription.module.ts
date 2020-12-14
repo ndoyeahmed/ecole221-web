@@ -12,11 +12,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { FicheRenseignementComponent } from './components/fiche-renseignement/fiche-renseignement.component';
 import { EtudiantListComponent } from './components/etudiant-list/etudiant-list.component';
 import { ChangementClasseComponent } from './components/changement-classe/changement-classe.component';
+import { ParcoursEtudiantComponent } from './components/parcours-etudiant/parcours-etudiant.component';
+import { DossierEtudiantComponent } from './components/dossier-etudiant/dossier-etudiant.component';
 
 
 
 @NgModule({
-  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent, ChangementClasseComponent],
+  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent, ChangementClasseComponent, ParcoursEtudiantComponent, DossierEtudiantComponent],
   imports: [
     SharedModule,
     MatCardModule,

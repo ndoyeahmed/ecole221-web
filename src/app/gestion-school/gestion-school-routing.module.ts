@@ -1,3 +1,5 @@
+import { DossierEtudiantComponent } from './inscription/components/dossier-etudiant/dossier-etudiant.component';
+import { ParcoursEtudiantComponent } from './inscription/components/parcours-etudiant/parcours-etudiant.component';
 import { EtudiantListComponent } from './inscription/components/etudiant-list/etudiant-list.component';
 import { InscriptionComponent } from './inscription/components/inscription/inscription.component';
 import { ParametragesComponent } from './parametrage/components/parametrages/parametrages.component';
@@ -30,6 +32,14 @@ import { RouterModule } from '@angular/router';
       {
         path: 'list-etudiant',
         component: EtudiantListComponent
+      },
+      {
+        path: 'parcours-etudiant/:inscriptionid',
+        component: ParcoursEtudiantComponent
+      },
+      {
+        path: 'dossier-etudiant/:inscriptionId/:anneescolaireid',
+        component: DossierEtudiantComponent
       }
     ])
   ],

@@ -149,7 +149,7 @@
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef> Actions </th>
                   <td mat-cell *matCellDef="let inscription">
-                    <button type="button" matTooltip="Parcours étudiant" mat-flat-button class="action-button"><em class="fa fa-list-alt fa-lg">
+                    <button type="button" matTooltip="Parcours étudiant" [routerLink]="'/gestion-school/parcours-etudiant/' + inscription.id" mat-flat-button class="action-button"><em class="fa fa-list-alt fa-lg">
                     </em>
                   </button>
                    &nbsp;&nbsp;
