@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  url: 'https://school221-api.herokuapp.com'
+  url: 'http://localhost:8090'
 };
 
 

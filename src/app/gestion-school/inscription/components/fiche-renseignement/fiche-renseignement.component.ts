@@ -14,12 +14,13 @@ import { ParametragesSpecialiteService } from './../../../parametrage/services/p
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MycustomNotificationService } from 'src/app/gestion-school/parametrage/services/mycustom-notification.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.model';
 import { HoraireModel } from 'src/app/shared/models/horaire.model';
 import { ParametragesBaseService } from 'src/app/gestion-school/parametrage/services/parametrages-base.service';
 import * as moment from 'moment';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 
 @Component({
@@ -52,6 +53,14 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
   utilisateurTuteurModel = new UtilisateurModel();
   inscriptionPOJOModel = new InscriptionPojoModel();
 
+  // upload docs variable
+  selectedFiles: FileList;
+  currentFile: File;
+  progress = 0;
+  message = '';
+
+  fileInfos: Observable<any>;
+
   constructor(
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
     private paramSpecialiteService: ParametragesSpecialiteService, private paramBaseService: ParametragesBaseService,
@@ -66,6 +75,39 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
     this.loadListNiveau();
     this.loadListHoraire();
     this.loadListPays();
+
+    this.fileInfos = this.inscriptionService.getFiles();
+  }
+
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
+    console.log(this.selectedFiles);
+  }
+
+  upload() {
+    this.progress = 0;
+
+    this.currentFile = this.selectedFiles.item(0);
+    this.inscriptionService.upload(this.currentFile).subscribe(
+      event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.progress = Math.round(100 * event.loaded / event.total);
+        } else if (event instanceof HttpResponse) {
+          this.message = event.body.message;
+          this.fileInfos = this.inscriptionService.getFiles();
+        }
+      },
+      err => {
+        this.progress = 0;
+        this.message = 'Could not upload the file!';
+        this.currentFile = undefined;
+      });
+
+    this.selectedFiles = undefined;
+  }
+
+  getFormatedDate(date): string {
+    return moment(date).format('DD/MM/YYYY');
   }
 
   onCheckedDocument(event: MatCheckboxChange, doc) {
@@ -275,6 +317,8 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
             this.etudiantModel = new EtudiantModel();
             this.etudiantModel.cin = cin;
           }
+          this.inscriptionPOJOModel.etudiant = this.etudiantModel;
+          this.paysModel = this.etudiantModel.pays;
         }, (error) => {
           this.notif.error('Erreur de chargement des données');
         }

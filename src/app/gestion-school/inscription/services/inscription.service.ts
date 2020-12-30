@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -37,5 +37,23 @@ export class InscriptionService {
 
   getAllEtudiantInscriptionByIdInscription(idInscription): Observable<any> {
     return this.http.get<any>(this.api + '/etudiant/inscriptions/' + idInscription);
+  }
+
+  // upload doc for inscription
+  upload(file: File): Observable<HttpEvent<any>> {
+    const formData: FormData = new FormData();
+
+    formData.append('file', file);
+
+    const req = new HttpRequest('POST', `/api/files-storage/upload`, formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+
+    return this.http.request(req);
+  }
+
+  getFiles(): Observable<any> {
+    return this.http.get(`/api/files-storage/files`);
   }
 }
