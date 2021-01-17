@@ -1,3 +1,4 @@
+import { SharedService } from './../../../../shared/services/shared.service';
 import { DocumentParNiveauModel } from './../../../../shared/models/document-par-niveau.model';
 import { ParametragesSpecialiteService } from './../../services/parametrages-specialite.service';
 import { SemestreModel } from './../../../../shared/models/semestre.model';
@@ -60,7 +61,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
-    private paramBaseService: ParametragesBaseService
+    private paramBaseService: ParametragesBaseService, private sharedService: SharedService
   ) {
   }
 
@@ -290,6 +291,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
           this.ngxService.hide(this.LOADERID);
         }, () => {
           this.ngxService.hide(this.LOADERID);
+          this.sharedService.isVisibleSource.next(true);
         }
       )
     );

@@ -7,4 +7,5 @@ export class DocumentParNiveauModel {
   public archive: boolean;
   public niveau: NiveauModel;
   public document: DocumentModel;
+  public checkedDoc: boolean;
 }

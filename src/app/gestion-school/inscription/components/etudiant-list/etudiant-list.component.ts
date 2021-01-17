@@ -48,12 +48,14 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   listHoraire = [] as HoraireModel[];
   listSousClasse = [] as ClasseSousClasse[];
 
-  constructor(private inscriptionService: InscriptionService, private paramSpecialiteService: ParametragesSpecialiteService,
-              private dialog: MatDialog, private notif: MycustomNotificationService,
-              private ngxService: NgxSpinnerService, private paramBaseService: ParametragesBaseService,
-              private paramClasseService: ParametrageClasseService) { }
+  searchTerm: string;
 
-    ngOnDestroy(): void {
+  constructor(private inscriptionService: InscriptionService, private paramSpecialiteService: ParametragesSpecialiteService,
+    private dialog: MatDialog, private notif: MycustomNotificationService,
+    private ngxService: NgxSpinnerService, private paramBaseService: ParametragesBaseService,
+    private paramClasseService: ParametrageClasseService) { }
+
+  ngOnDestroy(): void {
     this.subscription.forEach(x => x.unsubscribe());
   }
 
@@ -61,6 +63,30 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
     this.loadListInscription();
     this.loadListHoraire();
     this.loadListNiveau();
+  }
+
+  onSearchByTaping(term) {
+    // console.log(this.searchTerm);
+    if (this.searchTerm === undefined || this.searchTerm === null) {
+      this.listInscriptionFiltered = null;
+    } else {
+      if (this.searchTerm === '') {
+        this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscription);
+        this.dataSource.paginator = this.paginator;
+      } else {
+        this.listInscriptionFiltered = this.listInscription.filter(x =>
+          (x.etudiant.nom == null ? '' : x.etudiant.nom.toLowerCase()).includes(this.searchTerm.trim().toLowerCase()) ||
+          (x.etudiant.prenom == null ? '' : x.etudiant.prenom.toLowerCase()).includes(this.searchTerm.trim().toLowerCase()) ||
+          (x.etudiant.telephone == null ? '' : x.etudiant.telephone.toLowerCase()).includes(this.searchTerm.trim().toLowerCase()) ||
+          (x.etudiant.email == null ? '' : x.etudiant.email.toLowerCase()).includes(this.searchTerm.trim().toLowerCase()) ||
+          (x.etudiant.lieuNaissance == null ? '' : x.etudiant.lieuNaissance.toLowerCase()).includes(this.searchTerm.trim().toLowerCase()) ||
+          (x.etudiant.dateNaissance == null ? '' : this.getFormatedDate(x.etudiant.dateNaissance).toLowerCase()).includes(this.searchTerm.trim().toLowerCase())
+        );
+        this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
+        this.dataSource.paginator = this.paginator;
+      }
+
+    }
   }
 
   loadListNiveau() {
@@ -120,16 +146,16 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
       this.subscription.push(
         this.paramClasseService.getAllClasseSousClasseByNiveauSpecialiteHoraire(this.niveauModel.id,
           this.specialiteModel.id, this.horaireModel.id).subscribe(
-          (data) => {
-            this.listSousClasse = data;
-          },
-          (error) => {
-            this.ngxService.hide(this.LOADERID);
-          },
-          () => {
-            this.ngxService.hide(this.LOADERID);
-          }
-        )
+            (data) => {
+              this.listSousClasse = data;
+            },
+            (error) => {
+              this.ngxService.hide(this.LOADERID);
+            },
+            () => {
+              this.ngxService.hide(this.LOADERID);
+            }
+          )
       );
     }
   }
@@ -169,7 +195,7 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   loadListInscriptionByNiveauAndSpecialiteAndHoraire(niveauId, specialiteId, horaireId) {
     this.listInscriptionFiltered = this.listInscription.filter(
       x => Number(x.sousClasse.niveau.id) === Number(niveauId) && Number(x.sousClasse.specialite.id) === Number(specialiteId)
-      && Number(x.sousClasse.horaire.id) === Number(horaireId)
+        && Number(x.sousClasse.horaire.id) === Number(horaireId)
     );
     this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
     this.dataSource.paginator = this.paginator;
@@ -178,7 +204,7 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   loadListInscriptionByNiveauAndHoraire(niveauId, horaireId) {
     this.listInscriptionFiltered = this.listInscription.filter(
       x => Number(x.sousClasse.niveau.id) === Number(niveauId)
-      && Number(x.sousClasse.horaire.id) === Number(horaireId)
+        && Number(x.sousClasse.horaire.id) === Number(horaireId)
     );
     this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
     this.dataSource.paginator = this.paginator;
@@ -195,21 +221,21 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   search() {
     if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id
       && this.horaireModel && this.horaireModel.id && this.sousClasseModel && this.sousClasseModel.id) {
-        this.loadListInscriptionBySousClasse(this.sousClasseModel.id);
-      } else if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id
-        && this.horaireModel && this.horaireModel.id) {
-          this.loadListInscriptionByNiveauAndSpecialiteAndHoraire(this.niveauModel.id, this.specialiteModel.id, this.horaireModel.id);
-        } else if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id) {
-          this.loadListInscriptionByNiveauAndSpecialite(this.niveauModel.id, this.specialiteModel.id);
-        } else if (this.niveauModel && this.niveauModel.id && this.horaireModel && this.horaireModel.id) {
-          this.loadListInscriptionByNiveauAndHoraire(this.niveauModel.id, this.horaireModel.id);
-        } else if (this.niveauModel && this.niveauModel.id) {
-          this.loadListInscriptionByNiveau(this.niveauModel.id);
-        } else if (this.specialiteModel && this.specialiteModel.id) {
-          this.loadListInscriptionBySpecialite(this.specialiteModel.id);
-        } else if (this.horaireModel && this.horaireModel.id) {
-          this.loadListInscriptionByHoraire(this.horaireModel.id);
-        }
+      this.loadListInscriptionBySousClasse(this.sousClasseModel.id);
+    } else if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id
+      && this.horaireModel && this.horaireModel.id) {
+      this.loadListInscriptionByNiveauAndSpecialiteAndHoraire(this.niveauModel.id, this.specialiteModel.id, this.horaireModel.id);
+    } else if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id) {
+      this.loadListInscriptionByNiveauAndSpecialite(this.niveauModel.id, this.specialiteModel.id);
+    } else if (this.niveauModel && this.niveauModel.id && this.horaireModel && this.horaireModel.id) {
+      this.loadListInscriptionByNiveauAndHoraire(this.niveauModel.id, this.horaireModel.id);
+    } else if (this.niveauModel && this.niveauModel.id) {
+      this.loadListInscriptionByNiveau(this.niveauModel.id);
+    } else if (this.specialiteModel && this.specialiteModel.id) {
+      this.loadListInscriptionBySpecialite(this.specialiteModel.id);
+    } else if (this.horaireModel && this.horaireModel.id) {
+      this.loadListInscriptionByHoraire(this.horaireModel.id);
+    }
   }
 
   cancelSearch(searchForm) {

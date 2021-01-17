@@ -19,5 +19,6 @@ export class EtudiantModel {
   public ambition: string;
   public autresRenseignements: string;
   public photo: string;
+  public fileType: string;
   public pays: PaysModel;
 }

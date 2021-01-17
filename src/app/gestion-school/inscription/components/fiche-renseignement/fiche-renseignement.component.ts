@@ -1,3 +1,4 @@
+import { DocumentParEtudiantModel } from './../../../../shared/models/document-par-etudiant.model';
 import { InscriptionPojoModel } from './../../../../shared/models/inscription-pojo.model';
 import { DocumentModel } from 'src/app/shared/models/document.model';
 import { DocumentParNiveauModel } from 'src/app/shared/models/document-par-niveau.model';
@@ -33,13 +34,14 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
   LOADERID = 'inscription-loader';
 
   url: string;
+  fileType: string;
 
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as NiveauSpecialiteModel[];
   listHoraire = [] as HoraireModel[];
   listPays = [] as PaysModel[];
   listDocument = [] as DocumentParNiveauModel[];
-  listSelectedDocument = [] as DocumentModel[];
+  listSelectedDocument = [] as DocumentParEtudiantModel[];
 
   niveauModel: NiveauModel;
   specialiteModel: SpecialiteModel;
@@ -79,9 +81,31 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
     this.fileInfos = this.inscriptionService.getFiles();
   }
 
-  selectFile(event) {
-    this.selectedFiles = event.target.files;
-    console.log(this.selectedFiles);
+  onBrowse(id) {
+    document.getElementById(id).click();
+  }
+
+  selectFile(event, doc) {
+    // this.selectedFiles = event.target.files;
+    console.log(event.target.files);
+    if (event.target.files[0].type === 'application/pdf') {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+
+      this.listSelectedDocument.forEach(sd => {
+        if (Number(sd.document.id) === Number(doc.document.id)) {
+          reader.onload = (event1: any) => { // called once readAsDataURL is completed
+            sd.file = event1.target.result;
+            sd.fileType = event.target.files[0].type;
+          };
+        }
+      });
+    } else {
+      this.notif.error('Veuillez choisir un fichier pdf SVP');
+    }
+
+    console.log(this.listSelectedDocument);
   }
 
   upload() {
@@ -112,9 +136,13 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
 
   onCheckedDocument(event: MatCheckboxChange, doc) {
     if (event.checked === true) {
-      this.listSelectedDocument.push(doc.document);
+      doc.checkedDoc = true;
+      let documentParEtudiant = new DocumentParEtudiantModel();
+      documentParEtudiant.document = doc.document;
+      this.listSelectedDocument.push(documentParEtudiant);
     } else {
-      this.listSelectedDocument = this.listSelectedDocument.filter(sn => Number(sn.id) !== Number(doc.docuemnt.id));
+      doc.checkedDoc = false;
+      this.listSelectedDocument = this.listSelectedDocument.filter(sn => Number(sn.document.id) !== Number(doc.document.id));
     }
   }
 
@@ -137,35 +165,40 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
 
   onSelectFile(event) {
     if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
+      if (event.target.files[0].type === 'image/jpg' || event.target.files[0].type === 'image/jpeg' || event.target.files[0].type === 'image/png') {
+        this.fileType = event.target.files[0].type;
+        const reader = new FileReader();
 
-      reader.readAsDataURL(event.target.files[0]); // read file as data url
+        reader.readAsDataURL(event.target.files[0]); // read file as data url
 
-      reader.onload = (event1: any) => { // called once readAsDataURL is completed
-        this.url = event1.target.result;
-      };
+        reader.onload = (event1: any) => { // called once readAsDataURL is completed
+          this.url = event1.target.result;
+        };
+      } else {
+        this.notif.error('Veuillez choisir une image SVP');
+      }
     }
   }
 
   getSousClasseAInscrire() {
     if (this.niveauModel && this.niveauModel.id && this.specialiteModel
       && this.specialiteModel.id && this.horaireModel && this.horaireModel.id) {
-        const body = {
-          niveauId: this.niveauModel.id + '',
-          specialiteId: this.specialiteModel.id + '',
-          horaireId: this.horaireModel.id + ''
-        };
-        this.subscription.push(
-          this.paramClasseService.getSousClasseAInscrire(body).subscribe(
-            (data) => {
-              console.log(data);
-              this.sousClasseModel = data;
-            }, (error) => {
-              console.log(error);
-            }
-          )
-        );
-      }
+      const body = {
+        niveauId: this.niveauModel.id + '',
+        specialiteId: this.specialiteModel.id + '',
+        horaireId: this.horaireModel.id + ''
+      };
+      this.subscription.push(
+        this.paramClasseService.getSousClasseAInscrire(body).subscribe(
+          (data) => {
+            console.log(data);
+            this.sousClasseModel = data;
+          }, (error) => {
+            console.log(error);
+          }
+        )
+      );
+    }
   }
 
   loadListHoraire() {
@@ -244,56 +277,59 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
       && this.etudiantModel.cin && this.etudiantModel.genre && this.etudiantModel.email
       && this.etudiantModel.telephone && this.paysModel && this.paysModel.id) {
 
-        if (this.niveauModel && this.niveauModel.id && this.specialiteModel
-          && this.specialiteModel.id && this.horaireModel && this.horaireModel.id
-          && this.sousClasseModel && this.sousClasseModel.id) {
+      if (this.niveauModel && this.niveauModel.id && this.specialiteModel
+        && this.specialiteModel.id && this.horaireModel && this.horaireModel.id
+        && this.sousClasseModel && this.sousClasseModel.id) {
 
-            if ((this.utilisateurMereModel && this.utilisateurMereModel.cin && this.utilisateurMereModel.prenom
-              && this.utilisateurMereModel.nom && this.utilisateurMereModel.telephone) || (this.utilisateurPereModel
-                && this.utilisateurPereModel.cin && this.utilisateurPereModel.prenom && this.utilisateurPereModel.nom
-                && this.utilisateurPereModel.telephone) || (this.utilisateurTuteurModel && this.utilisateurTuteurModel.cin
-                  && this.utilisateurTuteurModel.prenom && this.utilisateurTuteurModel.nom && this.utilisateurTuteurModel.telephone)) {
+        if ((this.utilisateurMereModel && this.utilisateurMereModel.cin && this.utilisateurMereModel.prenom
+          && this.utilisateurMereModel.nom && this.utilisateurMereModel.telephone) || (this.utilisateurPereModel
+            && this.utilisateurPereModel.cin && this.utilisateurPereModel.prenom && this.utilisateurPereModel.nom
+            && this.utilisateurPereModel.telephone) || (this.utilisateurTuteurModel && this.utilisateurTuteurModel.cin
+              && this.utilisateurTuteurModel.prenom && this.utilisateurTuteurModel.nom && this.utilisateurTuteurModel.telephone)) {
 
-                    this.ngxService.show(this.LOADERID);
+          this.ngxService.show(this.LOADERID);
 
-                    this.etudiantModel.pays = this.paysModel;
-                    this.inscriptionPOJOModel.etudiant = this.etudiantModel;
-                    this.inscriptionPOJOModel.inscription = this.inscriptionModel;
-                    this.inscriptionPOJOModel.sousClasse = this.sousClasseModel;
-                    this.inscriptionPOJOModel.pere = this.utilisateurPereModel;
-                    this.inscriptionPOJOModel.mere = this.utilisateurMereModel;
-                    this.inscriptionPOJOModel.tuteur = this.utilisateurTuteurModel;
-                    this.inscriptionPOJOModel.documents = this.listSelectedDocument;
+          this.etudiantModel.pays = this.paysModel;
+          this.etudiantModel.photo = this.url;
+          this.etudiantModel.fileType = this.fileType;
+          this.inscriptionPOJOModel.etudiant = this.etudiantModel;
+          this.inscriptionPOJOModel.inscription = this.inscriptionModel;
+          this.inscriptionPOJOModel.sousClasse = this.sousClasseModel;
+          this.inscriptionPOJOModel.pere = this.utilisateurPereModel;
+          this.inscriptionPOJOModel.mere = this.utilisateurMereModel;
+          this.inscriptionPOJOModel.tuteur = this.utilisateurTuteurModel;
+          this.inscriptionPOJOModel.documents = this.listSelectedDocument;
 
-                    this.subscription.push(
-                      this.inscriptionService.inscription(this.inscriptionPOJOModel).subscribe(
-                        (data) => {
-                          console.log(data);
-                        }, (error) => {
-                          this.notif.error();
-                          this.ngxService.hide(this.LOADERID);
-                        }, () => {
-                          addForm.resetForm();
-                          this.clear();
-                          this.notif.success();
-                          this.ngxService.hide(this.LOADERID);
-                        }
-                      )
-                    );
+          this.subscription.push(
+            this.inscriptionService.inscription(this.inscriptionPOJOModel).subscribe(
+              (data) => {
+                console.log(data);
+              }, (error) => {
+                this.notif.error();
+                this.ngxService.hide(this.LOADERID);
+              }, () => {
+                addForm.resetForm();
+                this.clear();
+                this.notif.success();
+                this.ngxService.hide(this.LOADERID);
+              }
+            )
+          );
 
-                  } else {
-                    this.notif.error('Veuillez au moins remplir les informations d\'un des tuteurs');
-                  }
-          } else {
-            this.notif.error('Veuillez remplir tous les champs obligatoires');
-          }
+        } else {
+          this.notif.error('Veuillez au moins remplir les informations d\'un des tuteurs');
+        }
       } else {
         this.notif.error('Veuillez remplir tous les champs obligatoires');
       }
+    } else {
+      this.notif.error('Veuillez remplir tous les champs obligatoires');
+    }
     // addForm.resetForm();
   }
 
   clear() {
+    this.url = null;
     this.etudiantModel = new EtudiantModel();
     this.inscriptionModel = new InscriptionModel();
     this.niveauModel = new NiveauModel();

@@ -1,4 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { SharedService } from './../../../../shared/services/shared.service';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -46,7 +47,7 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
-    private paramBaseService: ParametragesBaseService
+    private paramBaseService: ParametragesBaseService, private sharedService: SharedService
   ) { }
 
   ngOnDestroy(): void {
@@ -59,6 +60,17 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
     this.loadListSemestre();
     this.loadListParcours();
     this.loadListDocument();
+
+    this.sharedService.isVisibleSource.subscribe(
+      (data) => {
+        if (data) {
+          this.loadListCycle();
+          this.loadListSemestre();
+          this.loadListParcours();
+          this.loadListDocument();
+        }
+      }
+    )
   }
 
   loadListDocument() {
@@ -171,19 +183,25 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
         this.niveauModel.parcours = this.parcoursModel;
         this.niveauModel.cycle = this.cycleModel;
         console.log(this.niveauModel);
+
+        const body = {
+          niveau: this.niveauModel,
+          documentParNiveaus: this.listSelectedDocumentsAFournir,
+          semestreNiveaus: this.listSemestreNiveau
+        }
         this.subscription.push(
           (this.niveauModel.id ?
             this.paramSpecialiteService.updateNiveau(this.niveauModel.id, this.niveauModel) :
-            this.paramSpecialiteService.addNiveau(this.niveauModel)).subscribe(
+            this.paramSpecialiteService.addNiveau(body)).subscribe(
               (data) => {
                 console.log(data);
-                if(!this.niveauModel.id) {
-                  if (data && data.id) {
-                    this.niveauModel = data as NiveauModel;
-                    this.saveDocumentParNiveau(this.listSelectedDocumentsAFournir, this.niveauModel);
-                    this.saveSemestreNiveau(this.listSemestreNiveau, this.niveauModel);
-                  }
-                }
+                // if (!this.niveauModel.id) {
+                //   if (data && data.id) {
+                //     this.niveauModel = data as NiveauModel;
+                //     this.saveDocumentParNiveau(this.listSelectedDocumentsAFournir, this.niveauModel);
+                //     this.saveSemestreNiveau(this.listSemestreNiveau, this.niveauModel);
+                //   }
+                // }
               }, (error) => {
                 this.notif.error();
                 this.ngxService.hide(this.LOADERID);
@@ -192,6 +210,7 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
                 this.clear();
                 this.notif.success();
                 this.ngxService.hide(this.LOADERID);
+                this.sharedService.isVisibleSource.next(true);
               }
             )
         );
