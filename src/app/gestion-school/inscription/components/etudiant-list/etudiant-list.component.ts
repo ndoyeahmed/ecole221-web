@@ -1,3 +1,6 @@
+import { HttpClient } from '@angular/common/http';
+import { style } from '@angular/animations';
+import { AnneeScolaireModel } from './../../../../shared/models/annee-scolaire.model';
 import { ChangementClasseComponent } from './../changement-classe/changement-classe.component';
 import { ParametrageClasseService } from './../../../parametrage/services/parametrage-classe.service';
 import { ParametragesBaseService } from 'src/app/gestion-school/parametrage/services/parametrages-base.service';
@@ -10,7 +13,7 @@ import { SpecialiteModel } from 'src/app/shared/models/specialite.model';
 import { NiveauModel } from 'src/app/shared/models/niveau.model';
 import { InscriptionService } from './../../services/inscription.service';
 import { InscriptionModel } from './../../../../shared/models/inscription.model';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
@@ -18,7 +21,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MycustomNotificationService } from 'src/app/gestion-school/parametrage/services/mycustom-notification.service';
 import * as moment from 'moment';
+import { DocumentParNiveauModel } from 'src/app/shared/models/document-par-niveau.model';
+import { DomSanitizer } from '@angular/platform-browser';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
+
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+
+
+/// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
+declare var $: any;
 @Component({
   selector: 'app-etudiant-list',
   templateUrl: './etudiant-list.component.html',
@@ -32,7 +45,7 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<InscriptionModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  inscriptionColumnsToDisplay = ['nom', 'prenom', 'datenaissance', 'lieunaissance', 'telephone', 'email', 'actions'];
+  inscriptionColumnsToDisplay = ['nom_prenom', 'datenaissance', 'lieunaissance', 'telephone', 'email', 'classe', 'documentadonner', 'actions'];
 
   LOADERID = 'list-inscription-loader';
 
@@ -47,22 +60,274 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   listSpecialite = [] as NiveauSpecialiteModel[];
   listHoraire = [] as HoraireModel[];
   listSousClasse = [] as ClasseSousClasse[];
+  listDocADonner = [] as DocumentParNiveauModel[];
 
   searchTerm: string;
+  anneeScolaireEncours: AnneeScolaireModel;
+
+  urlCarteEtudiant: string;
+  docTypeView = 1;
+
+  listPresenceActivated = false;
 
   constructor(private inscriptionService: InscriptionService, private paramSpecialiteService: ParametragesSpecialiteService,
-    private dialog: MatDialog, private notif: MycustomNotificationService,
-    private ngxService: NgxSpinnerService, private paramBaseService: ParametragesBaseService,
-    private paramClasseService: ParametrageClasseService) { }
+              private dialog: MatDialog, private notif: MycustomNotificationService, private http: HttpClient,
+              private ngxService: NgxSpinnerService, private paramBaseService: ParametragesBaseService,
+              private paramClasseService: ParametrageClasseService, private sanitizer: DomSanitizer) { }
 
   ngOnDestroy(): void {
     this.subscription.forEach(x => x.unsubscribe());
   }
 
   ngOnInit(): void {
+    this.paramBaseService.onChangeAnneeScolaireEncoursSession.subscribe(
+      (data) => {
+        if (data) {
+          this.anneeScolaireEncours = JSON.parse(localStorage.getItem('annee-scolaire-encours'));
+          this.loadListInscription();
+        }
+      }
+    );
+    this.anneeScolaireEncours = JSON.parse(localStorage.getItem('annee-scolaire-encours'));
     this.loadListInscription();
     this.loadListHoraire();
     this.loadListNiveau();
+  }
+
+  secureUlr(url) {
+    return this.urlCarteEtudiant ? this.sanitizer.bypassSecurityTrustResourceUrl(url)
+      : this.sanitizer.bypassSecurityTrustResourceUrl('');
+  }
+
+  async getContent() {
+    const content = [];
+    const image = [];
+    this.listInscription.forEach(x => {
+      this.inscriptionService.getFilesByName(x.etudiant.photo).subscribe((result) => {
+        image.push('data:image/png;base64, ' + result.response);
+        content.push(
+          {
+            table:
+            {
+              widths: [60, '*', 40],
+              body: [
+                [
+                  {
+                    image: 'data:image/png;base64, ' + result.response,
+                    width: 60, height: 65
+                  },
+                  {
+                    stack: [
+                      { text: 'Nom:', style: 'labelStyle' },
+                      { text: x.etudiant.nom, style: 'infosEtudiantStyle' },
+                      { text: 'Prénom:', style: 'labelStyle'},
+                      { text: x.etudiant.prenom, style: 'infosEtudiantStyle' },
+                      { text: 'Téléphone:', style: 'labelStyle' },
+                      { text: x.etudiant.telephone, style: 'infosEtudiantStyle'},
+                      { text: 'Adresse mail:', style: 'labelStyle' },
+                      { text: x.etudiant.email, style: 'infosEtudiantStyle' }
+                    ],
+                  },
+                  {
+                    stack: [
+                      {
+                        image: 'mylogo', fits: [25, 25], width: 25, margin: [0, 0, 0, 2], style: {alignment: 'center'}
+                      },
+                      { qr: 'med', fit: '25', width: 25, style: {alignment: 'center'} },
+                      { text: '#C9900-2020', style: 'promocodeStyle', width: 40, margin: [0, 2, 0, 0]}
+                    ]
+                  }
+                ],
+              ]
+            },
+            layout: 'noBorders'
+          },
+          {
+            table:
+            {
+              widths: ['100%'],
+              body: [
+                [
+                  {
+                    text: x.sousClasse.specialite.libelle,
+                    style: 'sectionTitle',
+                    fillColor: '#ca151b'
+                  }
+                ]
+              ]
+            },
+            margin: [0, 2, 0, 8],
+            layout: 'noBorders'
+          }
+        );
+      });
+    });
+    return { image, content };
+  }
+
+  async generateCarteEtudiant() {
+    let logo = '';
+    let photoProfil = '';
+
+    const content = await this.getContent();
+
+    logo = await this.getImageFromAssets('/assets/images/forslide.png');
+    photoProfil = await this.getImageFromAssets('/assets/images/photo_profil.jpg');
+
+    const documentDefinition = {
+      header: {
+        margin: [20, 15, 20, 20],
+        table:
+        {
+          widths: ['100%'],
+          body: [
+            [
+              {
+                text: 'CARTE ETUDIANT',
+                style: 'sectionTitle',
+                fillColor: '#ca151b'
+              }
+            ]
+          ]
+        },
+        layout: 'noBorders'
+      },
+      content: content.content,
+      // background: {
+      //   image: 'mylogo',
+      //   width: 110,
+      //   height: 120,
+      //   opacity: 0.3,
+      //   style: { alignment: 'center' },
+      //   margin: [0, 20, 0, 0]
+      // },
+      footer:
+      {
+        table:
+        {
+          headerRows: 1,
+          widths: ['*', '*'],
+          body: [
+            [
+              {
+                text: 'Dieupeul 1 en face biscuiterie Médina',
+                style: 'footerStyle',
+                fillColor: '#ca151b',
+                margin: [0, 5, 0, 0],
+              },
+              {
+                text: 'E-mail: contact@ecole221.com',
+                style: { color: 'white', fontSize: 6, alignment: 'left', bold: true },
+                fillColor: '#ca151b',
+                margin: [0, 5, 0, 0],
+              }
+            ],
+            [
+              {
+                text: '+221 33 834 84 41',
+                style: 'footerStyle',
+                fillColor: '#ca151b',
+                margin: [0, 0, 0, 10],
+              },
+              {
+                text: 'web: www.ecole221.com',
+                style: { color: 'white', fontSize: 6, alignment: 'left', bold: true },
+                fillColor: '#ca151b',
+                margin: [0, 0, 0, 10],
+              }
+            ]
+          ]
+        },
+        layout: 'noBorders'
+      },
+      pageSize: {
+        width: 300,
+        height: 170
+      },
+      pageMargins: [20, 40, 20, 40],
+      styles: {
+        sectionTitle: {
+          bold: true,
+          fontSize: 8,
+          alignment: 'center',
+          color: '#FFFFFF'
+        },
+        footerStyle: {
+          bold: true,
+          fontSize: 6,
+          alignment: 'right',
+          color: '#FFFFFF'
+        },
+        labelStyle: {
+          fontSize: 6,
+          alignment: 'left'
+        },
+        infosEtudiantStyle: {
+          bold: true,
+          fontSize: 8,
+          alignment: 'left'
+        },
+        promocodeStyle: {
+          bold: true,
+          fontSize: 5,
+          color: '#ca151b',
+          alignment: 'center'
+        }
+      },
+      images: {
+        mylogo: logo,
+        myProfil: photoProfil
+      }
+    };
+
+    const pdfDocGenerator = pdfMake.createPdf(documentDefinition);
+    pdfDocGenerator.getDataUrl((data) => {
+      this.urlCarteEtudiant = data;
+      $('#showPDFModal').modal('show');
+    });
+  }
+
+  getDocumentToPrint(event, inscription) {
+    console.log(event);
+    console.log(inscription);
+    $('#showPDFModal').modal('show');
+  }
+
+  /* async toDataURL(url, imgDataUrl) {
+    return this.http.get(url, { responseType: 'blob' })
+      .subscribe(res => {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64data = reader.result;
+          imgDataUrl = base64data + '';
+          console.log(base64data);
+        };
+
+        reader.readAsDataURL(res);
+        console.log(res);
+      });
+  }
+   */
+
+  async getImageFromAssets(url) {
+    const logoResponse = await this.toDataURL(url);
+
+    return await this.toBase64(logoResponse) + '';
+  }
+
+  async toDataURL(url) {
+    return await this.http.get(url, { responseType: 'blob' }).toPromise();
+  }
+
+  async toBase64(response) {
+
+    return new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onloadend = (file) => {
+        resolve(file.target.result);
+      };  // CHANGE to whatever function you want which would eventually call resolve
+      fr.readAsDataURL(response);
+    });
   }
 
   onSearchByTaping(term) {
@@ -114,6 +379,24 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
           this.listSpecialite = data;
         },
         (error) => {
+          this.ngxService.hide(this.LOADERID);
+        },
+        () => {
+          this.ngxService.hide(this.LOADERID);
+        }
+      )
+    );
+
+  }
+
+  loadDocuments(niveauId) {
+    this.subscription.push(
+      this.paramSpecialiteService.getAllDocumentParNiveauByNiveauAndFournir(false, niveauId).subscribe(
+        (data) => {
+          this.listDocADonner = data;
+        },
+        (error) => {
+          this.notif.error('Echec de chargement des données');
           this.ngxService.hide(this.LOADERID);
         },
         () => {
@@ -221,15 +504,20 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   search() {
     if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id
       && this.horaireModel && this.horaireModel.id && this.sousClasseModel && this.sousClasseModel.id) {
+      this.loadDocuments(this.niveauModel.id);
       this.loadListInscriptionBySousClasse(this.sousClasseModel.id);
     } else if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id
       && this.horaireModel && this.horaireModel.id) {
+      this.loadDocuments(this.niveauModel.id);
       this.loadListInscriptionByNiveauAndSpecialiteAndHoraire(this.niveauModel.id, this.specialiteModel.id, this.horaireModel.id);
     } else if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id) {
+      this.loadDocuments(this.niveauModel.id);
       this.loadListInscriptionByNiveauAndSpecialite(this.niveauModel.id, this.specialiteModel.id);
     } else if (this.niveauModel && this.niveauModel.id && this.horaireModel && this.horaireModel.id) {
+      this.loadDocuments(this.niveauModel.id);
       this.loadListInscriptionByNiveauAndHoraire(this.niveauModel.id, this.horaireModel.id);
     } else if (this.niveauModel && this.niveauModel.id) {
+      this.loadDocuments(this.niveauModel.id);
       this.loadListInscriptionByNiveau(this.niveauModel.id);
     } else if (this.specialiteModel && this.specialiteModel.id) {
       this.loadListInscriptionBySpecialite(this.specialiteModel.id);
@@ -252,8 +540,9 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
 
   loadListInscription() {
     this.subscription.push(
-      this.inscriptionService.getAllInscription().subscribe(
+      this.inscriptionService.getAllInscription(this.anneeScolaireEncours.id).subscribe(
         (data) => {
+          console.log(data);
           this.listInscription = data;
           this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscription);
           this.dataSource.paginator = this.paginator;
@@ -281,7 +570,7 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
 
     this.dialogRef.afterClosed().subscribe(result => {
       if (result && result.rep === true) {
-        this.loadListInscription()
+        this.loadListInscription();
       }
     });
   }

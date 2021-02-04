@@ -15,8 +15,8 @@ export class InscriptionService {
     return this.http.post<any>(this.api + '/inscription', body);
   }
 
-  getAllInscription(): Observable<any> {
-    return this.http.get<any>(this.api + '/inscription');
+  getAllInscription(idAnneeScolaire): Observable<any> {
+    return this.http.get<any>(this.api + '/inscription/annee/' + idAnneeScolaire);
   }
 
   getInscriptionById(id): Observable<any> {
@@ -55,5 +55,9 @@ export class InscriptionService {
 
   getFiles(): Observable<any> {
     return this.http.get(`/api/files-storage/files`);
+  }
+
+  getFilesByName(filename: string): Observable<any> {
+    return this.http.put('/api/files-storage/files/base64', filename);
   }
 }

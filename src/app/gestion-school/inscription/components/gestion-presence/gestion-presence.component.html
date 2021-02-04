@@ -1,0 +1,177 @@
+<div style="margin-top: 2%;">
+  <mat-tab-group>
+    <mat-tab label="Marquer les absences">
+      <div class="row" style="margin-top: 2%; margin-left: 1%;">
+        <button class="action-button" mat-raised-button (click)="saveListPresence()">
+          Enregistrer
+        </button>
+      </div>
+      <div class="row" style="margin-top: 2%;">
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource">
+            <!-- Nom Prenom column -->
+            <ng-container matColumnDef="nom_prenom">
+              <th mat-header-cell *matHeaderCellDef> Nom & Prénom</th>
+              <td mat-cell *matCellDef="let inscription">
+                {{inscription ? inscription.etudiant ?
+                  inscription.etudiant.nom ? inscription.etudiant.nom
+                  : '' : '' : '' }}
+                  {{inscription ? inscription.etudiant ?
+                    inscription.etudiant.prenom ? inscription.etudiant.prenom
+                    : '' : '' : '' }}
+              </td>
+            </ng-container>
+
+            <!-- telephone column -->
+            <ng-container matColumnDef="telephone">
+              <th mat-header-cell *matHeaderCellDef> Telephone</th>
+              <td mat-cell *matCellDef="let inscription">
+                {{inscription ? inscription.etudiant ?
+                  inscription.etudiant.telephone ? inscription.etudiant.telephone
+                  : '' : '' : ''}}
+              </td>
+            </ng-container>
+
+            <!-- email column -->
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef> Email </th>
+              <td mat-cell *matCellDef="let inscription">
+                {{inscription ? inscription.etudiant ?
+                  inscription.etudiant.email ? inscription.etudiant.email
+                  : '' : '' : ''}}
+              </td>
+            </ng-container>
+
+            <!-- Classe column -->
+            <ng-container matColumnDef="classe">
+              <th mat-header-cell *matHeaderCellDef> Classe </th>
+              <td mat-cell *matCellDef="let inscription">
+                {{inscription ? inscription.sousClasse ?
+                  inscription.sousClasse.libelle ? inscription.sousClasse.libelle
+                  : '' : '' : ''}}
+              </td>
+            </ng-container>
+
+            <!-- Actions column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> Présences </th>
+              <td mat-cell *matCellDef="let inscription">
+                <mat-checkbox (change)="onCheckedPresence($event, inscription)"
+                        color="primary" [name]="inscription.id" class="example-margin" >
+                      </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="inscriptionColumnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let element; columns: inscriptionColumnsToDisplay;"
+              class="example-element-row">
+            </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Listes des absents">
+      <div class="row" style="margin-top: 2%;">
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource">
+            <!-- Nom Prenom column -->
+            <ng-container matColumnDef="nom_prenom">
+              <th mat-header-cell *matHeaderCellDef> Nom & Prénom</th>
+              <td mat-cell *matCellDef="let inscription">
+                {{inscription ? inscription.etudiant ?
+                  inscription.etudiant.nom ? inscription.etudiant.nom
+                  : '' : '' : '' }}
+                  {{inscription ? inscription.etudiant ?
+                    inscription.etudiant.prenom ? inscription.etudiant.prenom
+                    : '' : '' : '' }}
+              </td>
+            </ng-container>
+
+            <!-- telephone column -->
+            <ng-container matColumnDef="telephone">
+              <th mat-header-cell *matHeaderCellDef> Telephone</th>
+              <td mat-cell *matCellDef="let inscription">
+                {{inscription ? inscription.etudiant ?
+                  inscription.etudiant.telephone ? inscription.etudiant.telephone
+                  : '' : '' : ''}}
+              </td>
+            </ng-container>
+
+            <!-- email column -->
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef> Email </th>
+              <td mat-cell *matCellDef="let inscription">
+                {{inscription ? inscription.etudiant ?
+                  inscription.etudiant.email ? inscription.etudiant.email
+                  : '' : '' : ''}}
+              </td>
+            </ng-container>
+
+            <!-- Classe column -->
+            <ng-container matColumnDef="classe">
+              <th mat-header-cell *matHeaderCellDef> Classe </th>
+              <td mat-cell *matCellDef="let inscription">
+                {{inscription ? inscription.sousClasse ?
+                  inscription.sousClasse.libelle ? inscription.sousClasse.libelle
+                  : '' : '' : ''}}
+              </td>
+            </ng-container>
+
+            <!-- Classe column -->
+            <ng-container matColumnDef="absence">
+              <th mat-header-cell *matHeaderCellDef> Absences </th>
+              <td mat-cell *matCellDef="let inscription">
+                <button (click)="loadListPresenceByInscriptionAndEtat(inscription.id)"
+                type="button" matTooltip="Voir les jours d'absence"
+                mat-flat-button class="action-button"><em class="fa fa-list fa-lg"
+                data-toggle="modal" data-target="#showDaysOff">
+                </em>
+              </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="presenceColumnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let element; columns: presenceColumnsToDisplay;"
+              class="example-element-row">
+            </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>
+
+<div class="modal fade" id="showDaysOff" tabindex="-1" role="dialog"
+aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Jours Absentés</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <mat-card *ngIf="!listAbsence || listAbsence.length <=0">
+        <mat-card-title>
+          Aucunes absences notées
+        </mat-card-title>
+      </mat-card>
+      <div *ngIf="listAbsence && listAbsence.length > 0">
+        <mat-card *ngFor="let presence of listAbsence" style="margin-top: 1%;">
+          <mat-card-title>
+           Absent le : {{presence ? presence.jour ? presence.jour.date ? getFormatedDate(presence.jour.date) : '' : '' : ''}}
+          </mat-card-title>
+        </mat-card>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+    </div>
+  </div>
+</div>
+</div>

@@ -1,6 +1,6 @@
 import { DomaineModel } from './../../../shared/models/domaine.model';
 import { AnneeScolaireModel } from './../../../shared/models/annee-scolaire.model';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 })
 export class ParametragesBaseService {
 
+  onChangeAnneeScolaireEncoursSession: BehaviorSubject<boolean> = new BehaviorSubject(false);
   api = '/api/parametrage-base';
 
   constructor(private http: HttpClient) { }

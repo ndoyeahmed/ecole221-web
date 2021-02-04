@@ -1,3 +1,4 @@
+import { PresenceService } from './services/presence.service';
 import { InscriptionService } from './services/inscription.service';
 import { SharedModule } from './../../shared/shared.module';
 import { NgModule } from '@angular/core';
@@ -14,11 +15,12 @@ import { EtudiantListComponent } from './components/etudiant-list/etudiant-list.
 import { ChangementClasseComponent } from './components/changement-classe/changement-classe.component';
 import { ParcoursEtudiantComponent } from './components/parcours-etudiant/parcours-etudiant.component';
 import { DossierEtudiantComponent } from './components/dossier-etudiant/dossier-etudiant.component';
+import { GestionPresenceComponent } from './components/gestion-presence/gestion-presence.component';
 
 
 
 @NgModule({
-  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent, ChangementClasseComponent, ParcoursEtudiantComponent, DossierEtudiantComponent],
+  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent, ChangementClasseComponent, ParcoursEtudiantComponent, DossierEtudiantComponent, GestionPresenceComponent],
   imports: [
     SharedModule,
     MatCardModule,
@@ -30,7 +32,8 @@ import { DossierEtudiantComponent } from './components/dossier-etudiant/dossier-
     MatInputModule,
   ],
   providers: [
-    InscriptionService
+    InscriptionService,
+    PresenceService
   ]
 })
 export class InscriptionModule { }

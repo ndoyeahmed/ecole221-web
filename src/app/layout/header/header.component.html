@@ -33,6 +33,44 @@
             </li>
           </ul>
         </li>-->
+
+        <!-- Notifications: style can be found in dropdown.less -->
+        <li class="dropdown notifications-menu">
+          <div style="padding-top: 5%;">
+            <select class="form-control" [(ngModel)]="id" (change)="onSelectedAnneeScolaire($event)">
+              <option disabled selected>Année scolaire</option>
+              <option *ngFor="let annee of listAnneeScolaire" [value]="annee.id">
+                {{annee ? annee.libelle ? annee.libelle : '' : ''}}
+              </option>
+            </select>
+          </div>
+        </li>
+
+        <!-- alerte pour changement annee scolaire-->
+        <div #alerteModal class="modal fade" id="alerteModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">Alerte</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Etes vous sur de vouloir changer l'année scolaire de votre session de travail?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCloseModal()">Non</button>
+        <button type="button" class="btn btn-primary" (click)="changeAnneeScolaire()">Oui</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- fin alerte pour changement annee scolaire-->
+
         <!-- Notifications: style can be found in dropdown.less -->
         <li class="dropdown notifications-menu">
           <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
