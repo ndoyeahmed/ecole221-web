@@ -16,11 +16,12 @@ import { ChangementClasseComponent } from './components/changement-classe/change
 import { ParcoursEtudiantComponent } from './components/parcours-etudiant/parcours-etudiant.component';
 import { DossierEtudiantComponent } from './components/dossier-etudiant/dossier-etudiant.component';
 import { GestionPresenceComponent } from './components/gestion-presence/gestion-presence.component';
+import { AfficherDossierAbsenceComponent } from './components/afficher-dossier-absence/afficher-dossier-absence.component';
 
 
 
 @NgModule({
-  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent, ChangementClasseComponent, ParcoursEtudiantComponent, DossierEtudiantComponent, GestionPresenceComponent],
+  declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent, ChangementClasseComponent, ParcoursEtudiantComponent, DossierEtudiantComponent, GestionPresenceComponent, AfficherDossierAbsenceComponent],
   imports: [
     SharedModule,
     MatCardModule,

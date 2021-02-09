@@ -1,0 +1,11 @@
+table {
+  width: 100%;
+}
+
+.mark-red {
+  color: rgb(228, 11, 11);
+}
+
+.mark-gold {
+  color: goldenrod;
+}

@@ -6,4 +6,6 @@ export class PresenceModel {
   public etat: boolean;
   public inscription: InscriptionModel;
   public jour: JourModel;
+  public motif: string;
+  public updateMotif = false;
 }

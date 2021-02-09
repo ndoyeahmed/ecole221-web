@@ -19,4 +19,8 @@ export class PresenceService {
   getAllPresenceByInscriptionAndEtat(idInscription: number, etat: boolean, idAnneeScolaire: number): Observable<any> {
     return this.http.get(this.api + '/inscription/' + idInscription + '/etat/' + etat + '/anneescolaire/' + idAnneeScolaire);
   }
+
+  updatePresenceMotif(idPresence: number, motif: any): Observable<any> {
+    return this.http.put(this.api + '/update-motif/' + idPresence, motif);
+  }
 }

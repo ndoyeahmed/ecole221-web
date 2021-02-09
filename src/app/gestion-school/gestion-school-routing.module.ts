@@ -1,3 +1,4 @@
+import { AfficherDossierAbsenceComponent } from './inscription/components/afficher-dossier-absence/afficher-dossier-absence.component';
 import { DossierEtudiantComponent } from './inscription/components/dossier-etudiant/dossier-etudiant.component';
 import { ParcoursEtudiantComponent } from './inscription/components/parcours-etudiant/parcours-etudiant.component';
 import { EtudiantListComponent } from './inscription/components/etudiant-list/etudiant-list.component';
@@ -40,6 +41,10 @@ import { RouterModule } from '@angular/router';
       {
         path: 'dossier-etudiant/:inscriptionId/:anneescolaireid',
         component: DossierEtudiantComponent
+      },
+      {
+        path: 'dossier-absence-etudiant/:inscriptionid',
+        component: AfficherDossierAbsenceComponent
       }
     ])
   ],

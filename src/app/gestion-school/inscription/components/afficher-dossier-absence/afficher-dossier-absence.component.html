@@ -1,0 +1,224 @@
+<mat-card>
+  <h3>Dossier absences</h3>
+  <ol class="breadcrumb text-right">
+    <li>
+      <a href="#"><em class="fa fa-home"></em> Accueil</a>
+    </li>
+    <li class="active">dossier absences</li>
+  </ol>
+</mat-card>
+<section class="content">
+  <div class="row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+      <mat-card>
+        <div style="margin-bottom: 2%;">
+          <button [routerLink]="'/gestion-school/inscription'" mat-raised-button color="primary">
+            <em class="fa fa-plus-circle fa-lg"></em>
+            Nouvelle inscription
+          </button>
+          &nbsp;&nbsp;
+          <button [routerLink]="'/gestion-school/list-etudiant'" mat-raised-button class="action-button">
+            <em class="fa fa-list fa-lg"></em>
+            Liste étudiants
+          </button>
+        </div>
+
+        <div class="row">
+
+          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+              <mat-card>
+                <div class="row">
+                  <div class="col-md-6">
+                    <img  [src]="url ? secureUlr(url) : '../../../../../assets/images/avatar.png'" mat-card-lg-image alt="photo profil"/>
+                  </div>
+                </div>
+              </mat-card>
+            </div>
+
+            <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+              <mat-card>
+                <mat-card-header>
+                  <mat-card-subtitle>IDENTIFICATION</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                 <div class="row">
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Matricule : </strong>
+                    {{inscription ? inscription.etudiant ?
+                       inscription.etudiant.matricule ?
+                       inscription.etudiant.matricule : '' : '' : '' }}
+                  </div>
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Nom : </strong>
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.nom ?
+                      inscription.etudiant.nom : '' : '' : '' }}
+                  </div>
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Prenom : </strong>
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.prenom ?
+                      inscription.etudiant.prenom : '' : '' : '' }}
+                  </div>
+                 </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+            <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+              <mat-card>
+                <mat-card-header>
+                  <mat-card-subtitle>GENRE / NAISSANCE</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                 <div class="row">
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Genre : </strong>
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.genre ?
+                      inscription.etudiant.genre : '' : '' : '' }}
+                  </div>
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Date naissance : </strong>
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.dateNaissance ?
+                      getFormatedDate(inscription.etudiant.dateNaissance) : '' : '' : '' }}
+                  </div>
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Lieu naissance : </strong>
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.lieuNaissance ?
+                      inscription.etudiant.lieuNaissance : '' : '' : '' }}
+                  </div>
+                 </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+            <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" style="margin-top: 3%;">
+              <mat-card>
+                <mat-card-header>
+                  <mat-card-subtitle>CONTACT</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                 <div class="row">
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Téléphone : </strong>
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.telephone ?
+                      inscription.etudiant.telephone : '' : '' : '' }}
+                  </div>
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Email Pro : </strong>
+                  </div>
+                  <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <strong>Email : </strong>
+                    {{inscription ? inscription.etudiant ?
+                      inscription.etudiant.email ?
+                      inscription.etudiant.email : '' : '' : '' }}
+                  </div>
+                 </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 2%;">
+          <form #searchForm="ngForm">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <div class="col-md-10 col-lg-2 col-sm-12 col-xs-12">
+                <div class="form-group row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-label>Début : </mat-label>
+                      <input name="datedebut" matInput [matDatepicker]="datedebut" [(ngModel)]="dateDebut">
+                      <mat-datepicker-toggle matSuffix [for]="datedebut"></mat-datepicker-toggle>
+                      <mat-datepicker color="primary" #datedebut></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-10 col-lg-2 col-sm-12 col-xs-12">
+                <div class="form-group row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <mat-label>Fin : </mat-label>
+                      <input name="datefin" matInput [matDatepicker]="datefin" [(ngModel)]="dateFin">
+                      <mat-datepicker-toggle matSuffix [for]="datefin"></mat-datepicker-toggle>
+                      <mat-datepicker color="primary" #datefin></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12">
+                <button mat-mini-fab style="background-color: whitesmoke; color: black;" (click)="search()" >
+                  <em class="fa fa-search fa-lg"></em>
+                </button>
+                &nbsp;&nbsp;
+                <button mat-mini-fab style="background-color: whitesmoke; color: black;" (click)="cancelSearch(searchForm)" >
+                  <em class="fa fa-remove fa-lg"></em>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="row" style="margin-top: 2%;">
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+
+              <!-- jour column -->
+              <ng-container matColumnDef="jour">
+                <th mat-header-cell *matHeaderCellDef > Jour</th>
+                <td mat-cell *matCellDef="let presence" [ngClass]="presence.motif ? presence.motif === '' ? 'mark-red' : 'mark-gold' : 'mark-red'">
+                  <em class="fa fa-flag fa-lg"></em>&nbsp;&nbsp;
+                  {{presence ? presence.jour ?
+                    presence.jour.date ? getFormatedDate(presence.jour.date)
+                    : '' : '' : ''}}
+                </td>
+              </ng-container>
+
+              <!-- justification column -->
+              <ng-container matColumnDef="justification">
+                <th mat-header-cell *matHeaderCellDef> Justification</th>
+                <td mat-cell *matCellDef="let presence">
+                  <p *ngIf="!presence.updateMotif">{{presence ? presence.motif ? presence.motif : '' : ''}}</p>
+                  <mat-form-field *ngIf="presence.updateMotif" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <mat-label>Motif : </mat-label>
+                    <input [name]="presence.id" matInput [(ngModel)]="presence.motif"/>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <!-- actions column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions</th>
+                <td mat-cell *matCellDef="let presence">
+                  <button *ngIf="!presence.updateMotif" type="button" mat-flat-button class="action-button" (click)="presence.updateMotif = !presence.updateMotif">
+                    <em class="fa fa-edit fa-lg"></em>
+                  </button>
+                  <button *ngIf="presence.updateMotif" type="button" mat-flat-button class="action-button" (click)="updatePresence(presence)">
+                    <em class="fa fa-check-circle-o fa-lg"></em>
+                  </button>
+                  &nbsp;&nbsp;
+                  <button *ngIf="presence.updateMotif" type="button" mat-flat-button class="action-button" (click)="cancelUpdatePresence(presence)">
+                    <em class="fa fa-remove fa-lg"></em>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="presenceColumnsToDisplay"></tr>
+              <tr mat-row
+              *matRowDef="let element; columns: presenceColumnsToDisplay;"
+                class="example-element-row">
+              </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</section>
