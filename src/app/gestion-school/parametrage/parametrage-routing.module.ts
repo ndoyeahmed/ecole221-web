@@ -3,6 +3,7 @@ import { DomaineComponent } from './components/domaine/domaine.component';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { ParametragesComponent } from './components/parametrages/parametrages.component';
+import {RecapReferentielComponent} from './components/referentiel/recap-referentiel/recap-referentiel.component';
 
 @NgModule({
   imports: [

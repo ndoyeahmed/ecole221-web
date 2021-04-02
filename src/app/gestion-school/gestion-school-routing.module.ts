@@ -6,6 +6,7 @@ import { InscriptionComponent } from './inscription/components/inscription/inscr
 import { ParametragesComponent } from './parametrage/components/parametrages/parametrages.component';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import {RecapReferentielComponent} from "./parametrage/components/referentiel/recap-referentiel/recap-referentiel.component";
 
 @NgModule({
   imports: [
@@ -45,6 +46,10 @@ import { RouterModule } from '@angular/router';
       {
         path: 'dossier-absence-etudiant/:inscriptionid',
         component: AfficherDossierAbsenceComponent
+      },
+      {
+        path: 'recap-referentiel/:referentielid',
+        component: RecapReferentielComponent
       }
     ])
   ],

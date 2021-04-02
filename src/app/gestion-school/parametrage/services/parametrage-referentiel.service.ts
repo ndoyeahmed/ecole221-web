@@ -112,4 +112,13 @@ export class ParametrageReferentielService {
   updateProgrammeModule(id: any, programmeModule: any): Observable<any> {
     return this.http.put<any>(this.api + '/programme-module/' + id, programmeModule);
   }
+
+  getAllProgrammeModuleByReferentiel(referentielId: number): Observable<any> {
+    return this.http.get(this.api + '/programme-module/programme-ue/referentiel/' + referentielId);
+  }
+
+  getAllProgrammeModuleByReferentielAndSemestre(referentielId: number, semestreId: number): Observable<any> {
+    return this.http.get(this.api + '/programme-module/programme-ue/referentiel/'
+      + referentielId + '/semestre/' + semestreId);
+  }
 }

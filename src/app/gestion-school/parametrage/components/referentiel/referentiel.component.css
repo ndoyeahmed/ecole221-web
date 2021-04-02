@@ -230,11 +230,27 @@ tr.example-element-row:not(.example-expanded-row):active {
   hyphens: auto;
 }
 
-.mat-column-budget {
+.mat-column-cm {
   word-wrap: break-word !important;
   white-space: unset !important;
-  flex: 0 0 10% !important;
-  width: 10% !important;
+  flex: 0 0 5% !important;
+  width: 5% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  word-break: break-word;
+
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+.mat-column-syllabus {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 5% !important;
+  width: 5% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
 
@@ -372,4 +388,8 @@ tr.example-element-row:not(.example-expanded-row):active {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+}
+
+.table > tbody > tr > td {
+  vertical-align: middle;
 }

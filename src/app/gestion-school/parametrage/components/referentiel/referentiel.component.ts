@@ -1,28 +1,36 @@
-import { NiveauSpecialiteModel } from './../../../../shared/models/niveau-specialite.model';
-import { SemestreNiveauModel } from './../../../../shared/models/semestre-niveau.model';
-import { ModuleModel } from './../../../../shared/models/module.model';
-import { ParametrageModuleUeService } from './../../services/parametrage-module-ue.service';
-import { SemestreModel } from './../../../../shared/models/semestre.model';
-import { UeModel } from './../../../../shared/models/ue.model';
-import { ProgrammeModuleModel } from './../../../../shared/models/programme-module.model';
-import { ProgrammeUEModel } from './../../../../shared/models/programme-ue.model';
-import { ReferentielModel } from './../../../../shared/models/referentiel.model';
-import { SpecialiteModel } from './../../../../shared/models/specialite.model';
-import { NiveauModel } from './../../../../shared/models/niveau.model';
-import { ParametrageReferentielService } from './../../services/parametrage-referentiel.service';
-import { ParametragesSpecialiteService } from './../../services/parametrages-specialite.service';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription } from 'rxjs';
-import { MycustomNotificationService } from '../../services/mycustom-notification.service';
-import { trigger, transition, style, animate, state } from '@angular/animations';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MentionUEModel } from 'src/app/shared/models/mention-ue.model';
-import { MentionModuleModel } from 'src/app/shared/models/mention-module.model';
-import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
-import { ParametrageClasseService } from '../../services/parametrage-classe.service';
+import {NiveauSpecialiteModel} from './../../../../shared/models/niveau-specialite.model';
+import {SemestreNiveauModel} from './../../../../shared/models/semestre-niveau.model';
+import {ModuleModel} from './../../../../shared/models/module.model';
+import {ParametrageModuleUeService} from './../../services/parametrage-module-ue.service';
+import {SemestreModel} from './../../../../shared/models/semestre.model';
+import {UeModel} from './../../../../shared/models/ue.model';
+import {ProgrammeModuleModel} from './../../../../shared/models/programme-module.model';
+import {ProgrammeUEModel} from './../../../../shared/models/programme-ue.model';
+import {ReferentielModel} from './../../../../shared/models/referentiel.model';
+import {SpecialiteModel} from './../../../../shared/models/specialite.model';
+import {NiveauModel} from './../../../../shared/models/niveau.model';
+import {ParametrageReferentielService} from './../../services/parametrage-referentiel.service';
+import {ParametragesSpecialiteService} from './../../services/parametrages-specialite.service';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {Subscription} from 'rxjs';
+import {MycustomNotificationService} from '../../services/mycustom-notification.service';
+import {trigger, transition, style, animate, state} from '@angular/animations';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MentionUEModel} from 'src/app/shared/models/mention-ue.model';
+import {MentionModuleModel} from 'src/app/shared/models/mention-module.model';
+import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
+import {ParametrageClasseService} from '../../services/parametrage-classe.service';
+import {RecapProgrammeModuleModel} from '../../../../shared/models/recap-programme-module.model';
+import {RecapProgrammeAnnuelleModel} from '../../../../shared/models/recap-programme-annuelle.model';
+import {InscriptionService} from "../../../inscription/services/inscription.service";
+import {DomSanitizer} from "@angular/platform-browser";
+
+
+/// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
+declare var $: any;
 
 @Component({
   selector: 'app-referentiel',
@@ -46,7 +54,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
 
   referentielColumnsToDisplay = ['annee', 'credit', 'vht', 'type', 'actions'];
   programmeUEColumnsToDisplay = ['designation', 'creditProgrammeUe', 'fondamental', 'nbrHeureUE', 'actionsProgrammeUE'];
-  programmeModuleColumnsToDisplay = ['nomModule', 'budget', 'coef', 'nbrCreditModule', 'td', 'tp', 'tpe', 'vhModule', 'vhtModule', 'actionsProgrammeModule'];
+  programmeModuleColumnsToDisplay = ['nomModule', 'coef', 'nbrCreditModule', 'td', 'tp', 'tpe', 'vhpModule', 'vhtModule', 'cm', 'syllabus', 'actionsProgrammeModule'];
 
   listTypeReferentiel = [
     {id: 1, name: 'Affecté'},
@@ -91,14 +99,24 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   annee = '';
   typeReferentiel: number;
 
+  // for recap programme needs
+
+  listRecapProgrammeModule = [] as RecapProgrammeModuleModel[];
+  listRecapProgrammeModuleSemestre = [] as RecapProgrammeAnnuelleModel[];
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  filename = '';
+  urlSyllabus: string;
 
   constructor(
     private dialog: MatDialog, private paramSpecialiteService: ParametragesSpecialiteService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
     private paramReferentielService: ParametrageReferentielService, private paramModuleUEService: ParametrageModuleUeService,
-    private paramClasseService: ParametrageClasseService
-  ) { }
+    private paramClasseService: ParametrageClasseService, private inscriptionService: InscriptionService,
+    private sanitizer: DomSanitizer
+  ) {
+  }
 
 
   ngAfterViewInit() {
@@ -121,6 +139,23 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ngxService.show(this.LOADERID);
     this.loadListNiveau();
     this.loadListReferentiel();
+  }
+
+  onSelectFile(event) {
+    console.log(event);
+    if (event.target.files && event.target.files[0]) {
+      if (event.target.files[0].type === 'application/pdf') {
+        const reader = new FileReader();
+        this.filename = event.target.files[0].name;
+        reader.readAsDataURL(event.target.files[0]); // read file as data url
+
+        reader.onload = (event1: any) => { // called once readAsDataURL is completed
+          this.programmeModuleModel.syllabus = event1.target.result;
+        };
+      } else {
+        this.notif.error('Veuillez choisir un fichier pdf SVP');
+      }
+    }
   }
 
   onDuplicateReferentiel(referentiel) {
@@ -254,7 +289,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   loadReferentielByNiveauAndSpecialiteAndType(niveauId, specialiteId, type) {
     this.listReferentielFiltered = this.listReferentiel.filter(
       x => Number(x.niveau.id) === Number(niveauId) && Number(x.specialite.id) === Number(specialiteId)
-      && Number(x.affected) === Number(type)
+        && Number(x.affected) === Number(type)
     );
     this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
     this.dataSource.paginator = this.paginator;
@@ -271,7 +306,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   loadReferentielByNiveauAndSpecialiteAndAnneeAndType(niveauId, specialiteId, annee, type) {
     this.listReferentielFiltered = this.listReferentiel.filter(
       x => Number(x.niveau.id) === Number(niveauId) && Number(x.specialite.id) === Number(specialiteId) && Number(x.annee) === Number(annee)
-      && Number(x.affected) === Number(type)
+        && Number(x.affected) === Number(type)
     );
     this.dataSource = new MatTableDataSource<ReferentielModel>(this.listReferentielFiltered);
     this.dataSource.paginator = this.paginator;
@@ -335,7 +370,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
 
   searchByNiveauAndSpecialite() {
     if (this.niveauModel && this.niveauModel.id && Number(this.annee) !== 0
-    && this.specialiteModel && this.specialiteModel.id && this.typeReferentiel) {
+      && this.specialiteModel && this.specialiteModel.id && this.typeReferentiel) {
       this.loadReferentielByNiveauAndSpecialiteAndAnneeAndType(this.niveauModel.id, this.specialiteModel.id, this.annee,
         this.typeReferentiel);
     } else if (this.niveauModel && this.niveauModel.id && Number(this.annee) !== 0
@@ -512,19 +547,19 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
           (this.referentielModel.id ?
             this.paramReferentielService.updateReferentiel(this.referentielModel.id, this.referentielModel) :
             this.paramReferentielService.addReferentiel(this.referentielModel)).subscribe(
-              (data) => {
-                console.log(data);
-              }, (error) => {
-                this.notif.error();
-                this.ngxService.hide(this.LOADERID);
-              }, () => {
-                addForm.resetForm();
-                this.clear();
-                this.notif.success();
-                this.loadListReferentiel();
-                this.ngxService.hide(this.LOADERID);
-              }
-            )
+            (data) => {
+              console.log(data);
+            }, (error) => {
+              this.notif.error();
+              this.ngxService.hide(this.LOADERID);
+            }, () => {
+              addForm.resetForm();
+              this.clear();
+              this.notif.success();
+              this.loadListReferentiel();
+              this.ngxService.hide(this.LOADERID);
+            }
+          )
         );
       } else {
         this.notif.error('Niveau et spécialité obligatoire');
@@ -535,7 +570,9 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   saveProgrammeUE(referentiel, semestre) {
-    if (this.programmeUEModel.fondamental && this.programmeUEModel.credit
+    /*this.checkTotalVHPAndTPEParAnnee(referentiel);
+    this.checkTotalVHPAndTPEParSemestre(referentiel, semestre);*/
+     if (this.programmeUEModel.fondamental && this.programmeUEModel.credit
       && this.programmeUEModel.nbreHeureUE) {
       if (this.ueModel && this.ueModel.id ) {
         this.ngxService.show(this.LOADERPROGRAMMEUE);
@@ -571,10 +608,12 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   saveProgrammeModule(programmeUE) {
-    if (this.programmeModuleModel.budget && this.programmeModuleModel.coef
+    /*this.checkTotalVHPAndTPEParAnnee(programmeUE.referentiel);
+    this.checkTotalVHPAndTPEParSemestre(programmeUE.referentiel, programmeUE.semestre);*/
+     if (this.programmeModuleModel.budget && this.programmeModuleModel.coef
       && this.programmeModuleModel.nbreCreditModule && this.programmeModuleModel.td
       && this.programmeModuleModel.tp && this.programmeModuleModel.tpe
-      && this.programmeModuleModel.vh && this.programmeModuleModel.vht) {
+      && this.programmeModuleModel.vhp && this.programmeModuleModel.vht) {
       if (this.moduleModel && this.moduleModel.id) {
         this.ngxService.show(this.LOADERPROGRAMMEUE);
         this.programmeModuleModel.module = this.moduleModel;
@@ -643,4 +682,147 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  onSetVhtProgrammeModule(event, s) {
+    console.log(s);
+    const vht = Number(event.target.value);
+    this.programmeModuleModel.vhp = (vht * 12) / 20;
+    this.programmeModuleModel.tpe = (vht * 8) / 20;
+    this.programmeModuleModel.nbreCreditModule = vht / 20;
+  }
+
+  onCheckTDAndTPAndCM() {
+    if (this.programmeModuleModel.td && this.programmeModuleModel.tp && this.programmeModuleModel.cm) {
+      const somme = Number(this.programmeModuleModel.td) + Number(this.programmeModuleModel.tp) + Number(this.programmeModuleModel.cm);
+      if (Number(somme) !== Number(this.programmeModuleModel.vhp)) {
+        this.notif.error('La somme de TD, TP et CM doit être égale au VHP');
+      }
+    }
+  }
+
+  checkTotalVHPAndTPEParSemestre(referentiel, semestre) {
+    console.log(referentiel);
+    console.log(semestre);
+  }
+
+  checkTotalVHPAndTPEParAnnee(referentiel) {
+    console.log(referentiel);
+  }
+
+  loadRecapProgrammeModule(referentiel) {
+    this.listRecapProgrammeModule = [];
+    this.listRecapProgrammeModuleSemestre = [];
+    let result = [] as ProgrammeModuleModel[];
+    this.subscription.push(
+      this.paramReferentielService.getAllProgrammeModuleByReferentiel(referentiel.id)
+        .subscribe(
+          (data) => {
+            result = data;
+          }, (error) => console.log(error),
+          () => {
+            this.groupByProgrammeUE(result, this.listRecapProgrammeModule);
+            this.listProgrammeModuleByProgrammeUE(result, this.listRecapProgrammeModule);
+
+            this.groupBySemestre(this.listRecapProgrammeModule, this.listRecapProgrammeModuleSemestre);
+            this.listProgrammeModuleBySemestre(this.listRecapProgrammeModule, this.listRecapProgrammeModuleSemestre);
+            console.log(this.listRecapProgrammeModuleSemestre);
+          }
+        )
+    );
+  }
+
+  groupByProgrammeUE(result, list) {
+    let recapProgrammeModule: RecapProgrammeModuleModel;
+    let trouve = false;
+    for (const p of result) {
+      trouve = false;
+      if (result.indexOf(p) === 0) {
+        trouve = true;
+        recapProgrammeModule = new RecapProgrammeModuleModel();
+        recapProgrammeModule.programmeUE = p.programmeUE;
+        list.push(recapProgrammeModule);
+      } else {
+        for (const j of list) {
+          if (Number(j.programmeUE.id) === Number(p.programmeUE.id)) {
+            trouve = true;
+            break;
+          }
+        }
+      }
+
+      if (trouve === false) {
+        recapProgrammeModule = new RecapProgrammeModuleModel();
+        recapProgrammeModule.programmeUE = p.programmeUE;
+        list.push(recapProgrammeModule);
+      }
+    }
+  }
+
+  listProgrammeModuleByProgrammeUE(result, list) {
+    let pmList;
+    for (const l of list) {
+      pmList = [];
+      for (const p of result) {
+        if (l.programmeUE.id === p.programmeUE.id) {
+          pmList.push(p);
+        }
+      }
+      l.programmeModuleList = pmList;
+    }
+  }
+
+  groupBySemestre(result, list) {
+    let recapProgrammeAnnuel: RecapProgrammeAnnuelleModel;
+    let trouve = false;
+    for (const p of result) {
+      trouve = false;
+      if (result.indexOf(p) === 0) {
+        trouve = true;
+        recapProgrammeAnnuel = new RecapProgrammeAnnuelleModel();
+        recapProgrammeAnnuel.semestre = p.programmeUE.semestre;
+        list.push(recapProgrammeAnnuel);
+      } else {
+        for (const j of list) {
+          if (Number(j.semestre.id) === Number(p.programmeUE.semestre.id)) {
+            trouve = true;
+            break;
+          }
+        }
+      }
+
+      if (trouve === false) {
+        recapProgrammeAnnuel = new RecapProgrammeAnnuelleModel();
+        recapProgrammeAnnuel.semestre = p.programmeUE.semestre;
+        list.push(recapProgrammeAnnuel);
+      }
+    }
+  }
+
+  listProgrammeModuleBySemestre(result, list) {
+    let pmList;
+    for (const l of list) {
+      pmList = [];
+      for (const p of result) {
+        if (l.semestre.id === p.programmeUE.semestre.id) {
+          pmList.push(p);
+        }
+      }
+      l.listRecapProgrammeModule = pmList;
+    }
+  }
+
+  loadSyllabus(programmeModule) {
+    this.inscriptionService.getFilesByName(programmeModule.syllabus).subscribe(
+      (data) => {
+        this.urlSyllabus = 'data:application/pdf;base64, ' + data.response;
+
+      }, (error) => console.log(error), () => {
+        $('#showSyllabusModal').modal('show');
+      }
+    );
+  }
+
+  secureUlr(url) {
+    return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url)
+      : this.sanitizer.bypassSecurityTrustResourceUrl('');
+  }
 }

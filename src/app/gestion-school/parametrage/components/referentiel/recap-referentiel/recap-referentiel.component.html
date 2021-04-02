@@ -1,0 +1,109 @@
+<mat-card>
+  <h3>Paramétrages</h3>
+  <ol class="breadcrumb text-right">
+    <li>
+      <a href="#"><em class="fa fa-home"></em> Accueil</a>
+    </li>
+    <li class="active">Récapitulatif référentiel</li>
+  </ol>
+</mat-card>
+
+<section class="content">
+  <div class="row">
+    <mat-card>
+      <div class="row text-center">
+        <h2>Récapitulatif</h2>
+      </div>
+        <ng-container *ngFor="let recap of listRecapProgrammeModuleSemestre">
+          <mat-expansion-panel expanded>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{recap.semestre.libelle}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <table class="table table-responsive table-bordered">
+              <thead>
+              <th>UE</th>
+              <th>Code</th>
+              <th>Module</th>
+              <th>Coef</th>
+              <th>CM</th>
+              <th>TP</th>
+              <th>TD</th>
+              <th>VHP</th>
+              <th>TPE</th>
+              <th>VHT</th>
+              <th>Credit</th>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let data of recap.listRecapProgrammeModule">
+                <tr>
+                  <td [attr.rowspan]="data.programmeModuleList.length">
+                    {{data.programmeUE.ue.libelle}}
+                  </td>
+                  <td>{{data.programmeModuleList[0].module.code}}</td>
+                  <td (click)="loadSyllabus(data.programmeModuleList[0])">
+                    <p (click)="loadSyllabus(data.programmeModuleList[0])">
+                      {{data.programmeModuleList[0].module.libelle}}
+                    </p>
+                  </td>
+                  <td>{{data.programmeModuleList[0].coef}}</td>
+                  <td>{{data.programmeModuleList[0].cm}}</td>
+                  <td>{{data.programmeModuleList[0].tp}}</td>
+                  <td>{{data.programmeModuleList[0].td}}</td>
+                  <td>{{data.programmeModuleList[0].vhp}}</td>
+                  <td>{{data.programmeModuleList[0].tpe}}</td>
+                  <td>{{data.programmeModuleList[0].vht}}</td>
+                  <td [attr.rowspan]="data.programmeModuleList.length">{{data.programmeUE.credit}}</td>
+                </tr>
+                <ng-container *ngFor="let programmeModule of data.programmeModuleList; let i = index">
+                  <tr *ngIf="i!=0">
+                    <td>{{programmeModule.module.code}}</td>
+                    <td (click)="loadSyllabus(programmeModule)">
+                      <p (click)="loadSyllabus(data.programmeModuleList[0])">
+                        {{programmeModule.module.libelle}}
+                      </p>
+                    </td>
+                    <td>{{programmeModule.coef}}</td>
+                    <td>{{programmeModule.cm}}</td>
+                    <td>{{programmeModule.tp}}</td>
+                    <td>{{programmeModule.td}}</td>
+                    <td>{{programmeModule.vhp}}</td>
+                    <td>{{programmeModule.tpe}}</td>
+                    <td>{{programmeModule.vht}}</td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+              </tbody>
+            </table>
+
+          </mat-expansion-panel>
+        </ng-container>
+
+    </mat-card>
+  </div>
+
+  <div *ngIf="urlSyllabus" #showSyllabusModal class="modal fade" id="showSyllabusModal" tabindex="-1" role="dialog"
+       aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="exampleModalLabel">Syllabus</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <iframe id="ifrm" type="application/pdf"
+                    frameborder="0" width="100%" height="700px"></iframe>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

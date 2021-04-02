@@ -36,6 +36,7 @@ import { AffectationClasseReferentielComponent } from './components/affectation-
 import { NiveauAddComponent } from './components/niveau-add/niveau-add.component';
 import { ReferentielAddComponent } from './components/referentiel-add/referentiel-add.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { RecapReferentielComponent } from './components/referentiel/recap-referentiel/recap-referentiel.component';
 
 
 
@@ -62,7 +63,8 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     AffectationClasseReferentielComponent,
     NiveauAddComponent,
     ReferentielAddComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    RecapReferentielComponent
   ],
   imports: [
     ParametrageRoutingModule,

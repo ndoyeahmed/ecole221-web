@@ -83,13 +83,11 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
     this.paramBaseService.onChangeAnneeScolaireEncoursSession.subscribe(
       (data) => {
         if (data) {
-          this.anneeScolaireEncours = JSON.parse(localStorage.getItem('annee-scolaire-encours'));
-          this.loadListInscription();
+          this.getAnneeScolaireEnCours();
         }
       }
     );
-    this.anneeScolaireEncours = JSON.parse(localStorage.getItem('annee-scolaire-encours'));
-    this.loadListInscription();
+    this.getAnneeScolaireEnCours();
     this.loadListHoraire();
     this.loadListNiveau();
   }
@@ -97,6 +95,24 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   secureUlr(url) {
     return this.urlCarteEtudiant ? this.sanitizer.bypassSecurityTrustResourceUrl(url)
       : this.sanitizer.bypassSecurityTrustResourceUrl('');
+  }
+
+  getAnneeScolaireEnCours() {
+    this.anneeScolaireEncours = JSON.parse(localStorage.getItem('annee-scolaire-encours'));
+    if (this.anneeScolaireEncours) {
+      this.loadListInscription();
+    } else {
+      this.subscription.push(
+        this.paramBaseService.getAnneeScolaireEnCours().subscribe(
+          (annee) => {
+            this.anneeScolaireEncours = annee;
+            localStorage.setItem('annee-scolaire-encours',
+              JSON.stringify(this.anneeScolaireEncours));
+          }, (error) => console.log(error),
+          () => this.loadListInscription()
+        )
+      );
+    }
   }
 
   async getContent() {
