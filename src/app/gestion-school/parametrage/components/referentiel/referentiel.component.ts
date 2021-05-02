@@ -25,8 +25,8 @@ import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
 import {ParametrageClasseService} from '../../services/parametrage-classe.service';
 import {RecapProgrammeModuleModel} from '../../../../shared/models/recap-programme-module.model';
 import {RecapProgrammeAnnuelleModel} from '../../../../shared/models/recap-programme-annuelle.model';
-import {InscriptionService} from "../../../inscription/services/inscription.service";
-import {DomSanitizer} from "@angular/platform-browser";
+import {InscriptionService} from '../../../inscription/services/inscription.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
@@ -53,8 +53,8 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   dataSource: MatTableDataSource<ReferentielModel>;
 
   referentielColumnsToDisplay = ['annee', 'credit', 'vht', 'type', 'actions'];
-  programmeUEColumnsToDisplay = ['designation', 'creditProgrammeUe', 'fondamental', 'nbrHeureUE', 'actionsProgrammeUE'];
-  programmeModuleColumnsToDisplay = ['nomModule', 'coef', 'nbrCreditModule', 'td', 'tp', 'tpe', 'vhpModule', 'vhtModule', 'cm', 'syllabus', 'actionsProgrammeModule'];
+  programmeUEColumnsToDisplay = ['codeUE', 'designation', 'creditProgrammeUe', 'nbrHeureUE', 'actionsProgrammeUE'];
+  programmeModuleColumnsToDisplay = ['codeModule', 'nomModule', 'coef', 'nbrCreditModule', 'td', 'tp', 'tpe', 'vhpModule', 'vhtModule', 'cm', 'syllabus', 'actionsProgrammeModule'];
 
   listTypeReferentiel = [
     {id: 1, name: 'Affecté'},
@@ -127,6 +127,32 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscription.forEach(x => x.unsubscribe());
   }
 
+  downloadFile() {
+
+    // calling service
+    this.paramReferentielService.downloadFile().subscribe(response => {
+
+      console.log(response);
+      const binaryData = [];
+      binaryData.push(response.data);
+      const url = window.URL.createObjectURL(new Blob(binaryData,
+         {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display: none');
+      a.setAttribute('target', 'blank');
+      a.href = url;
+      a.download = response.filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+
+    }, error => {
+
+      console.log(error);
+    });
+  }
+
   onAddReferentiel() {
     this.onAdd = true;
     this.etat = 'add';
@@ -139,6 +165,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ngxService.show(this.LOADERID);
     this.loadListNiveau();
     this.loadListReferentiel();
+    this.paramReferentielService.downloadModelExcelBehaviorSubject.next(true);
   }
 
   onSelectFile(event) {

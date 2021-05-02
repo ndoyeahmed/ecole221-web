@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +10,21 @@ export class ParametrageReferentielService {
 
   api = '/api/parametrage-referentiel';
 
+  public downloadModelExcelBehaviorSubject = new BehaviorSubject<boolean>(false);
+
   constructor(private http: HttpClient) { }
 
   // ------------------ REFERENTIEL service
+  downloadFile(): Observable<any> {
+    return this.http.get('/api/files-storage/referentiel-upload-model/download',
+      { responseType: 'blob' }).pipe(map((response) => {
+      return {
+        filename: 'Referentiel_upload_model.xlsx',
+        data: response
+      };
+    }));
+  }
+
   addReferentiel(referentiel: any): Observable<any> {
     return this.http.post<any>(this.api + '/referentiel', referentiel);
   }
@@ -25,6 +38,10 @@ export class ParametrageReferentielService {
       niveau: referentiel.niveau.id + '',
       specialite: referentiel.specialite.id + '',
     });
+  }
+
+  sendListRecapReferentiel(listRecapReferentiel): Observable<any> {
+    return this.http.post(this.api + '/get-recap-referentiel', listRecapReferentiel);
   }
 
   getAllReferentiel(): Observable<any> {

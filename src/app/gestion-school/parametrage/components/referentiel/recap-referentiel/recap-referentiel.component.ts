@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ProgrammeModuleModel} from '../../../../../shared/models/programme-module.model';
 import {RecapProgrammeModuleModel} from '../../../../../shared/models/recap-programme-module.model';
 import {RecapProgrammeAnnuelleModel} from '../../../../../shared/models/recap-programme-annuelle.model';
@@ -10,9 +10,11 @@ import {ParametrageReferentielService} from '../../../services/parametrage-refer
 import {ParametrageModuleUeService} from '../../../services/parametrage-module-ue.service';
 import {ParametrageClasseService} from '../../../services/parametrage-classe.service';
 import {Subscription} from 'rxjs';
-import {ActivatedRoute} from "@angular/router";
-import {DomSanitizer} from "@angular/platform-browser";
-import {InscriptionService} from "../../../../inscription/services/inscription.service";
+import {ActivatedRoute} from '@angular/router';
+import {DomSanitizer} from '@angular/platform-browser';
+import {InscriptionService} from '../../../../inscription/services/inscription.service';
+import {UeModel} from '../../../../../shared/models/ue.model';
+import {ModuleModel} from '../../../../../shared/models/module.model';
 
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
@@ -23,25 +25,61 @@ declare var $: any;
   templateUrl: './recap-referentiel.component.html',
   styleUrls: ['./recap-referentiel.component.css']
 })
-export class RecapReferentielComponent implements OnInit {
+export class RecapReferentielComponent implements OnInit, OnDestroy {
   subscription = [] as Subscription[];
   idReferentiel: number;
   urlSyllabus: string;
-// for recap programme needs
 
+  listUE = [] as UeModel[];
+  listModule = [] as ModuleModel[];
+// for recap programme needs
   listRecapProgrammeModule = [] as RecapProgrammeModuleModel[];
   listRecapProgrammeModuleSemestre = [] as RecapProgrammeAnnuelleModel[];
   constructor(
     private dialog: MatDialog, private paramSpecialiteService: ParametragesSpecialiteService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
     private paramReferentielService: ParametrageReferentielService, private route: ActivatedRoute,
-    private sanitizer: DomSanitizer, private inscriptionService: InscriptionService
+    private sanitizer: DomSanitizer, private inscriptionService: InscriptionService,
+    private paramModuleUEService: ParametrageModuleUeService
   ) { }
 
   ngOnInit(): void {
     this.idReferentiel = Number(this.route.snapshot.paramMap.get('referentielid'));
     console.log(this.idReferentiel);
+    this.paramReferentielService.downloadModelExcelBehaviorSubject.subscribe(
+      (data) => {
+        if (data) {
+          this.loadRecapProgrammeModule(this.idReferentiel);
+        }
+      }, (error) => console.log(error)
+    );
     this.loadRecapProgrammeModule(this.idReferentiel);
+    this.loadListUE();
+    this.loadListModule();
+  }
+
+  ngOnDestroy() {
+    this.subscription.forEach(s => s.unsubscribe());
+  }
+
+  loadListUE() {
+    this.subscription.push(
+      this.paramModuleUEService.getAllUE().subscribe(
+        (data) => {
+          this.listUE = data;
+        }, (error) => console.log(error)
+      )
+    );
+  }
+
+  loadListModule() {
+    this.subscription.push(
+      this.paramModuleUEService.getAllModule().subscribe(
+        (data) => {
+          this.listModule = data;
+        }, (error) => console.log(error)
+      )
+    );
   }
 
   loadSyllabus(programmeModule) {
@@ -79,6 +117,11 @@ export class RecapReferentielComponent implements OnInit {
             this.groupBySemestre(this.listRecapProgrammeModule, this.listRecapProgrammeModuleSemestre);
             this.listProgrammeModuleBySemestre(this.listRecapProgrammeModule, this.listRecapProgrammeModuleSemestre);
             console.log(this.listRecapProgrammeModuleSemestre);
+            this.paramReferentielService.sendListRecapReferentiel(this.listRecapProgrammeModuleSemestre)
+              .subscribe(
+                (data) => console.log(data),
+                (error) => console.log(error)
+              );
           }
         )
     );

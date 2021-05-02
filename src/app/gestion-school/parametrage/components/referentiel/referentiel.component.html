@@ -14,6 +14,10 @@
     <button matTooltip="Liste" *ngIf="onAdd" (click)="onAdd = false; loadListReferentiel()" mat-fab type="button" color="primary">
       <em class="fa fa-list fa-lg"></em>
     </button>
+    &nbsp;&nbsp;&nbsp;
+    <button  (click)="downloadFile()" matTooltip="Télécharger le model d'upload" mat-fab type="button" color="primary">
+      <em class="fa fa-download fa-lg"></em>
+    </button>
   </div>
 
   <app-referentiel-add [niveauModel]="niveauModel" [specialiteModel]="specialiteModel" [referentielModel]="referentielModel" [status]="etat" *ngIf="onAdd"></app-referentiel-add>
@@ -191,6 +195,11 @@
              <!-- tableau pour afficher la liste de programme UE -->
              <table mat-table [dataSource]="listProgrammeUE" multiTemplateDataRows>
 
+               <ng-container matColumnDef="codeUE">
+                 <th mat-header-cell *matHeaderCellDef> Code </th>
+                 <td mat-cell *matCellDef="let programmeUe"> {{programmeUe.ue.code}} </td>
+               </ng-container>
+
                <ng-container matColumnDef="designation">
                  <th mat-header-cell *matHeaderCellDef> Designation </th>
                  <td mat-cell *matCellDef="let programmeUe"> {{programmeUe.ue.libelle}} </td>
@@ -201,10 +210,10 @@
                  <td mat-cell *matCellDef="let programmeUe"> {{programmeUe.credit}} </td>
                </ng-container>
 
-               <ng-container matColumnDef="fondamental">
+               <!--<ng-container matColumnDef="fondamental">
                  <th mat-header-cell *matHeaderCellDef> Fondamental </th>
                  <td mat-cell *matCellDef="let programmeUe"> {{programmeUe.fondamental}} </td>
-               </ng-container>
+               </ng-container>-->
 
                <ng-container matColumnDef="nbrHeureUE">
                  <th mat-header-cell *matHeaderCellDef> Nombre Heure UE </th>
@@ -339,6 +348,11 @@
 
                      <!-- tableau pour afficher la liste de programme module -->
                      <table mat-table [dataSource]="listProgrammeModule" multiTemplateDataRows>
+
+                       <ng-container matColumnDef="codeModule">
+                         <th mat-header-cell *matHeaderCellDef> Code </th>
+                         <td mat-cell *matCellDef="let programmeModule"> {{programmeModule.module.code}} </td>
+                       </ng-container>
 
                        <ng-container matColumnDef="nomModule">
                          <th mat-header-cell *matHeaderCellDef> Nom </th>

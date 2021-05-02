@@ -133,11 +133,27 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 /** programme UE Columns width **/
+.mat-column-codeUE {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 5% !important;
+  width: 5% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  word-break: break-word;
+
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
 .mat-column-designation {
   word-wrap: break-word !important;
   white-space: unset !important;
-  flex: 0 0 10% !important;
-  width: 10% !important;
+  flex: 0 0 15% !important;
+  width: 15% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
 
@@ -165,7 +181,7 @@ tr.example-element-row:not(.example-expanded-row):active {
   hyphens: auto;
 }
 
-.mat-column-fondamental {
+/*.mat-column-fondamental {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 10% !important;
@@ -179,7 +195,7 @@ tr.example-element-row:not(.example-expanded-row):active {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-}
+}*/
 
 .mat-column-nbrHeureUE {
   word-wrap: break-word !important;
@@ -214,6 +230,22 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 /** programme Module Columns width **/
+.mat-column-codeModule {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 5% !important;
+  width: 5% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  word-break: break-word;
+
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
 .mat-column-nomModule {
   word-wrap: break-word !important;
   white-space: unset !important;
