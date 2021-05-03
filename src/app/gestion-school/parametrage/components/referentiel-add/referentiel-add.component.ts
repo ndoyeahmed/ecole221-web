@@ -34,6 +34,8 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
   @Input()
   status: string;
 
+  excelFile: File;
+
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
@@ -167,5 +169,23 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
     this.specialiteModel = new SpecialiteModel();
     this.niveauModel = new NiveauModel();
     this.referentielModel = new ReferentielModel();
+  }
+
+  uploadReferentiel() {
+    this.paramReferentielService.addReferentielByUploaded(this.excelFile).subscribe(
+      (data) => {
+        console.log(data);
+      }, (error) => console.log(error)
+    );
+  }
+
+  onSelectFile(event) {
+    if (event && event.target.files && event.target.files.length > 0) {
+      this.excelFile = event.target.files.item(0);
+      if (this.excelFile.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        this.excelFile = undefined;
+        console.log('please choose an excel file');
+      }
+    }
   }
 }

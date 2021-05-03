@@ -4,6 +4,26 @@
       <div class="text-center">
         <h3>Créer référentiel</h3>
       </div>
+
+      <form #uploadReferentielForm="ngForm" (submit)="uploadReferentiel()">
+        <div class="row">
+          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <button type="button" mat-flat-button color="primary"
+                    onclick="document.getElementById('uploadExcel').click()">
+              Parcourir
+            </button>
+            <input name="uploadExcel" style="display:none;"
+                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                   id="uploadExcel" type="file" (change)="onSelectFile($event)"/>
+          </div>
+          <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <h3>{{excelFile ? excelFile.name ? excelFile.name : '' : ''}}</h3>
+          </div>
+        </div>
+
+        <button type="submit" mat-raised-button color="primary">Save</button>
+      </form>
+
       <form #addForm="ngForm" (submit)="save(addForm)">
         <div class="row" style="margin-bottom: 2%">
           <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">

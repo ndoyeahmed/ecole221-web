@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import {HttpClient, HttpEvent, HttpRequest} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -12,18 +12,34 @@ export class ParametrageReferentielService {
 
   public downloadModelExcelBehaviorSubject = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   // ------------------ REFERENTIEL service
   downloadFile(): Observable<any> {
     return this.http.get('/api/files-storage/referentiel-upload-model/download',
-      { responseType: 'blob' }).pipe(map((response) => {
+      {responseType: 'blob'}).pipe(map((response) => {
       return {
         filename: 'Referentiel_upload_model.xlsx',
         data: response
       };
     }));
   }
+
+  // upload doc for inscription
+  addReferentielByUploaded(file: File): Observable<HttpEvent<any>> {
+    const formData: FormData = new FormData();
+
+    formData.append('file', file);
+
+    const req = new HttpRequest('POST', `/api/parametrage-referentiel/referentiel/upload`, formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+
+    return this.http.request(req);
+  }
+
 
   addReferentiel(referentiel: any): Observable<any> {
     return this.http.post<any>(this.api + '/referentiel', referentiel);
