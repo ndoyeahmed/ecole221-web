@@ -49,7 +49,7 @@ import {MatStepperModule} from '@angular/material/stepper';
     MatPaginatorModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatStepperModule
+    MatStepperModule,
   ],
   providers: [
     {

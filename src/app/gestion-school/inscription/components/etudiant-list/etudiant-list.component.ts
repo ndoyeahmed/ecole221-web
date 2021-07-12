@@ -257,8 +257,8 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
         layout: 'noBorders'
       },
       pageSize: {
-        width: 300,
-        height: 170
+        width: 300, // 2381,1 pt = 84 cm
+        height: 170 // 55 cm = ?
       },
       pageMargins: [20, 40, 20, 40],
       styles: {

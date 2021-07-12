@@ -27,17 +27,18 @@ export class ParametrageReferentielService {
   }
 
   // upload doc for inscription
-  addReferentielByUploaded(file: File): Observable<HttpEvent<any>> {
+  addReferentielByUploaded(file: File): Observable<any> {
     const formData: FormData = new FormData();
 
     formData.append('file', file);
 
-    const req = new HttpRequest('POST', `/api/parametrage-referentiel/referentiel/upload`, formData, {
-      reportProgress: true,
+    return this.http.post('/api/parametrage-referentiel/referentiel/upload', formData);
+    /*const req = new HttpRequest('POST', `/api/parametrage-referentiel/referentiel/upload`, formData, {
+      reportProgress: false,
       responseType: 'json'
     });
 
-    return this.http.request(req);
+    return this.http.request(req);*/
   }
 
 

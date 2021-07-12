@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ProgrammeModuleModel} from '../../../../../shared/models/programme-module.model';
 import {RecapProgrammeModuleModel} from '../../../../../shared/models/recap-programme-module.model';
 import {RecapProgrammeAnnuelleModel} from '../../../../../shared/models/recap-programme-annuelle.model';
@@ -15,6 +15,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {InscriptionService} from '../../../../inscription/services/inscription.service';
 import {UeModel} from '../../../../../shared/models/ue.model';
 import {ModuleModel} from '../../../../../shared/models/module.model';
+import {ReferentielModel} from "../../../../../shared/models/referentiel.model";
 
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
@@ -35,6 +36,12 @@ export class RecapReferentielComponent implements OnInit, OnDestroy {
 // for recap programme needs
   listRecapProgrammeModule = [] as RecapProgrammeModuleModel[];
   listRecapProgrammeModuleSemestre = [] as RecapProgrammeAnnuelleModel[];
+  @Input()
+  listRecapProgrammeUploaded: RecapProgrammeAnnuelleModel[];
+  @Input()
+  errorList: string[];
+  @Input()
+  referentiel: ReferentielModel;
   constructor(
     private dialog: MatDialog, private paramSpecialiteService: ParametragesSpecialiteService,
     private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
@@ -46,14 +53,16 @@ export class RecapReferentielComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idReferentiel = Number(this.route.snapshot.paramMap.get('referentielid'));
     console.log(this.idReferentiel);
-    this.paramReferentielService.downloadModelExcelBehaviorSubject.subscribe(
-      (data) => {
-        if (data) {
-          this.loadRecapProgrammeModule(this.idReferentiel);
-        }
-      }, (error) => console.log(error)
-    );
-    this.loadRecapProgrammeModule(this.idReferentiel);
+    if (this.idReferentiel) {
+      this.paramReferentielService.downloadModelExcelBehaviorSubject.subscribe(
+        (data) => {
+          if (data) {
+            this.loadRecapProgrammeModule(this.idReferentiel);
+          }
+        }, (error) => console.log(error)
+      );
+      this.loadRecapProgrammeModule(this.idReferentiel);
+    }
     this.loadListUE();
     this.loadListModule();
   }

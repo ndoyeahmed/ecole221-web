@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="!listRecapProgrammeUploaded">
   <h3>Paramétrages</h3>
   <ol class="breadcrumb text-right">
     <li>
@@ -10,6 +10,7 @@
 
 <section class="content">
   <div class="row">
+    <button disabled mat-raised-button color="primary" style="margin: 2%">Enregistrer</button>
     <mat-card>
       <div class="row text-center">
         <h2>Récapitulatif</h2>
@@ -70,18 +71,25 @@
         </div>
       </div>
 
-        <ng-container *ngFor="let recap of listRecapProgrammeModuleSemestre">
-          <mat-expansion-panel expanded>
+      <ng-container *ngIf="errorList && errorList.length > 0">
+        <ul class="list-group list-inline">
+          <li class="list-inline-item list-group-item list-group-item-danger" *ngFor="let error of errorList">{{error}}</li>
+        </ul>
+      </ng-container>
+
+        <ng-container *ngFor="let recap of
+            (listRecapProgrammeUploaded && (!errorList || errorList.length <= 0) ? listRecapProgrammeUploaded :
+            listRecapProgrammeModuleSemestre)">
+          <mat-expansion-panel expanded *ngIf="!errorList || errorList.length <=0">
             <mat-expansion-panel-header>
               <mat-panel-title>
-                {{recap.semestre.libelle}}
+                {{recap ? recap.semestre ? recap.semestre.libelle ? recap.semestre.libelle:'':'':''}}
               </mat-panel-title>
             </mat-expansion-panel-header>
 
             <table class="table table-responsive table-bordered">
               <thead>
               <th>UE</th>
-              <th>Code</th>
               <th>Module</th>
               <th>Coef</th>
               <th>CM</th>
@@ -98,7 +106,6 @@
                   <td [attr.rowspan]="data.programmeModuleList.length">
                     {{data.programmeUE.ue.libelle}}
                   </td>
-                  <td>{{data.programmeModuleList[0].module.code}}</td>
                   <td (click)="loadSyllabus(data.programmeModuleList[0])">
                     <p (click)="loadSyllabus(data.programmeModuleList[0])">
                       {{data.programmeModuleList[0].module.libelle}}
@@ -115,7 +122,6 @@
                 </tr>
                 <ng-container *ngFor="let programmeModule of data.programmeModuleList; let i = index">
                   <tr *ngIf="i!=0">
-                    <td>{{programmeModule.module.code}}</td>
                     <td (click)="loadSyllabus(programmeModule)">
                       <p (click)="loadSyllabus(data.programmeModuleList[0])">
                         {{programmeModule.module.libelle}}

@@ -9,6 +9,9 @@ import { MycustomNotificationService } from '../../services/mycustom-notificatio
 import { ParametrageModuleUeService } from '../../services/parametrage-module-ue.service';
 import { ParametrageReferentielService } from '../../services/parametrage-referentiel.service';
 import { ParametragesSpecialiteService } from '../../services/parametrages-specialite.service';
+import {RecapProgrammeModuleModel} from '../../../../shared/models/recap-programme-module.model';
+import {RecapProgrammeAnnuelleModel} from '../../../../shared/models/recap-programme-annuelle.model';
+import {ReferentielUploadRecapModel} from "../../../../shared/models/referentiel-upload-recap.model";
 
 @Component({
   selector: 'app-referentiel-add',
@@ -35,6 +38,9 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
   status: string;
 
   excelFile: File;
+
+  recapReferentielList: RecapProgrammeAnnuelleModel[];
+  referentielUploadRecap: ReferentielUploadRecapModel;
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService,
@@ -174,8 +180,13 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
   uploadReferentiel() {
     this.paramReferentielService.addReferentielByUploaded(this.excelFile).subscribe(
       (data) => {
-        console.log(data);
-      }, (error) => console.log(error)
+        this.referentielUploadRecap = data as ReferentielUploadRecapModel;
+        this.recapReferentielList = this.referentielUploadRecap.recapReferentielList;
+        console.log(this.referentielUploadRecap);
+      }, (error) => console.log(error),
+      () => {
+        this.excelFile = null;
+      }
     );
   }
 
