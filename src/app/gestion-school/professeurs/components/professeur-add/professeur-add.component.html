@@ -149,14 +149,15 @@
               <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
                 <h4> Modules </h4>
               </div>
-                <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12" style="margin: 0 1%"
-                     *ngFor="let module of moduleList">
-                  <mat-checkbox
-                    [checked]="checkModuleExist(module)"
-                                name="modules" color="primary" [value]="module" class="example-margin" (change)="onSelectedModule($event)" >
-                    {{ module ? module.libelle ? module.libelle : '' : ''}}
-                  </mat-checkbox>
-                </div>
+                <ng-container>
+                  <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12" style="margin: 0 1%"
+                       *ngFor="let module of moduleListCustome">
+                    <mat-checkbox [checked]="module.checked"
+                      name="modules" color="primary" [value]="module.module" class="example-margin" (change)="onSelectedModule($event)" >
+                      {{ module.module ? module.module.libelle ? module.module.libelle : '' : ''}}
+                    </mat-checkbox>
+                  </div>
+                </ng-container>
             </div>
 
             <div style="margin-bottom: 1%; margin-top: 3%" class="col-md-12 col-lg-12 col-sm-12 col-xs-12">

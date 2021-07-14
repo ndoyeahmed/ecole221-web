@@ -54,6 +54,7 @@ export class ProfesseurAddComponent implements OnInit, OnDestroy {
   LOADERID = 'prof-loader';
 
   moduleList: ModuleModel[];
+  moduleListCustome = [];
   selectedModuleList = [] as ModuleModel[];
 
   professeurModel = new ProfesseurModel();
@@ -92,8 +93,8 @@ export class ProfesseurAddComponent implements OnInit, OnDestroy {
     this.professeurEditId =  Number(this.route.snapshot.paramMap.get('id'));
     if (this.professeurEditId) {
       this.getProfesseurById(this.professeurEditId);
-      this.getProfesseurModuleByProfesseurId(this.professeurEditId);
       this.getContratByProfesseurId(this.professeurEditId);
+      this.getProfesseurModuleByProfesseurId(this.professeurEditId);
     }
   }
 
@@ -147,6 +148,11 @@ export class ProfesseurAddComponent implements OnInit, OnDestroy {
             this.selectedModuleList = [];
             this.listProfesseurModule.forEach(pm => {
               this.selectedModuleList.push(pm.module);
+              this.moduleListCustome.forEach(mc => {
+                if (Number(mc.module.id) === Number(pm.module.id)) {
+                  mc.checked = true;
+                }
+              });
             });
           }
         }
@@ -241,7 +247,12 @@ export class ProfesseurAddComponent implements OnInit, OnDestroy {
         (data) => {
           console.log(data);
           this.moduleList = data;
-        }, (error) => console.log(error)
+        }, (error) => console.log(error),
+        () => {
+          this.moduleList.forEach(m => {
+            this.moduleListCustome.push({checked: false, module: m});
+          });
+        }
       )
     );
   }

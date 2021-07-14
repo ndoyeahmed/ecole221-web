@@ -8,6 +8,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import {RecapReferentielComponent} from './parametrage/components/referentiel/recap-referentiel/recap-referentiel.component';
 import {PROFESSEUR_ADD_ROUTE, PROFESSEUR_EDIT_ROUTE, PROFESSEUR_LIST_ROUTE} from './professeurs/professeur.route';
+import {NOTE_ADD_ROUTE} from './gestion-note/notes.route';
 
 @NgModule({
   imports: [
@@ -54,7 +55,8 @@ import {PROFESSEUR_ADD_ROUTE, PROFESSEUR_EDIT_ROUTE, PROFESSEUR_LIST_ROUTE} from
       },
       PROFESSEUR_ADD_ROUTE,
       PROFESSEUR_EDIT_ROUTE,
-      PROFESSEUR_LIST_ROUTE
+      PROFESSEUR_LIST_ROUTE,
+      NOTE_ADD_ROUTE
     ])
   ],
   exports: [
