@@ -10,11 +10,14 @@ import {LayoutModule} from '../../layout/layout.module';
 import {MatIconModule} from '@angular/material/icon';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {NotesService} from "./services/notes.service";
+import { NotesEtudiantComponent } from './components/notes-etudiant/notes-etudiant.component';
+import { DevoirsListComponent } from './components/devoirs-list/devoirs-list.component';
 
 
 
 @NgModule({
-  declarations: [NotesComponent],
+  declarations: [NotesComponent, NotesEtudiantComponent, DevoirsListComponent],
   imports: [
     SharedModule,
     MatCardModule,
@@ -25,6 +28,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatIconModule,
     MatAutocompleteModule,
     MatExpansionModule,
+  ],
+  providers: [
+    NotesService
   ]
 })
 export class GestionNoteModule { }

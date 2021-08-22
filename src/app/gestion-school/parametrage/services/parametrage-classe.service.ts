@@ -122,4 +122,8 @@ export class ParametrageClasseService {
       horaire
     });
   }
+
+  getAllClasseSousClasseByHoraire(horaire): Observable<any> {
+    return this.http.get(this.api + '/classe-sous-classe/sousclasse/horaire/' + horaire);
+  }
 }

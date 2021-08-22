@@ -24,6 +24,17 @@ import {AnneeScolaireModel} from '../../../../shared/models/annee-scolaire.model
 import {FormControl} from "@angular/forms";
 import {map, startWith} from "rxjs/operators";
 import {ClasseModel} from "../../../../shared/models/classe.model";
+import {SemestreModel} from "../../../../shared/models/semestre.model";
+import {SemestreNiveauModel} from "../../../../shared/models/semestre-niveau.model";
+import {ParametrageReferentielService} from "../../../parametrage/services/parametrage-referentiel.service";
+import {ProgrammeModuleModel} from "../../../../shared/models/programme-module.model";
+import {NotesService} from "../../services/notes.service";
+import {NoteProgrammeModuleModel} from "../../../../shared/models/note-programme-module.model";
+import {NoteModel} from "../../../../shared/models/note.model";
+import {DevoirsModel} from "../../../../shared/models/devoirs.model";
+
+/// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
+declare var $: any;
 
 @Component({
   selector: 'app-notes',
@@ -32,11 +43,15 @@ import {ClasseModel} from "../../../../shared/models/classe.model";
 })
 export class NotesComponent implements OnInit, OnDestroy {
 
+  showDialog = 'note_etudiant';
+  isNoteRemplacement = false;
+  isNoteRemplacementok = true;
   title = 'Gestion des notes';
   subscription = [] as Subscription[];
   listInscription = [] as InscriptionModel[];
   listInscriptionFiltered = [] as InscriptionModel[];
   dataSource: MatTableDataSource<InscriptionModel>;
+  noteProgrammeModuleDataSource: MatTableDataSource<NoteProgrammeModuleModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   inscriptionColumnsToDisplay = ['nom_prenom', 'datenaissance', 'lieunaissance',  'telephone', 'actions', 'devoirs', 'exam', 'session'];
@@ -49,12 +64,24 @@ export class NotesComponent implements OnInit, OnDestroy {
   specialiteModel: SpecialiteModel;
   horaireModel: HoraireModel;
   sousClasseModel: SousClasseModel;
+  semestreModel: SemestreNiveauModel;
+  classeSousClasseModel: ClasseSousClasse;
+  programmeModuleModel: ProgrammeModuleModel;
+  inscriptionId: number;
+  inscription: InscriptionModel;
+  mdsNote: NoteModel;
+  listDevoirs = [] as DevoirsModel[];
 
   listNiveau = [] as NiveauModel[];
   listSpecialite = [] as NiveauSpecialiteModel[];
   listHoraire = [] as HoraireModel[];
   listSousClasse = [] as ClasseSousClasse[];
   listDocADonner = [] as DocumentParNiveauModel[];
+  listSemestre = [] as SemestreNiveauModel[];
+  listProgrammeModules = [] as ProgrammeModuleModel[];
+  listNoteProgrammeModule = [] as NoteProgrammeModuleModel[];
+  listNoteProgrammeModuleEtudiant = [] as NoteProgrammeModuleModel[];
+  noteProgrammeModuleEtudiantDataSource: MatTableDataSource<NoteProgrammeModuleModel>;
 
   searchTerm: string;
   anneeScolaireEncours: AnneeScolaireModel;
@@ -64,15 +91,22 @@ export class NotesComponent implements OnInit, OnDestroy {
     {id: 2, name: 'Remplacement'}
   ];
 
-  sessionModel = {};
+  noteDevoir: any = [];
+
+  sessionModel = {
+    id: null,
+    name: null
+  };
 
   myControl = new FormControl();
   filteredOptions: Observable<ClasseSousClasse[]>;
+
   constructor(
     private inscriptionService: InscriptionService, private paramSpecialiteService: ParametragesSpecialiteService,
     private dialog: MatDialog, private notif: MycustomNotificationService, private http: HttpClient,
     private ngxService: NgxSpinnerService, private paramBaseService: ParametragesBaseService,
-    private paramClasseService: ParametrageClasseService
+    private paramClasseService: ParametrageClasseService, private paramReferentiel: ParametrageReferentielService,
+    private noteService: NotesService
   ) { }
 
   displayFn(classeSousClasse: ClasseSousClasse): string {
@@ -99,8 +133,26 @@ export class NotesComponent implements OnInit, OnDestroy {
     );
     this.getAnneeScolaireEnCours();
     this.loadListHoraire();
-    this.loadListNiveau();
+    this.setFilteredOptions();
+  }
 
+  loadNoteProgrammeModule(programmeModuleId) {
+    this.subscription.push(
+      this.noteService
+        .getAllNoteProgrammeModuleByInscriptionAnneeScolaireAndProgrammeModule(this.anneeScolaireEncours.id, programmeModuleId)
+        .subscribe(
+          (data) => {
+            this.listNoteProgrammeModule = data;
+            localStorage.setItem('ListNote', JSON.stringify(this.listNoteProgrammeModule));
+            this.noteProgrammeModuleDataSource = new MatTableDataSource<NoteProgrammeModuleModel>(this.listNoteProgrammeModule);
+            this.noteProgrammeModuleDataSource.paginator = this.paginator;
+          },
+          (error) => console.log(error)
+        )
+    );
+  }
+
+  setFilteredOptions() {
     this.filteredOptions = this.myControl.valueChanges
       .pipe(
         startWith(''),
@@ -110,7 +162,66 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   onSelectedSession(event) {
-    console.log(event);
+    this.isNoteRemplacement = this.sessionModel && this.sessionModel.id === 2;
+  }
+
+  valideNote() {
+    if (this.sessionModel && this.sessionModel.id === 2) {
+      this.setNoteToRemplacementState(this.listNoteProgrammeModule);
+      console.log(this.listNoteProgrammeModule);
+    }
+    if (this.listNoteProgrammeModule && this.listNoteProgrammeModule.length > 0) {
+      this.listNoteProgrammeModule.forEach(npm => {
+        this.subscription.push(
+          this.noteService.updateNote(npm.note, this.programmeModuleModel.id).subscribe(
+            (data) => console.log(data),
+            (error) => console.log(error),
+            () => {
+              this.loadNoteProgrammeModule(this.programmeModuleModel.id);
+            }
+          )
+        );
+      });
+    }
+  }
+
+  loadSemestreEncours(event) {
+    const classe = event.option.value as ClasseSousClasse;
+    this.classeSousClasseModel = classe;
+    const niveauId = classe.sousClasse.niveau.id;
+    this.subscription.push(
+      this.paramSpecialiteService.getSemestreNiveauEncoursByNiveau(niveauId).subscribe(
+        (data) => {
+          this.semestreModel = data;
+        }, (error) => console.log(error),
+        () => {
+          this.getModuleListByClasseAndSemestre();
+        }
+      )
+    );
+    this.subscription.push(
+      this.paramSpecialiteService.getAllSemestreNiveauByNiveau(niveauId).subscribe(
+        (data) => {
+          this.listSemestre = data;
+        }, (error) => console.log(error)
+      )
+    );
+    this.loadListInscriptionBySousClasse(classe.sousClasse.id);
+  }
+
+  getModuleListByClasseAndSemestre() {
+    if (this.classeSousClasseModel && this.classeSousClasseModel.id && this.semestreModel && this.semestreModel.id) {
+      this.subscription.push(
+        this.paramReferentiel
+          .getAllProgrammeModuleByClasseAndSemestre(this.classeSousClasseModel.classe.id, this.semestreModel.semestre.id)
+          .subscribe(
+            (data) => {
+              this.listProgrammeModules = data;
+            },
+            (error) => console.log(error)
+          )
+      );
+    }
   }
 
   getAnneeScolaireEnCours() {
@@ -125,13 +236,15 @@ export class NotesComponent implements OnInit, OnDestroy {
             localStorage.setItem('annee-scolaire-encours',
               JSON.stringify(this.anneeScolaireEncours));
           }, (error) => console.log(error),
-          () => this.loadListInscription()
+          () => {
+            this.loadListInscription();
+          }
         )
       );
     }
   }
 
-  onSearchByTaping(term) {
+  onSearchByTaping() {
     // console.log(this.searchTerm);
     if (this.searchTerm === undefined || this.searchTerm === null) {
       this.listInscriptionFiltered = null;
@@ -156,58 +269,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadListNiveau() {
-    this.subscription.push(
-      this.paramSpecialiteService.getAllNiveau().subscribe(
-        (data) => {
-          this.listNiveau = data;
-        },
-        (error) => {
-          this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
-        },
-        () => {
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
-    );
-  }
-
-  loadListSpecialite(niveauId) {
-    this.specialiteModel = null;
-    this.subscription.push(
-      this.paramSpecialiteService.getAllNiveauSpecialiteByNiveau(niveauId).subscribe(
-        (data) => {
-          this.listSpecialite = data;
-        },
-        (error) => {
-          this.ngxService.hide(this.LOADERID);
-        },
-        () => {
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
-    );
-
-  }
-
-  loadDocuments(niveauId) {
-    this.subscription.push(
-      this.paramSpecialiteService.getAllDocumentParNiveauByNiveauAndFournir(false, niveauId).subscribe(
-        (data) => {
-          this.listDocADonner = data;
-        },
-        (error) => {
-          this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
-        },
-        () => {
-          this.ngxService.hide(this.LOADERID);
-        }
-      )
-    );
-  }
-
   loadListHoraire() {
     this.subscription.push(
       this.paramBaseService.getAllHoraire().subscribe(
@@ -226,70 +287,19 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   loadListSousClasse() {
-    if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id
-      && this.horaireModel && this.horaireModel.id) {
-      this.subscription.push(
-        this.paramClasseService.getAllClasseSousClasseByNiveauSpecialiteHoraire(this.niveauModel.id,
-          this.specialiteModel.id, this.horaireModel.id).subscribe(
+    this.subscription.push(
+      this.paramClasseService.getAllClasseSousClasseByHoraire(this.horaireModel.id)
+        .subscribe(
           (data) => {
             this.listSousClasse = data;
-          },
-          (error) => {
-            this.ngxService.hide(this.LOADERID);
-          },
-          () => {
-            this.ngxService.hide(this.LOADERID);
-          }
+          }, (error) => console.log(error)
         )
-      );
-    }
-  }
-
-  loadListInscriptionByNiveau(niveauId) {
-    this.listInscriptionFiltered = this.listInscription.filter(
-      x => Number(x.sousClasse.niveau.id) === Number(niveauId)
     );
-    this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
-    this.dataSource.paginator = this.paginator;
   }
 
   loadListInscriptionBySpecialite(specialiteId) {
     this.listInscriptionFiltered = this.listInscription.filter(
       x => Number(x.sousClasse.specialite.id) === Number(specialiteId)
-    );
-    this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
-    this.dataSource.paginator = this.paginator;
-  }
-
-  loadListInscriptionByHoraire(horaireId) {
-    this.listInscriptionFiltered = this.listInscription.filter(
-      x => Number(x.sousClasse.horaire.id) === Number(horaireId)
-    );
-    this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
-    this.dataSource.paginator = this.paginator;
-  }
-
-  loadListInscriptionByNiveauAndSpecialite(niveauId, specialiteId) {
-    this.listInscriptionFiltered = this.listInscription.filter(
-      x => Number(x.sousClasse.niveau.id) === Number(niveauId) && Number(x.sousClasse.specialite.id) === Number(specialiteId)
-    );
-    this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
-    this.dataSource.paginator = this.paginator;
-  }
-
-  loadListInscriptionByNiveauAndSpecialiteAndHoraire(niveauId, specialiteId, horaireId) {
-    this.listInscriptionFiltered = this.listInscription.filter(
-      x => Number(x.sousClasse.niveau.id) === Number(niveauId) && Number(x.sousClasse.specialite.id) === Number(specialiteId)
-        && Number(x.sousClasse.horaire.id) === Number(horaireId)
-    );
-    this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
-    this.dataSource.paginator = this.paginator;
-  }
-
-  loadListInscriptionByNiveauAndHoraire(niveauId, horaireId) {
-    this.listInscriptionFiltered = this.listInscription.filter(
-      x => Number(x.sousClasse.niveau.id) === Number(niveauId)
-        && Number(x.sousClasse.horaire.id) === Number(horaireId)
     );
     this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscriptionFiltered);
     this.dataSource.paginator = this.paginator;
@@ -304,39 +314,17 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   search() {
-    if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id
-      && this.horaireModel && this.horaireModel.id && this.sousClasseModel && this.sousClasseModel.id) {
-      this.loadDocuments(this.niveauModel.id);
-      this.loadListInscriptionBySousClasse(this.sousClasseModel.id);
-    } else if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id
-      && this.horaireModel && this.horaireModel.id) {
-      this.loadDocuments(this.niveauModel.id);
-      this.loadListInscriptionByNiveauAndSpecialiteAndHoraire(this.niveauModel.id, this.specialiteModel.id, this.horaireModel.id);
-    } else if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id) {
-      this.loadDocuments(this.niveauModel.id);
-      this.loadListInscriptionByNiveauAndSpecialite(this.niveauModel.id, this.specialiteModel.id);
-    } else if (this.niveauModel && this.niveauModel.id && this.horaireModel && this.horaireModel.id) {
-      this.loadDocuments(this.niveauModel.id);
-      this.loadListInscriptionByNiveauAndHoraire(this.niveauModel.id, this.horaireModel.id);
-    } else if (this.niveauModel && this.niveauModel.id) {
-      this.loadDocuments(this.niveauModel.id);
-      this.loadListInscriptionByNiveau(this.niveauModel.id);
-    } else if (this.specialiteModel && this.specialiteModel.id) {
-      this.loadListInscriptionBySpecialite(this.specialiteModel.id);
-    } else if (this.horaireModel && this.horaireModel.id) {
-      this.loadListInscriptionByHoraire(this.horaireModel.id);
-    }
+
   }
 
   cancelSearch(searchForm) {
     searchForm.resetForm();
-    this.niveauModel = new NiveauModel();
-    this.specialiteModel = new SpecialiteModel();
-    this.horaireModel = new HoraireModel();
-    this.sousClasseModel = new SousClasseModel();
-    this.listSousClasse = [];
-    this.listSpecialite = [];
     this.listInscriptionFiltered = [];
+    this.listNoteProgrammeModule = [];
+    this.semestreModel = null;
+    this.horaireModel = null;
+    this.myControl = new FormControl();
+    this.setFilteredOptions();
     this.loadListInscription();
   }
 
@@ -344,7 +332,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.subscription.push(
       this.inscriptionService.getAllInscription(this.anneeScolaireEncours.id).subscribe(
         (data) => {
-          console.log(data);
           this.listInscription = data;
           this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscription);
           this.dataSource.paginator = this.paginator;
@@ -375,5 +362,103 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.loadListInscription();
       }
     });
+  }
+
+  onSelectProgrammeModule(event) {
+    this.loadNoteProgrammeModule(event.value.id);
+  }
+
+  onChangeNoteExam(inscription, $event) {
+    if (this.sessionModel && this.sessionModel.id === 2) {
+      const newNote = $event.target.value;
+      const listnote = JSON.parse(localStorage.getItem('ListNote')) as NoteProgrammeModuleModel[];
+      listnote.forEach(ln => {
+        if (Number(ln.id) === Number(inscription.id)) {
+          if (Number(ln.note.nef) > Number(newNote)) {
+            this.isNoteRemplacementok = false;
+            inscription.styleNoteOnRemplacement = {color: 'red'};
+            inscription.errorMessage = 'La note de remplacement doit etre supérieur à la note normale';
+          } else {
+            this.isNoteRemplacementok = true;
+            inscription.styleNoteOnRemplacement = {color: 'black'};
+            inscription.errorMessage = '';
+          }
+        }
+      });
+    }
+  }
+
+  onSelectedNoteSession(event, inscription) {
+    inscription.isSessionRemplacementNote = event.checked === true;
+    inscription.note.session = event.checked === true ? 1 : 0;
+  }
+
+  setNoteToRemplacementState(listnoteUpdated: NoteProgrammeModuleModel[]) {
+    const listnote = JSON.parse(localStorage.getItem('ListNote')) as NoteProgrammeModuleModel[];
+    for (const npm of listnote) {
+      if (Number(npm.id) === Number(listnoteUpdated[listnote.indexOf(npm)].id)) {
+        if (Number(npm.note.nef) === Number(listnoteUpdated[listnote.indexOf(npm)].note.nef)) {
+          listnoteUpdated[listnote.indexOf(npm)].note.session = 0;
+        } else {
+          listnoteUpdated[listnote.indexOf(npm)].note.session = 1;
+        }
+      }
+    }
+  }
+
+  loadListNoteProgrammeModule() {
+    this.subscription.push(
+      this.noteService.getAllNoteProgrammeModuleByInscription(
+        this.inscriptionId
+      ).subscribe(
+        (data) => {
+          this.listNoteProgrammeModuleEtudiant = data;
+          this.noteProgrammeModuleEtudiantDataSource = new MatTableDataSource<NoteProgrammeModuleModel>
+          (this.listNoteProgrammeModuleEtudiant);
+          this.noteProgrammeModuleEtudiantDataSource.paginator = this.paginator;
+        }, (error) => console.log(error)
+      )
+    );
+  }
+
+  onSetNoteForOneStudent(item) {
+    this.showDialog = 'note_etudiant';
+    if (this.listNoteProgrammeModule && this.listNoteProgrammeModule.length > 0) {
+      this.inscriptionId = item.note.inscription.id;
+      this.inscription = item.note.inscription;
+    } else {
+      this.inscriptionId = item.id;
+      this.inscription = item;
+    }
+    this.loadListNoteProgrammeModule();
+    $('#showNoteModal').modal('show');
+  }
+
+  loadListDevoirByNote(note) {
+    this.subscription.push(
+      this.noteService.getAllDevoirsByNote(note.id).subscribe(
+        (data) => {
+          this.listDevoirs = data;
+        }, (error) => console.log(error),
+        () => {
+          if (this.listDevoirs.length <= 0) {
+            this.addNewInput();
+            this.addNewInput();
+          }
+        }
+      )
+    );
+  }
+
+  addNewInput() {
+    const devoir = new DevoirsModel();
+    this.listDevoirs.push(devoir);
+  }
+
+  onAddNoteDevoir(note) {
+    this.mdsNote = note;
+    this.loadListDevoirByNote(note);
+    this.showDialog = 'devoirs-list';
+    $('#showNoteModal').modal('show');
   }
 }

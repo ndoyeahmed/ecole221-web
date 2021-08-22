@@ -4,4 +4,7 @@ export class NoteProgrammeModuleModel {
   public id: number;
   public note: NoteModel;
   public programmeModule: ProgrammeModuleModel;
+  public styleNoteOnRemplacement = {color: 'black'};
+  public errorMessage: string;
+  public isSessionRemplacementNote = false;
 }

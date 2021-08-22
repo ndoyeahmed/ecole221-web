@@ -155,4 +155,8 @@ export class ParametrageReferentielService {
     return this.http.get(this.api + '/programme-module/programme-ue/referentiel/'
       + referentielId + '/semestre/' + semestreId);
   }
+
+  getAllProgrammeModuleByClasseAndSemestre(classeId: number, semestreId: number): Observable<any> {
+    return this.http.get(this.api + '/programme-module/classe/' + classeId + '/semestre/' + semestreId);
+  }
 }

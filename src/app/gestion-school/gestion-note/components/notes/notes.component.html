@@ -26,7 +26,7 @@
                       <mat-form-field  class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <mat-label>Classe</mat-label>
                         <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
-                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-autocomplete (optionSelected)="loadSemestreEncours($event)" #auto="matAutocomplete" [displayWith]="displayFn">
                           <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                             {{option.sousClasse.libelle}}
                           </mat-option>
@@ -46,9 +46,8 @@
                   <div class="form-group row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                       <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <mat-label>Semestre :</mat-label>
-                        <mat-select name="semestres" [(ngModel)]="sousClasseModel">
-                          <mat-option *ngFor="let sousclasse of listSousClasse" [value]="sousclasse.sousClasse" >{{ sousclasse.sousClasse?.libelle }}</mat-option >
+                        <mat-select (selectionChange)="getModuleListByClasseAndSemestre()" [placeholder]="semestreModel ? semestreModel.semestre.libelle : 'Semestre:'" name="semestres" [(ngModel)]="semestreModel">
+                          <mat-option *ngFor="let semestre of listSemestre" [value]="semestre" >{{ semestre?.semestre.libelle }}</mat-option >
                         </mat-select>
                       </mat-form-field>
                     </div>
@@ -60,37 +59,46 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                       <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <mat-label>Modules :</mat-label>
-                        <mat-select name="modules" [(ngModel)]="sousClasseModel">
-                          <mat-option *ngFor="let sousclasse of listSousClasse" [value]="sousclasse.sousClasse" >{{ sousclasse.sousClasse?.libelle }}</mat-option >
+                        <mat-select name="modules" [(ngModel)]="programmeModuleModel" (selectionChange)="onSelectProgrammeModule($event)">
+                          <mat-option *ngFor="let programmeModule of listProgrammeModules" [value]="programmeModule" >
+                            {{programmeModule ? programmeModule.module ? programmeModule.module.libelle : '' : ''}}
+                          </mat-option >
                         </mat-select>
                       </mat-form-field>
                     </div>
                   </div>
                 </div>
 
-                <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12">
-                  <div class="form-group row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                      <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <mat-label>Session :</mat-label>
-                        <mat-select name="session" [(ngModel)]="sessionModel">
-                          <mat-option *ngFor="let session of sessionList" [value]="session" >{{ session?.name }}</mat-option >
-                        </mat-select>
-                      </mat-form-field>
+
+              </div>
+              <div class="row">
+                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                  <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12">
+                    <div class="form-group row">
+                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                          <mat-label>Session :</mat-label>
+                          <mat-select name="session" [(ngModel)]="sessionModel" (selectionChange)="onSelectedSession($event)">
+                            <mat-option *ngFor="let session of sessionList" [value]="session" >{{ session?.name }}</mat-option >
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="col-md-10 col-lg-3 col-sm-12 col-xs-12 text-center">
-                  <button mat-raised-button class="action-button" (click)="search()" >
-                    Recherche
-                    <em class="fa fa-search fa-lg"></em>
-                  </button>
-                  &nbsp;&nbsp;
-                  <button mat-raised-button class="action-button" (click)="cancelSearch(searchForm)" >
-                    Annuler
-                    <em class="fa fa-remove fa-lg"></em>
-                  </button>
+                  <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+                    <!--<button mat-raised-button class="action-button" (click)="search()" >
+                      Recherche
+                      <em class="fa fa-search fa-lg"></em>
+                    </button>-->
+                    &nbsp;&nbsp;
+                    <button mat-raised-button class="action-button" (click)="cancelSearch(searchForm)" >
+                      Actualiser
+                      <em class="fa fa-refresh fa-lg"></em>
+                    </button>
+                  </div>
+                </div>
                 </div>
               </div>
             </form>
@@ -100,25 +108,48 @@
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
               <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <mat-label>Rechercher : </mat-label>
-                <input (keyup)="onSearchByTaping($event)" name="filtre" matInput [(ngModel)]="searchTerm">
+                <input (keyup)="onSearchByTaping()" name="filtre" matInput [(ngModel)]="searchTerm">
               </mat-form-field>
             </div>
           </div>
 
+          <div class="row" style="margin-top: 2%;">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+              <button mat-raised-button class="action-button"
+                      [disabled]="!isNoteRemplacementok"
+                      (click)="valideNote()" >
+                Valider
+                <em class="fa fa-save fa-lg"></em>
+              </button>
+            </div>
+          </div>
 
           <div class="row" style="margin-top: 2%;">
             <div class="mat-elevation-z8">
-              <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+              <table mat-table
+                     [dataSource]="(listNoteProgrammeModule && listNoteProgrammeModule.length > 0)
+                     ? noteProgrammeModuleDataSource : dataSource"
+                     multiTemplateDataRows>
                 <!-- Nom Prenom column -->
                 <ng-container matColumnDef="nom_prenom">
                   <th mat-header-cell *matHeaderCellDef> Nom & Prénom</th>
                   <td mat-cell *matCellDef="let inscription">
-                    {{inscription ? inscription.etudiant ?
+                    {{(listNoteProgrammeModule && listNoteProgrammeModule.length > 0)
+                    ? (inscription ? inscription.note ? inscription.note.inscription ?
+                      inscription.note.inscription.etudiant ?
+                      inscription.note.inscription.etudiant.nom ? inscription.note.inscription.etudiant.nom
+                        : '' : '' : '' : '' : '')
+                    : (inscription ? inscription.etudiant ?
                     inscription.etudiant.nom ? inscription.etudiant.nom
-                      : '' : '' : '' }}
-                    {{inscription ? inscription.etudiant ?
-                    inscription.etudiant.prenom ? inscription.etudiant.prenom
-                      : '' : '' : '' }}
+                      : '' : '' : '') }}
+                    {{(listNoteProgrammeModule && listNoteProgrammeModule.length > 0)
+                    ? (inscription ? inscription.note ? inscription.note.inscription ?
+                      inscription.note.inscription.etudiant ?
+                        inscription.note.inscription.etudiant.prenom ? inscription.note.inscription.etudiant.prenom
+                          : '' : '' : '' : '' : '')
+                    : (inscription ? inscription.etudiant ?
+                      inscription.etudiant.prenom ? inscription.etudiant.prenom
+                        : '' : '' : '') }}
                   </td>
                 </ng-container>
 
@@ -128,9 +159,15 @@
                 <ng-container matColumnDef="datenaissance">
                   <th mat-header-cell *matHeaderCellDef> Date naissance</th>
                   <td mat-cell *matCellDef="let inscription">
-                    {{inscription ? inscription.etudiant ?
-                    inscription.etudiant.dateNaissance ? getFormatedDate(inscription.etudiant.dateNaissance)
-                      : '' : '' : ''}}
+                    {{(listNoteProgrammeModule && listNoteProgrammeModule.length > 0)
+                    ? (inscription ? inscription.note ? inscription.note.inscription ?
+                      inscription.note.inscription.etudiant ?
+                        inscription.note.inscription.etudiant.dateNaissance ?
+                          getFormatedDate(inscription.note.inscription.etudiant.dateNaissance)
+                          : '' : '' : '' : '' : '')
+                    : (inscription ? inscription.etudiant ?
+                      inscription.etudiant.dateNaissance ? getFormatedDate(inscription.etudiant.dateNaissance)
+                        : '' : '' : '') }}
                   </td>
                 </ng-container>
 
@@ -138,9 +175,15 @@
                 <ng-container matColumnDef="lieunaissance">
                   <th mat-header-cell *matHeaderCellDef> Lieu naissance</th>
                   <td mat-cell *matCellDef="let inscription">
-                    {{inscription ? inscription.etudiant ?
-                    inscription.etudiant.lieuNaissance ? inscription.etudiant.lieuNaissance
-                      : '' : '' : ''}}
+                    {{(listNoteProgrammeModule && listNoteProgrammeModule.length > 0)
+                    ? (inscription ? inscription.note ? inscription.note.inscription ?
+                      inscription.note.inscription.etudiant ?
+                        inscription.note.inscription.etudiant.lieuNaissance ?
+                          inscription.note.inscription.etudiant.lieuNaissance
+                          : '' : '' : '' : '' : '')
+                    : (inscription ? inscription.etudiant ?
+                      inscription.etudiant.lieuNaissance ? inscription.etudiant.lieuNaissance
+                        : '' : '' : '') }}
                   </td>
                 </ng-container>
 
@@ -148,9 +191,15 @@
                 <ng-container matColumnDef="telephone">
                   <th mat-header-cell *matHeaderCellDef> Telephone</th>
                   <td mat-cell *matCellDef="let inscription">
-                    {{inscription ? inscription.etudiant ?
-                    inscription.etudiant.telephone ? inscription.etudiant.telephone
-                      : '' : '' : ''}}
+                    {{(listNoteProgrammeModule && listNoteProgrammeModule.length > 0)
+                    ? (inscription ? inscription.note ? inscription.note.inscription ?
+                      inscription.note.inscription.etudiant ?
+                        inscription.note.inscription.etudiant.telephone ?
+                          inscription.note.inscription.etudiant.telephone
+                          : '' : '' : '' : '' : '')
+                    : (inscription ? inscription.etudiant ?
+                      inscription.etudiant.telephone ? inscription.etudiant.telephone
+                        : '' : '' : '') }}
                   </td>
                 </ng-container>
 
@@ -159,6 +208,7 @@
                   <th mat-header-cell *matHeaderCellDef> Actions </th>
                   <td mat-cell *matCellDef="let inscription">
                     <button type="button" matTooltip="Voir notes étudiant"
+                            (click)="onSetNoteForOneStudent(inscription)"
                             mat-flat-button class="action-button">
                       <em class="fa fa-book fa-lg">
                       </em>
@@ -176,12 +226,26 @@
 
                 <!-- Devoirs column -->
                 <ng-container matColumnDef="devoirs">
-                  <th mat-header-cell *matHeaderCellDef> Devoir </th>
-                  <td mat-cell *matCellDef="let inscription">
-                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <th mat-header-cell *matHeaderCellDef> Moyenne Devoirs </th>
+                  <td mat-cell *matCellDef="let inscription; let i = index">
+
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+                    *ngIf="(listNoteProgrammeModule && listNoteProgrammeModule.length > 0)">
                       <mat-label>Note : </mat-label>
-                      <input name="notedevoir" matInput/>
+                      <input name="notedevoir" disabled
+                             [(ngModel)]="inscription.note.mds" matInput/>
+                      <button  mat-button matSuffix mat-stroked-button
+                               (click)="onAddNoteDevoir(inscription.note)"
+                               type="button" class="action-button">
+                        <i class="fa fa-plus-square-o"></i>
+                      </button>
                     </mat-form-field>
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+                                    *ngIf="(!listNoteProgrammeModule || listNoteProgrammeModule.length <= 0)">
+                      <mat-label>Note : </mat-label>
+                      <input disabled matInput/>
+                    </mat-form-field>
+
                   </td>
                 </ng-container>
 
@@ -189,9 +253,19 @@
                 <ng-container matColumnDef="exam">
                   <th mat-header-cell *matHeaderCellDef> Examen </th>
                   <td mat-cell *matCellDef="let inscription">
-                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+                                    *ngIf="(listNoteProgrammeModule && listNoteProgrammeModule.length > 0)">
                       <mat-label>Note : </mat-label>
-                      <input name="noteexam" matInput/>
+                      <input name="noteexamen"
+                             [style]="inscription.styleNoteOnRemplacement"
+                             (keyup)="onChangeNoteExam(inscription, $event)"
+                             [(ngModel)]="inscription.note.nef" matInput/>
+                    </mat-form-field>
+                    <h5 class="text-danger">{{inscription.errorMessage}}</h5>
+                    <mat-form-field class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+                                    *ngIf="(!listNoteProgrammeModule || listNoteProgrammeModule.length <= 0)">
+                      <mat-label>Note : </mat-label>
+                      <input disabled matInput/>
                     </mat-form-field>
                   </td>
                 </ng-container>
@@ -201,9 +275,11 @@
                   <th mat-header-cell *matHeaderCellDef> Session </th>
                   <td mat-cell *matCellDef="let inscription">
                     <mat-checkbox name="session" color="primary"
+                                  [checked]="isNoteRemplacement"
+                                  [disabled]="isNoteRemplacement"
                                   [value]="inscription"
                                   class="example-margin"
-                                  (change)="onSelectedSession($event)" >
+                                  (change)="onSelectedNoteSession($event, inscription)" >
                       Note session normale
                     </mat-checkbox>
                   </td>
@@ -219,6 +295,34 @@
           </div>
         </mat-card-content>
       </mat-card>
+    </div>
+  </div>
+
+
+  <div #showNoteModal class="modal fade" id="showNoteModal" tabindex="-1" role="dialog"
+       aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+         <ng-container *ngIf="showDialog === 'note_etudiant' && inscription && inscriptionId && noteProgrammeModuleEtudiantDataSource">
+           <app-notes-etudiant
+             [inscription]="inscription"
+             [dataSource]="noteProgrammeModuleEtudiantDataSource">
+           </app-notes-etudiant>
+         </ng-container>
+          <ng-container *ngIf="showDialog === 'devoirs-list' && listDevoirs && listDevoirs.length > 0 && mdsNote">
+            <app-devoirs-list [listDevoirs]="listDevoirs" [note]="mdsNote"></app-devoirs-list>
+          </ng-container>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>

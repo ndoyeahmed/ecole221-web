@@ -78,6 +78,10 @@ export class ParametragesSpecialiteService {
     return this.http.get(this.api + '/semestre-niveau/niveau/' + niveauId);
   }
 
+  getSemestreNiveauEncoursByNiveau(niveauId: number): Observable<any> {
+    return this.http.get(this.api + '/semestre-niveau/encours/niveau/' + niveauId);
+  }
+
   updateSemestreNiveauEncours(status: boolean, id: any): Observable<any> {
     return this.http.put<any>(this.api + '/semestre-niveau/encours/' + id, {status: status + ''});
   }
