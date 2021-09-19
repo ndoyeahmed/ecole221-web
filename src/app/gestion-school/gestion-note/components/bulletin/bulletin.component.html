@@ -1,0 +1,189 @@
+<mat-card>
+  <mat-card-content>
+
+    <div class="row" style="margin: 20px 0">
+      <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%;">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>IDENTIFICATION</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="row">
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Matricule : </strong>
+                {{inscription ? inscription.etudiant.matricule ? inscription.etudiant.matricule : '' : ''}}
+              </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Nom : </strong>
+                {{inscription ? inscription.etudiant.nom ? inscription.etudiant.nom : '' : ''}}
+              </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Prenom : </strong>
+                {{inscription ? inscription.etudiant.prenom ? inscription.etudiant.prenom : '' : ''}}
+              </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Téléphone : </strong>
+                {{inscription ? inscription.etudiant.telephone ? inscription.etudiant.telephone : '' : ''}}
+              </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Email : </strong>
+                {{inscription ? inscription.etudiant.email ? inscription.etudiant.email : '' : ''}}
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" style="margin-top: 1%;">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>Information Classe</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="row">
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Année scolaire : </strong>
+                {{inscription ? inscription.anneeScolaire.libelle ? inscription.anneeScolaire.libelle : '' : ''}}
+              </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Domaine : </strong>
+                {{inscription ? inscription.sousClasse.specialite.mention.domaine.libelle ?
+                inscription.sousClasse.specialite.mention.domaine.libelle : '' : ''}}
+              </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Classe : </strong>
+                {{inscription ? inscription.sousClasse.libelle ? inscription.sousClasse.libelle : '' : ''}}
+              </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Niveau : </strong>
+                {{inscription ? inscription.sousClasse.niveau.libelle ? inscription.sousClasse.niveau.libelle : '' : ''}}
+              </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Specialité : </strong>
+                {{inscription ? inscription.sousClasse.specialite.libelle ? inscription.sousClasse.specialite.libelle : '' : ''}}
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+<div class="row">
+  <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+    <button type="button" mat-raised-button (click)="displayBulletin()">
+      Voir Bulletin
+    </button>
+  </div>
+  <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+    <button type="button" mat-raised-button (click)="downloadBulletin()">
+      Télécharger Bulletin
+    </button>
+  </div>
+  <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+    <button type="button" mat-raised-button (click)="printBulletin()">
+      Imprimer
+    </button>
+  </div>
+</div>
+    <ng-container >
+      <div class="row" style="margin: 20px 0">
+        <table class="table table-responsive table-bordered" style="margin-top: 3%">
+          <thead>
+          <th>UE</th>
+          <th>Module</th>
+          <th>MD </th>
+          <th>NE</th>
+          <th>Coef</th>
+          <th>Credit</th>
+          <th>Moyenne UE</th>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let data of listRecapNoteProgrammeModule">
+            <tr>
+              <td [attr.rowspan]="data.noteProgrammeModules.length">
+                {{data.programmeUE.ue.libelle}}
+              </td>
+              <td >
+                <p>
+                  {{data.noteProgrammeModules[0].programmeModule.module.libelle}}
+                </p>
+              </td>
+              <td>{{data.noteProgrammeModules[0].note.mds}}</td>
+              <td>{{data.noteProgrammeModules[0].note.nef}}</td>
+              <td>{{data.noteProgrammeModules[0].programmeModule.coef}}</td>
+              <td [attr.rowspan]="data.noteProgrammeModules.length">{{data.programmeUE.credit}}</td>
+              <td [attr.rowspan]="data.noteProgrammeModules.length">{{data.moyenneUE}}</td>
+            </tr>
+            <ng-container *ngFor="let noteProgrammeModule of data.noteProgrammeModules; let i = index">
+              <tr *ngIf="i!=0">
+                <td >
+                  <p>
+                    {{noteProgrammeModule.programmeModule.module.libelle}}
+                  </p>
+                </td>
+                <td>{{noteProgrammeModule.note.mds}}</td>
+                <td>{{noteProgrammeModule.note.nef}}</td>
+                <td>{{noteProgrammeModule.programmeModule.coef}}</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <ng-container>
+            <tr>
+              <td [attr.colspan]="5">Total</td>
+              <td>{{sommeCredit && sommeCredit !== 0 ? sommeCredit : ''}}</td>
+              <td>{{sommeMoyenneUE && sommeMoyenneUE!==0 ? sommeMoyenneUE : ''}}</td>
+            </tr>
+          </ng-container>
+          <ng-container>
+            <tr>
+              <td class="text-right" [attr.colspan]="6">Moyenne Générale</td>
+              <td>{{moyenneGenerale && moyenneGenerale!==0 ? moyenneGenerale : ''}}</td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="row">
+        <!-- TODO total et moyenne à ajouter -->
+      </div>
+
+      <div class="row" style="margin: 20px 0">
+        <table class="table table-responsive table-bordered">
+          <thead>
+          <th>Semestre</th>
+          <th>Statut</th>
+          <th>Nombre Crédit</th>
+          </thead>
+          <tbody>
+          <tr *ngFor="let bulletinRecap of bulletinRecapModels">
+            <td>{{bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : ''}}</td>
+            <td>{{bulletinRecap ? bulletinRecap.valide ? (bulletinRecap.totalCredit === 0 ? '--' : 'Validé') : (bulletinRecap.totalCredit === 0 ? '--' : 'Non Validé') : '--'}}</td>
+            <td>{{bulletinRecap ? bulletinRecap.totalCredit ? (bulletinRecap.totalCredit === 0 ? '--' : bulletinRecap.totalCredit) : '--' : '--'}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+
+  </mat-card-content>
+</mat-card>
+
+<div #showPDFModal class="modal fade" id="showPDFModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <embed [src]="secureUlr(url)"
+               frameborder="0" width="100%" height="400px">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

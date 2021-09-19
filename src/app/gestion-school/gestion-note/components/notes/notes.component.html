@@ -114,12 +114,20 @@
           </div>
 
           <div class="row" style="margin-top: 2%;">
-            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <div class="col-md-10 col-lg-10 col-sm-6 col-xs-12">
               <button mat-raised-button class="action-button"
                       [disabled]="!isNoteRemplacementok"
                       (click)="valideNote()" >
-                Valider
+                Valider Notes
                 <em class="fa fa-save fa-lg"></em>
+              </button>
+            </div>
+            <div class="col-md-2 col-lg-2 col-sm-6 col-xs-12">
+              <button mat-raised-button class="action-button"
+                      [disabled]="!isClassOk"
+                      (click)="generateBulletine()" >
+                Générer Bulletins
+                <em class="fa fa-book fa-lg"></em>
               </button>
             </div>
           </div>
@@ -216,6 +224,7 @@
                     </button>
                     &nbsp;&nbsp;
                     <button type="button" matTooltip="Voir bulletin étudiant"
+                            (click)="onShowBulletinEtudiant(inscription)"
                             mat-flat-button class="action-button">
                       <em class="fa fa-book fa-lg">
                       </em>
@@ -309,14 +318,25 @@
           </button>
         </div>
         <div class="modal-body">
-         <ng-container *ngIf="showDialog === 'note_etudiant' && inscription && inscriptionId && noteProgrammeModuleEtudiantDataSource">
+
+          <ng-container *ngIf="showDialog === 'note_etudiant' && inscription && inscriptionId && noteProgrammeModuleEtudiantDataSource">
            <app-notes-etudiant
              [inscription]="inscription"
              [dataSource]="noteProgrammeModuleEtudiantDataSource">
            </app-notes-etudiant>
          </ng-container>
+
           <ng-container *ngIf="showDialog === 'devoirs-list' && listDevoirs && listDevoirs.length > 0 && mdsNote">
             <app-devoirs-list [listDevoirs]="listDevoirs" [note]="mdsNote"></app-devoirs-list>
+          </ng-container>
+
+          <ng-container *ngIf="showDialog === 'bulletin_etudiant'
+          && sommeMoyenneUE && sommeMoyenneUE !== 0 && sommeCreditUE && sommeCreditUE !== 0
+          && recapListNoteProgrammeModuleByProgrammeUe && recapListNoteProgrammeModuleByProgrammeUe.length > 0">
+            <app-bulletin [inscription]="inscription" [sommeCredit]="sommeCreditUE" [sommeMoyenneUE]="sommeMoyenneUE"
+                          [bulletinRecapModels]="bulletinRecaps"
+                          [listRecapNoteProgrammeModule]="recapListNoteProgrammeModuleByProgrammeUe"
+                          [moyenneGenerale]="bulletinInscription.moyenneGeneral"></app-bulletin>
           </ng-container>
         </div>
         <div class="modal-footer">

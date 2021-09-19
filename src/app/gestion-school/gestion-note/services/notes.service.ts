@@ -24,6 +24,14 @@ export class NotesService {
     return this.http.get(this.api + 'note-programme-module/inscription/' + inscriptionId );
   }
 
+  // get All NoteProgrammeModule by Inscription Classe Referentiel and semestre
+  getAllNoteProgrammeModuleByInsClasseSemestre(inscriptionId: number,
+                                               classeId: number,
+                                               semestreId: number): Observable<any> {
+    return this.http.get(this.api + 'note-programme-module/inscription/' + inscriptionId
+      + '/classe/' + classeId + '/semestre/' + semestreId);
+  }
+
   updateNote(note, programmeModuleId): Observable<any> {
     return this.http.put(this.api + 'programme-module/' + programmeModuleId, note);
   }
@@ -46,5 +54,21 @@ export class NotesService {
 
   updateDevoir(devoirId: number, devoir): Observable<any> {
     return this.http.put(this.api + 'devoirs/' + devoirId, devoir);
+  }
+
+  // ----------------------- programme UE inscription --------------
+
+  getAllProgrammeUEInscriptionByInscription(idInscription: number): Observable<any> {
+    return this.http.get(this.api + 'bulletin/programmeue-inscription/inscription/' + idInscription);
+  }
+
+  // ------------------ bulletin -----------------------
+
+  getRecapNoteProgrammeModuleByProgrammeUE(inscriptionId: number): Observable<any> {
+    return this.http.get(this.api + 'bulletin/inscription/' + inscriptionId);
+  }
+
+  getBulletinRecapByInscription(inscriptionId: number): Observable<any> {
+    return this.http.get(this.api + 'bulletin-recap/inscription/' + inscriptionId);
   }
 }

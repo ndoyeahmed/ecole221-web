@@ -13,11 +13,12 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {NotesService} from "./services/notes.service";
 import { NotesEtudiantComponent } from './components/notes-etudiant/notes-etudiant.component';
 import { DevoirsListComponent } from './components/devoirs-list/devoirs-list.component';
+import { BulletinComponent } from './components/bulletin/bulletin.component';
 
 
 
 @NgModule({
-  declarations: [NotesComponent, NotesEtudiantComponent, DevoirsListComponent],
+  declarations: [NotesComponent, NotesEtudiantComponent, DevoirsListComponent, BulletinComponent],
   imports: [
     SharedModule,
     MatCardModule,

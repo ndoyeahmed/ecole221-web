@@ -36,7 +36,6 @@ export class NotesEtudiantComponent implements OnInit, AfterViewInit {
   @Input() sessionModel: any;
 
   @Input() dataSource: MatTableDataSource<NoteProgrammeModuleModel>;
-  @ViewChild('dialogpaginator') paginator: MatPaginator;
 
   etudiantNoteColumnsToDisplay = ['moduleEtudiant', 'moyenneDevoirsEtudiant', 'examEtudiant', 'sessionEtudiant'];
 
@@ -49,8 +48,6 @@ export class NotesEtudiantComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    localStorage.setItem('list-note-etudiant', JSON.stringify(this.dataSource.data));
   }
 
   onSelectedSession(event) {

@@ -15,7 +15,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {InscriptionService} from '../../../../inscription/services/inscription.service';
 import {UeModel} from '../../../../../shared/models/ue.model';
 import {ModuleModel} from '../../../../../shared/models/module.model';
-import {ReferentielModel} from "../../../../../shared/models/referentiel.model";
+import {ReferentielModel} from '../../../../../shared/models/referentiel.model';
 
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>

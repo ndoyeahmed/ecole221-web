@@ -32,6 +32,9 @@ import {NotesService} from "../../services/notes.service";
 import {NoteProgrammeModuleModel} from "../../../../shared/models/note-programme-module.model";
 import {NoteModel} from "../../../../shared/models/note.model";
 import {DevoirsModel} from "../../../../shared/models/devoirs.model";
+import {RecapNoteProgrammeModuleByProgrammeUeModel} from "../../../../shared/models/recap-note-programme-module-by-programme-ue.model";
+import {BulletinRecapModel} from "../../../../shared/models/bulletin-recap.model";
+import {BulletinInscriptionModel} from "../../../../shared/models/bulletin-inscription.model";
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
 declare var $: any;
@@ -53,6 +56,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<InscriptionModel>;
   noteProgrammeModuleDataSource: MatTableDataSource<NoteProgrammeModuleModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('dialogpaginator') dialogpaginator: MatPaginator;
 
   inscriptionColumnsToDisplay = ['nom_prenom', 'datenaissance', 'lieunaissance',  'telephone', 'actions', 'devoirs', 'exam', 'session'];
 
@@ -82,6 +86,10 @@ export class NotesComponent implements OnInit, OnDestroy {
   listNoteProgrammeModule = [] as NoteProgrammeModuleModel[];
   listNoteProgrammeModuleEtudiant = [] as NoteProgrammeModuleModel[];
   noteProgrammeModuleEtudiantDataSource: MatTableDataSource<NoteProgrammeModuleModel>;
+  recapListNoteProgrammeModuleByProgrammeUe = [] as RecapNoteProgrammeModuleByProgrammeUeModel[];
+  bulletinInscription: BulletinInscriptionModel;
+  sommeCreditUE = 0;
+  sommeMoyenneUE = 0;
 
   searchTerm: string;
   anneeScolaireEncours: AnneeScolaireModel;
@@ -100,6 +108,9 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   myControl = new FormControl();
   filteredOptions: Observable<ClasseSousClasse[]>;
+  isClassOk = false;
+
+  bulletinRecaps: BulletinRecapModel[];
 
   constructor(
     private inscriptionService: InscriptionService, private paramSpecialiteService: ParametragesSpecialiteService,
@@ -193,9 +204,13 @@ export class NotesComponent implements OnInit, OnDestroy {
       this.paramSpecialiteService.getSemestreNiveauEncoursByNiveau(niveauId).subscribe(
         (data) => {
           this.semestreModel = data;
-        }, (error) => console.log(error),
+        }, (error) => {
+          console.log(error);
+          this.isClassOk = false;
+        },
         () => {
           this.getModuleListByClasseAndSemestre();
+          this.isClassOk = true;
         }
       )
     );
@@ -407,18 +422,35 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   loadListNoteProgrammeModule() {
-    this.subscription.push(
-      this.noteService.getAllNoteProgrammeModuleByInscription(
-        this.inscriptionId
-      ).subscribe(
-        (data) => {
-          this.listNoteProgrammeModuleEtudiant = data;
-          this.noteProgrammeModuleEtudiantDataSource = new MatTableDataSource<NoteProgrammeModuleModel>
-          (this.listNoteProgrammeModuleEtudiant);
-          this.noteProgrammeModuleEtudiantDataSource.paginator = this.paginator;
-        }, (error) => console.log(error)
-      )
-    );
+    if (!this.classeSousClasseModel || !this.classeSousClasseModel.classe.id || !this.semestreModel || !this.semestreModel.semestre.id) {
+      this.subscription.push(
+        this.noteService.getAllNoteProgrammeModuleByInscription(
+          this.inscriptionId
+        ).subscribe(
+          (data) => {
+            this.listNoteProgrammeModuleEtudiant = data;
+            console.log(data);
+            this.noteProgrammeModuleEtudiantDataSource = new MatTableDataSource<NoteProgrammeModuleModel>
+            (this.listNoteProgrammeModuleEtudiant);
+            localStorage.setItem('list-note-etudiant', JSON.stringify(data));
+          }, (error) => console.log(error)
+        )
+      );
+    } else {
+      this.subscription.push(
+        this.noteService.getAllNoteProgrammeModuleByInsClasseSemestre(
+          this.inscriptionId, this.classeSousClasseModel.classe.id, this.semestreModel.semestre.id
+        ).subscribe(
+          (data) => {
+            this.listNoteProgrammeModuleEtudiant = data;
+            console.log(data);
+            this.noteProgrammeModuleEtudiantDataSource = new MatTableDataSource<NoteProgrammeModuleModel>
+            (this.listNoteProgrammeModuleEtudiant);
+            localStorage.setItem('list-note-etudiant', JSON.stringify(data));
+          }, (error) => console.log(error)
+        )
+      );
+    }
   }
 
   onSetNoteForOneStudent(item) {
@@ -460,5 +492,65 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.loadListDevoirByNote(note);
     this.showDialog = 'devoirs-list';
     $('#showNoteModal').modal('show');
+  }
+
+  onShowBulletinEtudiant(item) {
+    this.showDialog = 'bulletin_etudiant';
+    if (this.listNoteProgrammeModule && this.listNoteProgrammeModule.length > 0) {
+      this.inscriptionId = item.note.inscription.id;
+      this.inscription = item.note.inscription;
+    } else {
+      this.inscriptionId = item.id;
+      this.inscription = item;
+    }
+    this.getAllRecapNoteProgrammeModuleByProgrammeUE();
+    // this.getAllProgrammeUeInscriptionByInscription(this.inscriptionId);
+    $('#showNoteModal').modal('show');
+  }
+
+  getAllRecapNoteProgrammeModuleByProgrammeUE() {
+    this.subscription.push(
+      this.noteService.getRecapNoteProgrammeModuleByProgrammeUE(this.inscriptionId).subscribe(
+        (data) => {
+          this.bulletinInscription = data;
+          this.recapListNoteProgrammeModuleByProgrammeUe = this.bulletinInscription.recapNoteProgrammeModuleByProgrammeUES;
+        }, (error) => console.log(error),
+        () => {
+          this.sommeMoyenneUE = 0;
+          this.sommeCreditUE = 0;
+          this.recapListNoteProgrammeModuleByProgrammeUe.forEach(recap => {
+            this.sommeCreditUE = this.sommeCreditUE + recap.programmeUE.credit;
+            this.sommeMoyenneUE = this.sommeMoyenneUE + recap.moyenneUE;
+          });
+        }
+      )
+    );
+
+    this.getBulletinRecapByInscription(this.inscriptionId);
+  }
+
+  getBulletinRecapByInscription(inscriptionId) {
+    this.subscription.push(
+      this.noteService.getBulletinRecapByInscription(inscriptionId).subscribe(
+        (data) => {
+          this.bulletinRecaps = data;
+        }, (error) => console.log(error)
+      )
+    );
+  }
+
+  getAllProgrammeUeInscriptionByInscription(idInscription: number) {
+    this.subscription.push(
+      this.noteService.getAllProgrammeUEInscriptionByInscription(idInscription)
+        .subscribe(
+          (data) => {
+            console.log(data);
+          }, (error) => console.log(error)
+        )
+    );
+  }
+
+  generateBulletine() {
+
   }
 }
