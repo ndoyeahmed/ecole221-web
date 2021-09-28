@@ -7,6 +7,7 @@ import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import {HttpClient} from '@angular/common/http';
 import {log} from 'util';
+import * as moment from 'moment/moment';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
@@ -65,15 +66,31 @@ export class BulletinComponent implements OnInit {
                   {text: 'ECOLE SUPERIEUR 221', style: 'header', alignment: 'center', margin: [0, 15, 0, 0]}
                 ],
                 [
-                  {text: 'Future is now!', style: 'subtitle', alignment: 'center'}
+                  {text: 'Future is now!', style: 'subtitle', alignment: 'center', margin: [0, 0, 0, 10]}
+                ],
+                [
+                  {canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595 - 2 * 50, y2: 5, lineWidth: 1 }]},
                 ]
               ]
             }
           }
         ],
       },
+      footer: {
+        stack: [
+          {canvas: [{ type: 'line', x1: 80, y1: 5, x2: 595 - 2 * 40, y2: 5, lineWidth: 1 }]},
+          {
+            margin: [0, 5, 0, 0],
+            fontSize: 7,
+            alignment: 'center',
+            color: '#000000',
+            background: '#afaeae',
+            text: 'Tel: (221) 77 117 33 33 - 76 337 63 33 - Site web: www.ecole221.com - Email: contact@ecole221.com'
+          }
+        ]
+      },
       content: [
-        {text: 'BULLETIN DES NOTE 2020-2021', style: 'bulletinNote', alignment: 'center', margin: [0, 10, 0, 15]},
+        {text: 'BULLETIN DES NOTE 2020-2021', style: 'bulletinNote', alignment: 'center', margin: [0, 5, 0, 15]},
         {
           columns: [
             {
@@ -82,19 +99,24 @@ export class BulletinComponent implements OnInit {
                 {
                   columns: [
                     {text: 'Domaine: ', style: 'labelStyle', width: '20%'},
-                    {text: ' SCIENCES ET TECHNOLOGIES', fontSize: 10, width: '80%'},
+                    {text: this.inscription ? this.inscription.sousClasse.specialite.mention.domaine.libelle ?
+                        this.inscription.sousClasse.specialite.mention.domaine.libelle : '' : '',
+                      fontSize: 10, width: '80%'},
                   ]
                 },
                 {
                   columns: [
                     {text: 'Spécialité: ', style: 'labelStyle', width: '20%'},
-                    {text: 'GENIE LOGICIEL', fontSize: 10, width: '80%'},
+                    {text: this.inscription ? this.inscription.sousClasse.specialite.libelle ?
+                        this.inscription.sousClasse.specialite.libelle : '' : '',
+                      fontSize: 10, width: '80%'},
                   ]
                 },
                 {
                   columns: [
                     {text: 'Classe: ', style: 'labelStyle', width: '20%'},
-                    {text: 'L1 GL', fontSize: 10, width: '80%'},
+                    {text: this.inscription ? this.inscription.sousClasse.libelle ? this.inscription.sousClasse.libelle : '' : '',
+                      fontSize: 10, width: '80%'},
                   ]
                 }
               ],
@@ -105,19 +127,23 @@ export class BulletinComponent implements OnInit {
                 {
                   columns: [
                     {text: 'Mention: ', style: 'labelStyle', width: '20%'},
-                    {text: 'INFORMATIQUE', fontSize: 10, width: '80%'},
+                    {text: this.inscription ? this.inscription.sousClasse.specialite.mention.libelle ?
+                        this.inscription.sousClasse.specialite.mention.libelle : '' : '',
+                      fontSize: 10, width: '80%'},
                   ]
                 },
                 {
                   columns: [
                     {text: 'Grade: ', style: 'labelStyle', width: '20%'},
-                    {text: 'LICENCE', fontSize: 10, width: '80%'},
+                    {text: this.inscription ? this.inscription.sousClasse.niveau.libelle ?
+                        this.inscription.sousClasse.niveau.libelle : '' : '',
+                      fontSize: 10, width: '80%'},
                   ]
                 },
                 {
                   columns: [
                     {text: 'Semestre: ', style: 'labelStyle', width: '20%'},
-                    {text: '2', fontSize: 10, width: '80%'},
+                    {text: 'S1', fontSize: 10, width: '80%'},
                   ]
                 }
               ],
@@ -423,8 +449,11 @@ export class BulletinComponent implements OnInit {
   }
 
   async downloadBulletin() {
+    const filename = '' +
+      this.inscription.etudiant.nom +
+      this.inscription.etudiant.prenom + moment();
     const docDef = await this.generateBulletin();
-    pdfMake.createPdf(docDef).download();
+    pdfMake.createPdf(docDef).download(filename);
   }
 
   async displayBulletin() {
