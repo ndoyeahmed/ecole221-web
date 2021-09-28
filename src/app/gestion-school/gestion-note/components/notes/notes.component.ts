@@ -90,6 +90,8 @@ export class NotesComponent implements OnInit, OnDestroy {
   bulletinInscription: BulletinInscriptionModel;
   sommeCreditUE = 0;
   sommeMoyenneUE = 0;
+  sommeMCR = 0;
+  sommeCoef = 0;
 
   searchTerm: string;
   anneeScolaireEncours: AnneeScolaireModel;
@@ -518,9 +520,15 @@ export class NotesComponent implements OnInit, OnDestroy {
         () => {
           this.sommeMoyenneUE = 0;
           this.sommeCreditUE = 0;
+          this.sommeMCR = 0;
+          this.sommeCoef = 0;
           this.recapListNoteProgrammeModuleByProgrammeUe.forEach(recap => {
             this.sommeCreditUE = this.sommeCreditUE + recap.programmeUE.credit;
             this.sommeMoyenneUE = this.sommeMoyenneUE + recap.moyenneUE;
+            this.sommeMCR = this.sommeMCR + (recap.moyenneUE * recap.programmeUE.credit);
+            recap.noteProgrammeModules.forEach(n => {
+              this.sommeCoef = this.sommeCoef + n.programmeModule.coef;
+            });
           });
         }
       )
