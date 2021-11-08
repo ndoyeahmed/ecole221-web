@@ -281,11 +281,11 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
         && this.specialiteModel.id && this.horaireModel && this.horaireModel.id
         && this.sousClasseModel && this.sousClasseModel.id) {
 
-        if ((this.utilisateurMereModel && this.utilisateurMereModel.cin && this.utilisateurMereModel.prenom
+        /*if ((this.utilisateurMereModel && this.utilisateurMereModel.prenom
           && this.utilisateurMereModel.nom && this.utilisateurMereModel.telephone) || (this.utilisateurPereModel
-            && this.utilisateurPereModel.cin && this.utilisateurPereModel.prenom && this.utilisateurPereModel.nom
-            && this.utilisateurPereModel.telephone) || (this.utilisateurTuteurModel && this.utilisateurTuteurModel.cin
-              && this.utilisateurTuteurModel.prenom && this.utilisateurTuteurModel.nom && this.utilisateurTuteurModel.telephone)) {
+            && this.utilisateurPereModel.prenom && this.utilisateurPereModel.nom
+            && this.utilisateurPereModel.telephone) || (this.utilisateurTuteurModel
+              && this.utilisateurTuteurModel.prenom && this.utilisateurTuteurModel.nom && this.utilisateurTuteurModel.telephone)) {*/
 
           this.ngxService.show(this.LOADERID);
 
@@ -305,7 +305,11 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
               (data) => {
                 console.log(data);
               }, (error) => {
-                this.notif.error();
+                if (error.error.message === 'deja inscrit dans cette filiere') {
+                  this.notif.error('Deja inscrit dans cette spécialité');
+                } else {
+                  this.notif.error();
+                }
                 this.ngxService.hide(this.LOADERID);
               }, () => {
                 addForm.resetForm();
@@ -316,9 +320,9 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
             )
           );
 
-        } else {
+        /*} else {
           this.notif.error('Veuillez au moins remplir les informations d\'un des tuteurs');
-        }
+        }*/
       } else {
         this.notif.error('Veuillez remplir tous les champs obligatoires');
       }

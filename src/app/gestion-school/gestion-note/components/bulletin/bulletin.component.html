@@ -51,17 +51,19 @@
                 inscription.sousClasse.specialite.mention.domaine.libelle : '' : ''}}
               </div>
               <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-                <strong>Classe : </strong>
-                {{inscription ? inscription.sousClasse.libelle ? inscription.sousClasse.libelle : '' : ''}}
-              </div>
-              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-                <strong>Niveau : </strong>
-                {{inscription ? inscription.sousClasse.niveau.libelle ? inscription.sousClasse.niveau.libelle : '' : ''}}
+                <strong>Mention : </strong>
+                {{inscription ? inscription?.sousClasse?.specialite?.mention?.libelle ?
+                inscription?.sousClasse?.specialite?.mention?.libelle : '' : ''}}
               </div>
               <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
                 <strong>Specialité : </strong>
                 {{inscription ? inscription.sousClasse.specialite.libelle ? inscription.sousClasse.specialite.libelle : '' : ''}}
               </div>
+              <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <strong>Niveau : </strong>
+                {{inscription ? inscription.sousClasse.niveau.libelle ? inscription.sousClasse.niveau.libelle : '' : ''}}
+              </div>
+
             </div>
           </mat-card-content>
         </mat-card>
@@ -120,14 +122,14 @@
           <ng-container>
             <tr>
               <td [attr.colspan]="5">Total</td>
-              <td>{{sommeCredit && sommeCredit !== 0 ? sommeCredit : ''}}</td>
-              <td>{{sommeMoyenneUE && sommeMoyenneUE!==0 ? sommeMoyenneUE : ''}}</td>
+              <td>{{sommeCredit ? sommeCredit : '0'}}</td>
+              <td>{{sommeMoyenneUE ? (sommeMoyenneUE | number:'2.0-2') : '0'}}</td>
             </tr>
           </ng-container>
           <ng-container>
             <tr>
               <td class="text-right" [attr.colspan]="6">Moyenne Générale</td>
-              <td>{{moyenneGenerale && moyenneGenerale!==0 ? moyenneGenerale : ''}}</td>
+              <td>{{moyenneGenerale ? (moyenneGenerale | number:'2.0-2') : '0'}}</td>
             </tr>
           </ng-container>
           </tbody>
@@ -141,14 +143,15 @@
         <table class="table table-responsive table-bordered">
           <thead>
           <th>Semestre</th>
-          <th>Statut</th>
           <th>Nombre Crédit</th>
+          <th>Statut</th>
           </thead>
           <tbody>
           <tr *ngFor="let bulletinRecap of bulletinRecapModels">
             <td>{{bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : ''}}</td>
-            <td>{{bulletinRecap ? bulletinRecap.valide ? (bulletinRecap.totalCredit === 0 ? '--' : 'Validé') : (bulletinRecap.totalCredit === 0 ? '--' : 'Non Validé') : '--'}}</td>
-            <td>{{bulletinRecap ? bulletinRecap.totalCredit ? (bulletinRecap.totalCredit === 0 ? '--' : bulletinRecap.totalCredit) : '--' : '--'}}</td>
+            <td>{{bulletinRecap ? bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--'}}</td>
+            <td>{{bulletinRecap ? bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
+              (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--'}}</td>
           </tr>
           </tbody>
         </table>

@@ -496,7 +496,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     $('#showNoteModal').modal('show');
   }
 
-  onShowBulletinEtudiant(item) {
+  async onShowBulletinEtudiant(item) {
     this.showDialog = 'bulletin_etudiant';
     if (this.listNoteProgrammeModule && this.listNoteProgrammeModule.length > 0) {
       this.inscriptionId = item.note.inscription.id;
@@ -505,7 +505,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       this.inscriptionId = item.id;
       this.inscription = item;
     }
-    this.getAllRecapNoteProgrammeModuleByProgrammeUE();
+    await this.getAllRecapNoteProgrammeModuleByProgrammeUE();
     // this.getAllProgrammeUeInscriptionByInscription(this.inscriptionId);
     $('#showNoteModal').modal('show');
   }
@@ -541,7 +541,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.subscription.push(
       this.noteService.getBulletinRecapByInscription(inscriptionId).subscribe(
         (data) => {
+          console.log('moyenne');
           this.bulletinRecaps = data;
+          console.log(this.bulletinRecaps);
         }, (error) => console.log(error)
       )
     );

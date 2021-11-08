@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   url: 'http://localhost:8090'
+  // url: 'http://192.168.1.46:8090'
 };
 
 

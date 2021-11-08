@@ -8,6 +8,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import {HttpClient} from '@angular/common/http';
 import {log} from 'util';
 import * as moment from 'moment/moment';
+import {SemestreNiveauModel} from '../../../../shared/models/semestre-niveau.model';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
@@ -30,6 +31,7 @@ export class BulletinComponent implements OnInit {
   @Input() sommeMoyenneUE: number;
   @Input() sommeMCR: number;
   @Input() sommeCoef: number;
+  @Input() semestre: SemestreNiveauModel;
 
   url = '';
 
@@ -90,7 +92,10 @@ export class BulletinComponent implements OnInit {
         ]
       },
       content: [
-        {text: 'BULLETIN DES NOTE 2020-2021', style: 'bulletinNote', alignment: 'center', margin: [0, 5, 0, 15]},
+        {
+          text: 'RELEVé DES NOTES '.toUpperCase() + this.inscription?.anneeScolaire?.libelle,
+          style: 'bulletinNote', alignment: 'center', margin: [0, 5, 0, 15]
+        },
         {
           columns: [
             {
@@ -134,16 +139,16 @@ export class BulletinComponent implements OnInit {
                 },
                 {
                   columns: [
-                    {text: 'Grade: ', style: 'labelStyle', width: '20%'},
-                    {text: this.inscription ? this.inscription.sousClasse.niveau.libelle ?
-                        this.inscription.sousClasse.niveau.libelle : '' : '',
+                    {text: 'Parcours: ', style: 'labelStyle', width: '20%'},
+                    {text: this.inscription ? this.inscription.sousClasse.niveau.parcours.libelle ?
+                        this.inscription.sousClasse.niveau.parcours.libelle : '' : '',
                       fontSize: 10, width: '80%'},
                   ]
                 },
                 {
                   columns: [
                     {text: 'Semestre: ', style: 'labelStyle', width: '20%'},
-                    {text: 'S1', fontSize: 10, width: '80%'},
+                    {text: this.semestre?.semestre?.libelle, fontSize: 10, width: '80%'},
                   ]
                 }
               ],
@@ -164,19 +169,19 @@ export class BulletinComponent implements OnInit {
                         {
                           columns: [
                             {text: 'Matricule: ', style: 'labelStyle', width: 50},
-                            {text: '01 16 002615', fontSize: 10, width: 100},
+                            {text: this.inscription?.etudiant?.matricule, fontSize: 10, width: 100},
                           ]
                         },
                         {
                           columns: [
                             {text: 'Nom: ', style: 'labelStyle', width: 50},
-                            {text: 'AKHYAR', fontSize: 10, width: 100},
+                            {text: this.inscription?.etudiant?.nom.toUpperCase(), fontSize: 10, width: 100},
                           ]
                         },
                         {
                           columns: [
                             {text: 'Prénom: ', style: 'labelStyle', width: 50},
-                            {text: 'MOUSSA OUMRAN', fontSize: 10, width: 150},
+                            {text: this.inscription?.etudiant?.prenom.toUpperCase(), fontSize: 10, width: 150},
                           ]
                         }
                       ],
@@ -187,19 +192,22 @@ export class BulletinComponent implements OnInit {
                         {
                           columns: [
                             {text: 'Date et lieu de naissance: ', style: 'labelStyle', width: 120},
-                            {text: '10/10/1996 à NOUAKCHOTT', fontSize: 10, width: 150},
+                            {
+                              text: moment(this.inscription?.etudiant?.dateNaissance).format('DD/MM/YYYY') + ' ' +
+                                this.inscription?.etudiant?.lieuNaissance,
+                              fontSize: 10, width: 150},
                           ]
                         },
                         {
                           columns: [
                             {text: 'Pays: ', style: 'labelStyle', width: 50},
-                            {text: 'MAURITANIE', fontSize: 10, width: 200},
+                            {text: this.inscription?.etudiant?.pays?.libelle.toUpperCase(), fontSize: 10, width: 200},
                           ]
                         },
                         {
                           columns: [
                             {text: 'Sexe: ', style: 'labelStyle', width: 50},
-                            {text: 'M', fontSize: 10, width: 200},
+                            {text: this.inscription?.etudiant?.genre.toUpperCase(), fontSize: 10, width: 200},
                           ]
                         }
                       ],
@@ -229,6 +237,12 @@ export class BulletinComponent implements OnInit {
                   text: ' MDS:Moyenne Devoirs Surveillés, NEF:Note de l\'Examen Final, MUE:Moyenne Unite d\'Enseignement, NCR:Nombre de Credit, MCR:Moyenne Credité, VAL:Validation, V:Validé, NV:Non Validé, VSR:ValidéSession de Remplacement',
                   fontSize: 5
                 }
+              ],
+              [
+                {
+                  text: this.addLegende(),
+                  fontSize: 5
+                }
               ]
             ]
           }
@@ -239,7 +253,7 @@ export class BulletinComponent implements OnInit {
               width: '50%',
               margin: [0, 15, 0, 0],
               style: 'moyenneG',
-              text: 'Moyenne General : ' + this.moyenneGenerale
+              text: 'Moyenne General : ' + this.formatNumber(this.moyenneGenerale)
             },
             {
               width: '50%',
@@ -356,10 +370,9 @@ export class BulletinComponent implements OnInit {
     this.bulletinRecapModels.forEach(bulletinRecap => {
       const col = [
         {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
-        {text: bulletinRecap ? bulletinRecap.totalCredit ? (bulletinRecap.totalCredit === 0 ? '--' : bulletinRecap.totalCredit) : '--' : '--', style: 'tableData'},
-        {text: bulletinRecap ? bulletinRecap.valide ?
-            (bulletinRecap.totalCredit === 0 ? '--' : 'Validé') :
-            (bulletinRecap.totalCredit === 0 ? '--' : 'Non Validé') : '--', style: 'tableData'},
+        {text: bulletinRecap ? bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--', style: 'tableData'},
+        {text: bulletinRecap ? bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
+            (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'},
       ];
       body.push(col);
     });
@@ -389,9 +402,14 @@ export class BulletinComponent implements OnInit {
     body.push(headers2);
     this.listRecapNoteProgrammeModule.forEach(data => {
       const col = [
-        {text: data.programmeUE.ue.libelle, style: 'tableUE',
+        {text: data.programmeUE.ue.libelle.trim().length >= 23 ?
+            data.programmeUE.code :
+            data.programmeUE.ue.libelle, style: 'tableUE',
           rowSpan: data.noteProgrammeModules.length},
-        {text: data.noteProgrammeModules[0].programmeModule.module.libelle, style: 'tableModule'},
+        // libelle length max 31 caraters
+        {text: data.noteProgrammeModules[0].programmeModule.module.libelle.trim().length >= 28 ?
+            data.noteProgrammeModules[0].programmeModule.code :
+            data.noteProgrammeModules[0].programmeModule.module.libelle, style: 'tableModule'},
         {text: data.noteProgrammeModules[0].note.mds, style: 'tableData'},
         {text: data.noteProgrammeModules[0].note.nef, style: 'tableData'},
         {text: (data.noteProgrammeModules[0].note.nef), style: 'tableData'},
@@ -406,10 +424,12 @@ export class BulletinComponent implements OnInit {
         if (data.noteProgrammeModules.indexOf(noteProgrammeModule) !== 0) {
           const col2 = [
             {},
-            {text: noteProgrammeModule.programmeModule.module.libelle, style: 'tableModule'},
+            {text: noteProgrammeModule.programmeModule.module.libelle.trim().length >= 28 ?
+                noteProgrammeModule.programmeModule.code :
+                noteProgrammeModule.programmeModule.module.libelle, style: 'tableModule'},
             {text: noteProgrammeModule.note.mds, style: 'tableData'},
             {text: noteProgrammeModule.note.nef, style: 'tableData'},
-            {text: '12.67', style: 'tableData'},
+            {text: (Number(noteProgrammeModule.note.mds) + Number(noteProgrammeModule.note.nef)) / 2, style: 'tableData'},
             {text: noteProgrammeModule.programmeModule.coef, style: 'tableData'},
             {},
             {},
@@ -428,9 +448,9 @@ export class BulletinComponent implements OnInit {
       {},
       {},
       {text: this.sommeCoef, style: 'tableData'},
-      {text: this.sommeMoyenneUE, style: 'tableData'},
+      {text: this.formatNumber(this.sommeMoyenneUE), style: 'tableData'},
       {text: this.sommeCredit, style: 'tableData'},
-      {text: this.sommeMCR, style: 'tableData'},
+      {text: this.formatNumber(this.sommeMCR), style: 'tableData'},
       {},
     ];
 
@@ -439,8 +459,24 @@ export class BulletinComponent implements OnInit {
     return body;
   }
 
-  getMoyDevoir(mds, nef) {
+  formatNumber(num, numberDigits = 2) {
+    return (Math.round(num * 100) / 100).toFixed(numberDigits);
+  }
 
+  addLegende() {
+    let legende = '';
+    this.listRecapNoteProgrammeModule.forEach(data => {
+      if (data.programmeUE.ue.libelle.trim().length >= 23) {
+        legende = legende + data.programmeUE.code + ' : ' + data.programmeUE.ue.libelle + ', ';
+      }
+      data.noteProgrammeModules.forEach(noteProgrammeModule => {
+        if (noteProgrammeModule.programmeModule.module.libelle.trim().length >= 28) {
+          legende = legende + noteProgrammeModule.programmeModule.code + ' : ' + noteProgrammeModule.programmeModule.module.libelle + ', ';
+        }
+      });
+    });
+
+    return legende;
   }
 
   async printBulletin() {

@@ -330,14 +330,13 @@
             <app-devoirs-list [listDevoirs]="listDevoirs" [note]="mdsNote"></app-devoirs-list>
           </ng-container>
 
-          <ng-container *ngIf="showDialog === 'bulletin_etudiant'
-          && sommeMoyenneUE && sommeMoyenneUE !== 0 && sommeCreditUE && sommeCreditUE !== 0
-          && recapListNoteProgrammeModuleByProgrammeUe && recapListNoteProgrammeModuleByProgrammeUe.length > 0">
+          <ng-container *ngIf="showDialog === 'bulletin_etudiant'">
             <app-bulletin [inscription]="inscription" [sommeCredit]="sommeCreditUE" [sommeMoyenneUE]="sommeMoyenneUE"
                           [bulletinRecapModels]="bulletinRecaps"
+                          [semestre]="semestreModel"
                           [sommeCoef]="sommeCoef" [sommeMCR]="sommeMCR"
                           [listRecapNoteProgrammeModule]="recapListNoteProgrammeModuleByProgrammeUe"
-                          [moyenneGenerale]="bulletinInscription.moyenneGeneral"></app-bulletin>
+                          [moyenneGenerale]="bulletinInscription?.moyenneGeneral"></app-bulletin>
           </ng-container>
         </div>
         <div class="modal-footer">
