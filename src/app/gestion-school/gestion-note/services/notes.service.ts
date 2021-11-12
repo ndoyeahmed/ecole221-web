@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,7 @@ import {Observable} from 'rxjs';
 export class NotesService {
 
   api = '/api/notes/';
+  public onGenerateAllBulletin = new BehaviorSubject<any>([]);
   constructor(private http: HttpClient) { }
 
   getAllNotesByInscriptionAnneeScolaire(anneeScolaireId: number): Observable<any> {
@@ -68,7 +69,16 @@ export class NotesService {
     return this.http.get(this.api + 'bulletin/inscription/' + inscriptionId);
   }
 
+  getRecapNoteProgrammeModuleByProgrammeUEAndSemestre(inscriptionId: number, semestreId: number): Observable<any> {
+    return this.http.get(this.api + 'bulletin/inscription/' + inscriptionId + '/semestre/' + semestreId);
+  }
+
   getBulletinRecapByInscription(inscriptionId: number): Observable<any> {
     return this.http.get(this.api + 'bulletin-recap/inscription/' + inscriptionId);
+  }
+
+  // ------------------------------ recap semestre inscription valide -----------------------------------------------
+  getRecapSemestreInscriptionValideByInscriptionEtudiant(etudiantId): Observable<any> {
+    return this.http.get(this.api + 'recap-semestre-inscription-valide/inscription/etudiant/' + etudiantId);
   }
 }

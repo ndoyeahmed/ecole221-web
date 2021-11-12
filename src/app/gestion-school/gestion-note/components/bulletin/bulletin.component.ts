@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {RecapNoteProgrammeModuleByProgrammeUeModel} from '../../../../shared/models/recap-note-programme-module-by-programme-ue.model';
 import {InscriptionModel} from '../../../../shared/models/inscription.model';
 import {BulletinRecapModel} from '../../../../shared/models/bulletin-recap.model';
@@ -9,6 +9,11 @@ import {HttpClient} from '@angular/common/http';
 import {log} from 'util';
 import * as moment from 'moment/moment';
 import {SemestreNiveauModel} from '../../../../shared/models/semestre-niveau.model';
+import {NotesService} from "../../services/notes.service";
+import {Subscription} from "rxjs";
+import {BulletinAllModel} from "../../../../shared/models/bulletin-all.model";
+import {ClasseSousClasse} from "../../../../shared/models/classe-sous-classe.model";
+import {ParametragesSpecialiteService} from "../../../parametrage/services/parametrages-specialite.service";
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
@@ -21,7 +26,7 @@ declare var $: any;
   templateUrl: './bulletin.component.html',
   styleUrls: ['./bulletin.component.css']
 })
-export class BulletinComponent implements OnInit {
+export class BulletinComponent implements OnInit, OnDestroy {
   @Input() listRecapNoteProgrammeModule: RecapNoteProgrammeModuleByProgrammeUeModel[];
   @Input() bulletinRecapModels: BulletinRecapModel[];
   @Input() inscription: InscriptionModel;
@@ -33,63 +38,70 @@ export class BulletinComponent implements OnInit {
   @Input() sommeCoef: number;
   @Input() semestre: SemestreNiveauModel;
 
+  subscription = [] as Subscription[];
+  bulletinAllClasse = [] as BulletinAllModel[];
+  semestreNiveauArray = [] as SemestreNiveauModel[];
+  recapSemestreInscription = [];
+  classeSousClasse: ClasseSousClasse;
   url = '';
 
   constructor(private sanitizer: DomSanitizer,
+              private noteService: NotesService,
+              private paramSpecialiteService: ParametragesSpecialiteService,
               private http: HttpClient) {
   }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    this.subscription.forEach(s => s.unsubscribe());
   }
 
-  async getContent() {
+  ngOnInit(): void {
+    this.onGenerateAllBulletin();
+  }
+
+  getRecapSemestreInscriptionByInscriptionEtudiant(etudiantId) {
+    this.subscription.push(
+      this.noteService.getRecapSemestreInscriptionValideByInscriptionEtudiant(etudiantId)
+        .subscribe(
+          (data) => {
+            this.recapSemestreInscription = data;
+          }, (error) => console.log(error)
+        )
+    );
+  }
+
+  getSemestreNiveauByNiveau(niveauId) {
+    this.subscription.push(
+      this.paramSpecialiteService.getAllSemestreNiveauByNiveau(niveauId).subscribe(
+        (data) => {
+          this.semestreNiveauArray = data;
+        }, (error) => console.log(error),
+        () => {
+        }
+      )
+    );
   }
 
   async generateBulletin() {
-    const logo = await this.getImageFromAssets('/assets/images/forslide.png');
+    const logo = await this.getImageFromAssets('/assets/images/bulletin/header.png');
+    const footer = await this.getImageFromAssets('/assets/images/bulletin/footer.png');
     console.log(logo);
     return {
       header: {
         columns: [
           {
-            margin: [150, 5, 0, 0],
-            image: 'mylogo', width: 50
-          },
-          {
-            layout: 'noBorders', // optional
-            table: {
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
-              headerRows: 1,
-              widths: ['*'],
-
-              body: [
-                [
-                  {text: 'ECOLE SUPERIEUR 221', style: 'header', alignment: 'center', margin: [0, 15, 0, 0]}
-                ],
-                [
-                  {text: 'Future is now!', style: 'subtitle', alignment: 'center', margin: [0, 0, 0, 10]}
-                ],
-                [
-                  {canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595 - 2 * 50, y2: 5, lineWidth: 1 }]},
-                ]
-              ]
-            }
+            margin: [0, 0, 0, 0],
+            image: 'mylogo', width: 600, height: 80
           }
         ],
       },
       footer: {
-        stack: [
-          {canvas: [{ type: 'line', x1: 80, y1: 5, x2: 595 - 2 * 40, y2: 5, lineWidth: 1 }]},
+        columns: [
           {
-            margin: [0, 5, 0, 0],
-            fontSize: 7,
-            alignment: 'center',
-            color: '#000000',
-            background: '#afaeae',
-            text: 'Tel: (221) 77 117 33 33 - 76 337 63 33 - Site web: www.ecole221.com - Email: contact@ecole221.com'
+            margin: [0, 0, 0, 0],
+            image: 'footerImg', width: 600, height: 60
           }
-        ]
+        ],
       },
       content: [
         {
@@ -104,24 +116,30 @@ export class BulletinComponent implements OnInit {
                 {
                   columns: [
                     {text: 'Domaine: ', style: 'labelStyle', width: '20%'},
-                    {text: this.inscription ? this.inscription.sousClasse.specialite.mention.domaine.libelle ?
+                    {
+                      text: this.inscription ? this.inscription.sousClasse.specialite.mention.domaine.libelle ?
                         this.inscription.sousClasse.specialite.mention.domaine.libelle : '' : '',
-                      fontSize: 10, width: '80%'},
+                      fontSize: 10, width: '80%'
+                    },
                   ]
                 },
                 {
                   columns: [
                     {text: 'Spécialité: ', style: 'labelStyle', width: '20%'},
-                    {text: this.inscription ? this.inscription.sousClasse.specialite.libelle ?
+                    {
+                      text: this.inscription ? this.inscription.sousClasse.specialite.libelle ?
                         this.inscription.sousClasse.specialite.libelle : '' : '',
-                      fontSize: 10, width: '80%'},
+                      fontSize: 10, width: '80%'
+                    },
                   ]
                 },
                 {
                   columns: [
                     {text: 'Classe: ', style: 'labelStyle', width: '20%'},
-                    {text: this.inscription ? this.inscription.sousClasse.libelle ? this.inscription.sousClasse.libelle : '' : '',
-                      fontSize: 10, width: '80%'},
+                    {
+                      text: this.inscription ? this.inscription.sousClasse.libelle ? this.inscription.sousClasse.libelle : '' : '',
+                      fontSize: 10, width: '80%'
+                    },
                   ]
                 }
               ],
@@ -132,17 +150,21 @@ export class BulletinComponent implements OnInit {
                 {
                   columns: [
                     {text: 'Mention: ', style: 'labelStyle', width: '20%'},
-                    {text: this.inscription ? this.inscription.sousClasse.specialite.mention.libelle ?
+                    {
+                      text: this.inscription ? this.inscription.sousClasse.specialite.mention.libelle ?
                         this.inscription.sousClasse.specialite.mention.libelle : '' : '',
-                      fontSize: 10, width: '80%'},
+                      fontSize: 10, width: '80%'
+                    },
                   ]
                 },
                 {
                   columns: [
                     {text: 'Parcours: ', style: 'labelStyle', width: '20%'},
-                    {text: this.inscription ? this.inscription.sousClasse.niveau.parcours.libelle ?
+                    {
+                      text: this.inscription ? this.inscription.sousClasse.niveau.parcours.libelle ?
                         this.inscription.sousClasse.niveau.parcours.libelle : '' : '',
-                      fontSize: 10, width: '80%'},
+                      fontSize: 10, width: '80%'
+                    },
                   ]
                 },
                 {
@@ -164,38 +186,39 @@ export class BulletinComponent implements OnInit {
                   fillColor: '#afaeae',
                   columns: [
                     {
-                      width: 200,
+                      width: 220,
                       stack: [
                         {
                           columns: [
-                            {text: 'Matricule: ', style: 'labelStyle', width: 50},
-                            {text: this.inscription?.etudiant?.matricule, fontSize: 10, width: 100},
+                            {text: 'Matricule: ', style: 'labelStyle', width: 60},
+                            {text: this.inscription?.etudiant?.matricule, fontSize: 10, width: 140},
                           ]
                         },
                         {
                           columns: [
-                            {text: 'Nom: ', style: 'labelStyle', width: 50},
-                            {text: this.inscription?.etudiant?.nom.toUpperCase(), fontSize: 10, width: 100},
+                            {text: 'Nom: ', style: 'labelStyle', width: 60},
+                            {text: this.inscription?.etudiant?.nom.toUpperCase(), fontSize: 10, width: 140},
                           ]
                         },
                         {
                           columns: [
-                            {text: 'Prénom: ', style: 'labelStyle', width: 50},
-                            {text: this.inscription?.etudiant?.prenom.toUpperCase(), fontSize: 10, width: 150},
+                            {text: 'Prénom: ', style: 'labelStyle', width: 60},
+                            {text: this.inscription?.etudiant?.prenom.toUpperCase(), fontSize: 10, width: 160},
                           ]
                         }
                       ],
                     },
                     {
-                      width: 300,
+                      width: 345,
                       stack: [
                         {
                           columns: [
-                            {text: 'Date et lieu de naissance: ', style: 'labelStyle', width: 120},
+                            {text: 'Date et lieu de naissance: ', style: 'labelStyle', width: 150},
                             {
                               text: moment(this.inscription?.etudiant?.dateNaissance).format('DD/MM/YYYY') + ' ' +
                                 this.inscription?.etudiant?.lieuNaissance,
-                              fontSize: 10, width: 150},
+                              fontSize: 10, width: 195
+                            },
                           ]
                         },
                         {
@@ -223,9 +246,10 @@ export class BulletinComponent implements OnInit {
             // headers are automatically repeated if the table spans over multiple pages
             // you can declare how many rows should be treated as headers
             headerRows: 2,
-            widths: [ 100, 120, 25, 25, 25, 25, 25, 25, 25, 25 ],
+            widths: [100, 144, 30, 30, 30, 30, 30, 30, 30, 30],
 
-            body: this.getTableRowsForBulletin()
+            body: this.getTableRowsForBulletin(this.listRecapNoteProgrammeModule,
+              this.sommeCoef, this.sommeMoyenneUE, this.sommeCredit, this.sommeMCR)
           }
         },
         {
@@ -235,13 +259,13 @@ export class BulletinComponent implements OnInit {
               [
                 {
                   text: ' MDS:Moyenne Devoirs Surveillés, NEF:Note de l\'Examen Final, MUE:Moyenne Unite d\'Enseignement, NCR:Nombre de Credit, MCR:Moyenne Credité, VAL:Validation, V:Validé, NV:Non Validé, VSR:ValidéSession de Remplacement',
-                  fontSize: 5
+                  fontSize: 7
                 }
               ],
               [
                 {
-                  text: this.addLegende(),
-                  fontSize: 5
+                  text: this.addLegende(this.listRecapNoteProgrammeModule),
+                  fontSize: 7
                 }
               ]
             ]
@@ -269,9 +293,9 @@ export class BulletinComponent implements OnInit {
             // headers are automatically repeated if the table spans over multiple pages
             // you can declare how many rows should be treated as headers
             headerRows: 1,
-            widths: [ 100, 100, 100 ],
+            widths: [100, 100, 100],
 
-            body: this.getBulletinRecapTablePdf()
+            body: this.getBulletinRecapTablePdf(this.bulletinRecapModels, this.inscription)
           }
         },
         {
@@ -279,7 +303,7 @@ export class BulletinComponent implements OnInit {
             {
               width: '50%',
               margin: [0, 15, 0, 0],
-              fontSize: 9,
+              fontSize: 11,
               bold: true,
               text: 'Decision du Conseil: Admis'
             },
@@ -288,7 +312,7 @@ export class BulletinComponent implements OnInit {
               margin: [0, 15, 0, 0],
               stack: [
                 {
-                  fontSize: 10,
+                  fontSize: 11,
                   bold: true,
                   decoration: 'underline',
                   color: '#000000',
@@ -297,7 +321,7 @@ export class BulletinComponent implements OnInit {
                 },
                 {
                   text: 'Nom du Directeur',
-                  fontSize: 10,
+                  fontSize: 11,
                   alignment: 'center',
                 }
               ]
@@ -323,43 +347,45 @@ export class BulletinComponent implements OnInit {
           background: '#afaeae'
         },
         labelStyle: {
-          fontSize: 10,
+          fontSize: 12,
           color: '#000000',
           bold: true
         },
         tableHeader: {
-          fontSize: 8,
+          fontSize: 10,
           color: '#000000',
           bold: true,
           alignment: 'center'
         },
         tableData: {
-          fontSize: 8,
+          fontSize: 9,
           color: '#000000',
           alignment: 'center'
         },
         tableUE: {
-          fontSize: 9,
+          fontSize: 10,
           color: '#000000'
         },
         tableModule: {
-          fontSize: 8,
+          fontSize: 10,
           color: '#000000'
         },
         moyenneG: {
-          fontSize: 10,
+          fontSize: 12,
           bold: true,
           color: '#000000'
         }
       },
       images: {
-        mylogo: logo
+        mylogo: logo,
+        footerImg: footer,
       },
-      pageMargins: [40, 80, 40, 60]
+      // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
+      pageMargins: [10, 80, 10, 60]
     };
   }
 
-  getBulletinRecapTablePdf() {
+  getBulletinRecapTablePdf(bulletinRecapModels: BulletinRecapModel[], inscription: InscriptionModel) {
     const body = [];
     const headers = [
       {text: 'Semestre', style: 'tableHeader'},
@@ -367,27 +393,65 @@ export class BulletinComponent implements OnInit {
       {text: 'Statut', style: 'tableHeader'},
     ];
     body.push(headers);
-    this.bulletinRecapModels.forEach(bulletinRecap => {
-      const col = [
-        {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
-        {text: bulletinRecap ? bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--', style: 'tableData'},
-        {text: bulletinRecap ? bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
-            (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'},
-      ];
+    // let cpt = 0;
+
+
+    for (let i = 0; i < 2; i++){
+      const bulletinRecap = bulletinRecapModels[i];
+      let col;
+      if (this.semestre.semestre.numero === 1 && bulletinRecap.semestre.id === this.semestre.semestre.id) {
+        col = [
+          {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+          {
+            text: bulletinRecap ?
+              bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--',
+            style: 'tableData'
+          },
+
+          {
+            text: bulletinRecap ?
+              bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
+                (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'
+          },
+        ];
+      } else if (this.semestre.semestre.numero === 2) {
+        col = [
+          {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+          {
+            text: bulletinRecap ?
+              bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--',
+            style: 'tableData'
+          },
+
+          {
+            text: bulletinRecap ?
+              bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
+                (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'
+          },
+        ];
+      } else {
+        col = [
+          {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+          {text:  '--', style: 'tableData'},
+
+          {text: '--', style: 'tableData'},
+        ];
+      }
       body.push(col);
-    });
+
+    }
 
     return body;
   }
 
-  getTableRowsForBulletin() {
+  getTableRowsForBulletin(listRecapNoteProgrammeModule, sommeCoef, sommeMoyenneUE, sommeCredit, sommeMCR) {
     const body = [];
-    const headers1 = [ {text: 'Unités d\'enseignement', style: 'tableHeader', rowSpan: 2},
+    const headers1 = [{text: 'Unités d\'enseignement', style: 'tableHeader', rowSpan: 2},
       {text: 'Elements Constitutifs', style: 'tableHeader', colSpan: 5}, {}, {}, {}, {},
       {text: 'MU.E', style: 'tableHeader', rowSpan: 2},
       {text: 'Crédits', style: 'tableHeader', colSpan: 3}, {}, {}
     ];
-    const headers2 = [ {},
+    const headers2 = [{},
       {text: 'Intitulé', style: 'tableHeader'},
       {text: 'MDS', style: 'tableHeader'},
       {text: 'NEF', style: 'tableHeader'},
@@ -400,23 +464,27 @@ export class BulletinComponent implements OnInit {
     ];
     body.push(headers1);
     body.push(headers2);
-    this.listRecapNoteProgrammeModule.forEach(data => {
+    listRecapNoteProgrammeModule.forEach(data => {
       const col = [
-        {text: data.programmeUE.ue.libelle.trim().length >= 23 ?
-            data.programmeUE.code :
-            data.programmeUE.ue.libelle, style: 'tableUE',
-          rowSpan: data.noteProgrammeModules.length},
+        {
+          text: data.programmeUE.code, style: 'tableUE',
+          rowSpan: data.noteProgrammeModules.length
+        },
         // libelle length max 31 caraters
-        {text: data.noteProgrammeModules[0].programmeModule.module.libelle.trim().length >= 28 ?
-            data.noteProgrammeModules[0].programmeModule.code :
-            data.noteProgrammeModules[0].programmeModule.module.libelle, style: 'tableModule'},
-        {text: data.noteProgrammeModules[0].note.mds, style: 'tableData'},
+        {text: data.noteProgrammeModules[0].programmeModule.module.libelle, style: 'tableModule'},
+        {text: this.formatNumber(data.noteProgrammeModules[0].note.mds), style: 'tableData'},
         {text: data.noteProgrammeModules[0].note.nef, style: 'tableData'},
-        {text: (data.noteProgrammeModules[0].note.nef), style: 'tableData'},
+        {
+          text: this.formatNumber((Number(data.noteProgrammeModules[0].note.nef) + Number(data.noteProgrammeModules[0].note.mds)) / 2),
+          style: 'tableData'
+        },
         {text: data.noteProgrammeModules[0].programmeModule.coef, style: 'tableData'},
-        {text: data.moyenneUE, style: 'tableData', rowSpan: data.noteProgrammeModules.length},
+        {text: this.formatNumber(data.moyenneUE), style: 'tableData', rowSpan: data.noteProgrammeModules.length},
         {text: data.programmeUE.credit, style: 'tableData', rowSpan: data.noteProgrammeModules.length},
-        {text: (data.moyenneUE * data.programmeUE.credit), style: 'tableData', rowSpan: data.noteProgrammeModules.length},
+        {
+          text: this.formatNumber((data.moyenneUE * data.programmeUE.credit)),
+          style: 'tableData', rowSpan: data.noteProgrammeModules.length
+        },
         {text: data.moyenneUE >= 10 ? 'V' : 'NV', style: 'tableData', rowSpan: data.noteProgrammeModules.length},
       ];
       body.push(col);
@@ -424,12 +492,13 @@ export class BulletinComponent implements OnInit {
         if (data.noteProgrammeModules.indexOf(noteProgrammeModule) !== 0) {
           const col2 = [
             {},
-            {text: noteProgrammeModule.programmeModule.module.libelle.trim().length >= 28 ?
-                noteProgrammeModule.programmeModule.code :
-                noteProgrammeModule.programmeModule.module.libelle, style: 'tableModule'},
-            {text: noteProgrammeModule.note.mds, style: 'tableData'},
-            {text: noteProgrammeModule.note.nef, style: 'tableData'},
-            {text: (Number(noteProgrammeModule.note.mds) + Number(noteProgrammeModule.note.nef)) / 2, style: 'tableData'},
+            {text: noteProgrammeModule.programmeModule.module.libelle, style: 'tableModule'},
+            {text: this.formatNumber(noteProgrammeModule.note.mds), style: 'tableData'},
+            {text: this.formatNumber(noteProgrammeModule.note.nef), style: 'tableData'},
+            {
+              text: this.formatNumber((Number(noteProgrammeModule.note.mds) + Number(noteProgrammeModule.note.nef)) / 2),
+              style: 'tableData'
+            },
             {text: noteProgrammeModule.programmeModule.coef, style: 'tableData'},
             {},
             {},
@@ -447,10 +516,10 @@ export class BulletinComponent implements OnInit {
       {},
       {},
       {},
-      {text: this.sommeCoef, style: 'tableData'},
-      {text: this.formatNumber(this.sommeMoyenneUE), style: 'tableData'},
-      {text: this.sommeCredit, style: 'tableData'},
-      {text: this.formatNumber(this.sommeMCR), style: 'tableData'},
+      {text: sommeCoef, style: 'tableData'},
+      {text: this.formatNumber(sommeMoyenneUE), style: 'tableData'},
+      {text: sommeCredit, style: 'tableData'},
+      {text: this.formatNumber(sommeMCR), style: 'tableData'},
       {},
     ];
 
@@ -463,17 +532,10 @@ export class BulletinComponent implements OnInit {
     return (Math.round(num * 100) / 100).toFixed(numberDigits);
   }
 
-  addLegende() {
+  addLegende(listRecapNoteProgrammeModule) {
     let legende = '';
-    this.listRecapNoteProgrammeModule.forEach(data => {
-      if (data.programmeUE.ue.libelle.trim().length >= 23) {
-        legende = legende + data.programmeUE.code + ' : ' + data.programmeUE.ue.libelle + ', ';
-      }
-      data.noteProgrammeModules.forEach(noteProgrammeModule => {
-        if (noteProgrammeModule.programmeModule.module.libelle.trim().length >= 28) {
-          legende = legende + noteProgrammeModule.programmeModule.code + ' : ' + noteProgrammeModule.programmeModule.module.libelle + ', ';
-        }
-      });
+    listRecapNoteProgrammeModule.forEach(data => {
+      legende = legende + data.programmeUE.code + ' : ' + data.programmeUE.ue.libelle + ', ';
     });
 
     return legende;
@@ -490,6 +552,335 @@ export class BulletinComponent implements OnInit {
       this.inscription.etudiant.prenom + moment();
     const docDef = await this.generateBulletin();
     pdfMake.createPdf(docDef).download(filename);
+  }
+
+  async downloadAllBulletin() {
+    const filename = this.classeSousClasse.classe.libelle + '-' +
+      this.semestre.semestre.libelle + '-' +
+      moment().format('DD-MM-YYYY HH-mm-ss');
+    const docDef = await this.generateAllBulletin();
+    pdfMake.createPdf(docDef).download(filename);
+  }
+
+  getAllBulletinContent() {
+    const content = [];
+    let cpt = 0;
+    if (this.bulletinAllClasse && this.bulletinAllClasse.length > 0) {
+      this.bulletinAllClasse.forEach(bulletinAll => {
+        cpt++;
+        content.push(...[
+          {
+            text: 'RELEVé DES NOTES '.toUpperCase() + bulletinAll.inscription?.anneeScolaire?.libelle,
+            style: 'bulletinNote', alignment: 'center', margin: [0, 5, 0, 15]
+          },
+          {
+            columns: [
+              {
+                width: '50%',
+                stack: [
+                  {
+                    columns: [
+                      {text: 'Domaine: ', style: 'labelStyle', width: '20%'},
+                      {
+                        text: bulletinAll.inscription ? bulletinAll.inscription.sousClasse.specialite.mention.domaine.libelle ?
+                          bulletinAll.inscription.sousClasse.specialite.mention.domaine.libelle : '' : '',
+                        fontSize: 10, width: '80%'
+                      },
+                    ]
+                  },
+                  {
+                    columns: [
+                      {text: 'Spécialité: ', style: 'labelStyle', width: '20%'},
+                      {
+                        text: bulletinAll.inscription ? bulletinAll.inscription.sousClasse.specialite.libelle ?
+                          bulletinAll.inscription.sousClasse.specialite.libelle : '' : '',
+                        fontSize: 10, width: '80%'
+                      },
+                    ]
+                  },
+                  {
+                    columns: [
+                      {text: 'Classe: ', style: 'labelStyle', width: '20%'},
+                      {
+                        text: bulletinAll.inscription ? bulletinAll.inscription.sousClasse.libelle ?
+                          bulletinAll.inscription.sousClasse.libelle : '' : '',
+                        fontSize: 10, width: '80%'
+                      },
+                    ]
+                  }
+                ],
+              },
+              {
+                width: '50%',
+                stack: [
+                  {
+                    columns: [
+                      {text: 'Mention: ', style: 'labelStyle', width: '20%'},
+                      {
+                        text: bulletinAll.inscription ? bulletinAll.inscription.sousClasse.specialite.mention.libelle ?
+                          bulletinAll.inscription.sousClasse.specialite.mention.libelle : '' : '',
+                        fontSize: 10, width: '80%'
+                      },
+                    ]
+                  },
+                  {
+                    columns: [
+                      {text: 'Parcours: ', style: 'labelStyle', width: '20%'},
+                      {
+                        text: bulletinAll.inscription ? bulletinAll.inscription.sousClasse.niveau.parcours.libelle ?
+                          bulletinAll.inscription.sousClasse.niveau.parcours.libelle : '' : '',
+                        fontSize: 10, width: '80%'
+                      },
+                    ]
+                  },
+                  {
+                    columns: [
+                      {text: 'Semestre: ', style: 'labelStyle', width: '20%'},
+                      {text: this.semestre?.semestre?.libelle, fontSize: 10, width: '80%'},
+                    ]
+                  }
+                ],
+              }
+            ]
+          },
+          {
+            margin: [0, 15, 0, 15],
+            table: {
+              body: [
+                [
+                  {
+                    fillColor: '#afaeae',
+                    columns: [
+                      {
+                        width: 220,
+                        stack: [
+                          {
+                            columns: [
+                              {text: 'Matricule: ', style: 'labelStyle', width: 60},
+                              {text: bulletinAll.inscription?.etudiant?.matricule, fontSize: 10, width: 140},
+                            ]
+                          },
+                          {
+                            columns: [
+                              {text: 'Nom: ', style: 'labelStyle', width: 60},
+                              {text: bulletinAll.inscription?.etudiant?.nom.toUpperCase(), fontSize: 10, width: 140},
+                            ]
+                          },
+                          {
+                            columns: [
+                              {text: 'Prénom: ', style: 'labelStyle', width: 60},
+                              {text: bulletinAll.inscription?.etudiant?.prenom.toUpperCase(), fontSize: 10, width: 160},
+                            ]
+                          }
+                        ],
+                      },
+                      {
+                        width: 345,
+                        stack: [
+                          {
+                            columns: [
+                              {text: 'Date et lieu de naissance: ', style: 'labelStyle', width: 150},
+                              {
+                                text: moment(bulletinAll.inscription?.etudiant?.dateNaissance).format('DD/MM/YYYY') + ' ' +
+                                  bulletinAll.inscription?.etudiant?.lieuNaissance,
+                                fontSize: 10, width: 195
+                              },
+                            ]
+                          },
+                          {
+                            columns: [
+                              {text: 'Pays: ', style: 'labelStyle', width: 50},
+                              {
+                                text: bulletinAll.inscription?.etudiant?.pays?.libelle.toUpperCase(),
+                                fontSize: 10,
+                                width: 200
+                              },
+                            ]
+                          },
+                          {
+                            columns: [
+                              {text: 'Sexe: ', style: 'labelStyle', width: 50},
+                              {text: bulletinAll.inscription?.etudiant?.genre.toUpperCase(), fontSize: 10, width: 200},
+                            ]
+                          }
+                        ],
+                      }
+                    ]
+                  }
+                ]
+              ]
+            }
+          },
+          {
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 2,
+              widths: [100, 144, 30, 30, 30, 30, 30, 30, 30, 30],
+
+              body: this.getTableRowsForBulletin(bulletinAll.recapListNoteProgrammeModuleByProgrammeUe,
+                bulletinAll.sommeCoef, bulletinAll.sommeMoyenneUE, bulletinAll.sommeCreditUE, bulletinAll.sommeMCR)
+            }
+          },
+          {
+            margin: [0, 5, 0, 0],
+            table: {
+              body: [
+                [
+                  {
+                    text: ' MDS:Moyenne Devoirs Surveillés, NEF:Note de l\'Examen Final, MUE:Moyenne Unite d\'Enseignement, NCR:Nombre de Credit, MCR:Moyenne Credité, VAL:Validation, V:Validé, NV:Non Validé, VSR:ValidéSession de Remplacement',
+                    fontSize: 7
+                  }
+                ],
+                [
+                  {
+                    text: this.addLegende(bulletinAll.recapListNoteProgrammeModuleByProgrammeUe),
+                    fontSize: 7
+                  }
+                ]
+              ]
+            }
+          },
+          {
+            columns: [
+              {
+                width: '50%',
+                margin: [0, 15, 0, 0],
+                style: 'moyenneG',
+                text: 'Moyenne General : ' + this.formatNumber(bulletinAll.moyenneGeneral)
+              },
+              {
+                width: '50%',
+                margin: [0, 15, 0, 0],
+                style: 'moyenneG',
+                text: 'Appréciation : Passable'
+              }
+            ]
+          },
+          {
+            margin: [0, 20, 0, 0],
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 1,
+              widths: [100, 100, 100],
+
+              body: this.getBulletinRecapTablePdf(bulletinAll.bulletinRecaps, bulletinAll.inscription)
+            }
+          },
+          {
+            columns: [
+              {
+                width: '50%',
+                margin: [0, 15, 0, 0],
+                fontSize: 11,
+                bold: true,
+                text: 'Decision du Conseil: Admis'
+              },
+              {
+                width: '50%',
+                margin: [0, 15, 0, 0],
+                stack: [
+                  {
+                    fontSize: 11,
+                    bold: true,
+                    decoration: 'underline',
+                    color: '#000000',
+                    alignment: 'center',
+                    text: 'Le Directeur des Etudes'
+                  },
+                  {
+                    text: 'Nom du Directeur',
+                    fontSize: 11,
+                    alignment: 'center',
+                  }
+                ]
+              }
+            ],
+            pageBreak: cpt < this.bulletinAllClasse.length ? 'after' : ''
+          }
+        ]);
+      });
+    }
+    return content;
+  }
+
+  async generateAllBulletin() {
+    const logo = await this.getImageFromAssets('/assets/images/bulletin/header.png');
+    const footer = await this.getImageFromAssets('/assets/images/bulletin/footer.png');
+    console.log(logo);
+    return {
+      header: {
+        columns: [
+          {
+            margin: [0, 0, 0, 0],
+            image: 'mylogo', width: 600, height: 80
+          }
+        ],
+      },
+      footer: {
+        columns: [
+          {
+            margin: [0, 0, 0, 0],
+            image: 'footerImg', width: 600, height: 60
+          }
+        ],
+      },
+      content: this.getAllBulletinContent(),
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          color: '#b80d0d'
+        },
+        subtitle: {
+          fontSize: 11,
+          bold: true,
+          color: '#b80d0d'
+        },
+        bulletinNote: {
+          fontSize: 14,
+          color: '#000000',
+          decoration: 'underline',
+          background: '#afaeae'
+        },
+        labelStyle: {
+          fontSize: 12,
+          color: '#000000',
+          bold: true
+        },
+        tableHeader: {
+          fontSize: 10,
+          color: '#000000',
+          bold: true,
+          alignment: 'center'
+        },
+        tableData: {
+          fontSize: 9,
+          color: '#000000',
+          alignment: 'center'
+        },
+        tableUE: {
+          fontSize: 10,
+          color: '#000000'
+        },
+        tableModule: {
+          fontSize: 10,
+          color: '#000000'
+        },
+        moyenneG: {
+          fontSize: 12,
+          bold: true,
+          color: '#000000'
+        }
+      },
+      images: {
+        mylogo: logo,
+        footerImg: footer,
+      },
+      // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
+      pageMargins: [10, 80, 10, 60]
+    };
   }
 
   async displayBulletin() {
@@ -541,13 +932,35 @@ export class BulletinComponent implements OnInit {
     return body;
   }
 
-   table(data, columns) {
-     return {
-       table: {
-         headerRows: 1,
-         body: this.buildTableBody(data, columns)
-       }
-     };
-   }
+  table(data, columns) {
+    return {
+      table: {
+        headerRows: 1,
+        body: this.buildTableBody(data, columns)
+      }
+    };
+  }
+
+  onGenerateAllBulletin() {
+    this.subscription.push(
+      this.noteService.onGenerateAllBulletin.subscribe(
+        (data) => {
+          if (data && data.bulletinAllClasse && data.bulletinAllClasse.length) {
+            console.log(data);
+            this.bulletinAllClasse = data.bulletinAllClasse;
+            this.classeSousClasse = data.classe;
+            if (this.bulletinAllClasse && this.bulletinAllClasse.length > 0) {
+              this.downloadAllBulletin().then(result => {
+                console.log('generation ok');
+              }).catch(error => console.log(error));
+            }
+          }
+        }, (error) => console.log(error),
+        () => {
+
+        }
+      )
+    );
+  }
 
 }

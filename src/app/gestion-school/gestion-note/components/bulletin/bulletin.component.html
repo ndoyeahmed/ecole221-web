@@ -1,4 +1,10 @@
-<mat-card>
+<mat-card *ngIf="bulletinAllClasse && bulletinAllClasse.length > 0">
+  <mat-card-content>
+    <h3>Téléchargement de tous les bulletins en cours....</h3>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="!bulletinAllClasse || bulletinAllClasse.length <= 0">
   <mat-card-content>
 
     <div class="row" style="margin: 20px 0">

@@ -35,6 +35,7 @@ import {DevoirsModel} from "../../../../shared/models/devoirs.model";
 import {RecapNoteProgrammeModuleByProgrammeUeModel} from "../../../../shared/models/recap-note-programme-module-by-programme-ue.model";
 import {BulletinRecapModel} from "../../../../shared/models/bulletin-recap.model";
 import {BulletinInscriptionModel} from "../../../../shared/models/bulletin-inscription.model";
+import {BulletinAllModel} from "../../../../shared/models/bulletin-all.model";
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
 declare var $: any;
@@ -113,6 +114,8 @@ export class NotesComponent implements OnInit, OnDestroy {
   isClassOk = false;
 
   bulletinRecaps: BulletinRecapModel[];
+  bulletinAllClasse = [] as BulletinAllModel[];
+  presValidate = true;
 
   constructor(
     private inscriptionService: InscriptionService, private paramSpecialiteService: ParametragesSpecialiteService,
@@ -191,6 +194,7 @@ export class NotesComponent implements OnInit, OnDestroy {
             (error) => console.log(error),
             () => {
               this.loadNoteProgrammeModule(this.programmeModuleModel.id);
+              this.presValidate = true;
             }
           )
         );
@@ -385,7 +389,14 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.loadNoteProgrammeModule(event.value.id);
   }
 
+  onOpenModuleSelect(event) {
+    if (this.presValidate === false) {
+      this.notif.warning('Veuillez d\'abord valider les notes actuelles');
+    }
+  }
+
   onChangeNoteExam(inscription, $event) {
+    this.presValidate = false;
     if (this.sessionModel && this.sessionModel.id === 2) {
       const newNote = $event.target.value;
       const listnote = JSON.parse(localStorage.getItem('ListNote')) as NoteProgrammeModuleModel[];
@@ -562,5 +573,59 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   generateBulletine() {
 
+  }
+
+  async getAllBulletinClasse() {
+    this.bulletinAllClasse = [];
+    if (this.listInscriptionFiltered && this.listInscriptionFiltered.length > 0) {
+      for (const inscription1 of this.listInscriptionFiltered) {
+        await this.getAllRecapNoteProgrammeModuleByProgrammeUEByInscription(inscription1);
+      }
+      /*console.log('---------------------this.bulletinAllClasse');
+      console.log(this.bulletinAllClasse);*/
+      this.showDialog = 'bulletin_etudiant';
+      $('#showNoteModal').modal('show');
+      this.noteService.onGenerateAllBulletin.next({
+        bulletinAllClasse: this.bulletinAllClasse,
+        classe: this.classeSousClasseModel
+      });
+    }
+  }
+
+  async getAllRecapNoteProgrammeModuleByProgrammeUEByInscription(inscription) {
+    const bulletinAllModel = new BulletinAllModel();
+    this.subscription.push(
+      await this.noteService.getRecapNoteProgrammeModuleByProgrammeUEAndSemestre(inscription.id, this.semestreModel.semestre.id).subscribe(
+        (data) => {
+          bulletinAllModel.moyenneGeneral = data.moyenneGeneral;
+          bulletinAllModel.recapListNoteProgrammeModuleByProgrammeUe = data.recapNoteProgrammeModuleByProgrammeUES;
+        }, (error) => console.log(error),
+        () => {
+          bulletinAllModel.inscription = inscription;
+          bulletinAllModel.sommeMoyenneUE = 0;
+          bulletinAllModel.sommeCreditUE = 0;
+          bulletinAllModel.sommeMCR = 0;
+          bulletinAllModel.sommeCoef = 0;
+          bulletinAllModel.recapListNoteProgrammeModuleByProgrammeUe.forEach(recap => {
+            bulletinAllModel.sommeCreditUE = bulletinAllModel.sommeCreditUE + recap.programmeUE.credit;
+            bulletinAllModel.sommeMoyenneUE = bulletinAllModel.sommeMoyenneUE + recap.moyenneUE;
+            bulletinAllModel.sommeMCR = bulletinAllModel.sommeMCR + (recap.moyenneUE * recap.programmeUE.credit);
+            recap.noteProgrammeModules.forEach(n => {
+              bulletinAllModel.sommeCoef = bulletinAllModel.sommeCoef + n.programmeModule.coef;
+            });
+          });
+        }
+      )
+    );
+
+    this.subscription.push(
+      await this.noteService.getBulletinRecapByInscription(inscription.id).subscribe(
+        (data) => {
+          bulletinAllModel.bulletinRecaps = data;
+        }, (error) => console.log(error)
+      )
+    );
+
+    this.bulletinAllClasse.push(bulletinAllModel);
   }
 }
