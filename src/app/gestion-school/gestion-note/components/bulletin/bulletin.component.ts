@@ -9,11 +9,11 @@ import {HttpClient} from '@angular/common/http';
 import {log} from 'util';
 import * as moment from 'moment/moment';
 import {SemestreNiveauModel} from '../../../../shared/models/semestre-niveau.model';
-import {NotesService} from "../../services/notes.service";
-import {Subscription} from "rxjs";
-import {BulletinAllModel} from "../../../../shared/models/bulletin-all.model";
-import {ClasseSousClasse} from "../../../../shared/models/classe-sous-classe.model";
-import {ParametragesSpecialiteService} from "../../../parametrage/services/parametrages-specialite.service";
+import {NotesService} from '../../services/notes.service';
+import {Subscription} from 'rxjs';
+import {BulletinAllModel} from '../../../../shared/models/bulletin-all.model';
+import {ClasseSousClasse} from '../../../../shared/models/classe-sous-classe.model';
+import {ParametragesSpecialiteService} from '../../../parametrage/services/parametrages-specialite.service';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
@@ -44,6 +44,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
   recapSemestreInscription = [];
   classeSousClasse: ClasseSousClasse;
   url = '';
+  somme = 0;
 
   constructor(private sanitizer: DomSanitizer,
               private noteService: NotesService,
@@ -56,7 +57,9 @@ export class BulletinComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.bulletinAllClasse = [];
     this.onGenerateAllBulletin();
+
   }
 
   getRecapSemestreInscriptionByInscriptionEtudiant(etudiantId) {
@@ -283,7 +286,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
               width: '50%',
               margin: [0, 15, 0, 0],
               style: 'moyenneG',
-              text: 'Appréciation : Passable'
+              text: 'Appréciation : ' + this.getAppreciation(this.formatNumber(this.moyenneGenerale))
             }
           ]
         },
@@ -305,7 +308,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
               margin: [0, 15, 0, 0],
               fontSize: 11,
               bold: true,
-              text: 'Decision du Conseil: Admis'
+              text: 'Decision du Conseil: '
             },
             {
               width: '50%',
@@ -383,6 +386,33 @@ export class BulletinComponent implements OnInit, OnDestroy {
       // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
       pageMargins: [10, 80, 10, 60]
     };
+  }
+
+  async getDecisionConseil() {
+    console.log('eeee');
+    for (const bulletinAll of this.bulletinAllClasse) {
+      this.somme = 0;
+      this.subscription.push(
+       await this.noteService.getSumRecapSemestreInscriptionValideByInscription(bulletinAll.inscription.id)
+          .subscribe(
+            (data) => {
+              console.log('somme', data);
+              if (data) {
+                this.somme = data;
+              }
+            }, (error) => console.log(error),
+            () => {
+              if (this.somme >= 42 && this.somme < 60) {
+                bulletinAll.decision = 'Admis sous réserve';
+              } else if (this.somme === 60) {
+                bulletinAll.decision = 'Admis';
+              } else if (this.somme < 42) {
+                bulletinAll.decision = 'Redouble';
+              }
+            }
+          )
+      );
+    }
   }
 
   getBulletinRecapTablePdf(bulletinRecapModels: BulletinRecapModel[], inscription: InscriptionModel) {
@@ -560,6 +590,22 @@ export class BulletinComponent implements OnInit, OnDestroy {
       moment().format('DD-MM-YYYY HH-mm-ss');
     const docDef = await this.generateAllBulletin();
     pdfMake.createPdf(docDef).download(filename);
+  }
+
+  getAppreciation(moyenneGeneral) {
+    if (moyenneGeneral >= 10 && moyenneGeneral <= 12.99) {
+      return 'Passable';
+    } else if (moyenneGeneral >= 13 && moyenneGeneral <= 14.99) {
+      return 'Assez Bien';
+    } else if (moyenneGeneral >= 15 && moyenneGeneral <= 15.99) {
+      return 'Bien';
+    } else if (moyenneGeneral >= 16 && moyenneGeneral <= 17.99) {
+      return 'Très Bien';
+    } else if (moyenneGeneral >= 18 && moyenneGeneral <= 20) {
+      return 'Excellent';
+    } else {
+      return 'Médiocre';
+    }
   }
 
   getAllBulletinContent() {
@@ -753,7 +799,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                 width: '50%',
                 margin: [0, 15, 0, 0],
                 style: 'moyenneG',
-                text: 'Appréciation : Passable'
+                text: 'Appréciation : ' + this.getAppreciation(this.formatNumber(bulletinAll.moyenneGeneral))
               }
             ]
           },
@@ -775,7 +821,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                 margin: [0, 15, 0, 0],
                 fontSize: 11,
                 bold: true,
-                text: 'Decision du Conseil: Admis'
+                text: this.semestre.semestre.numero === 2 ? 'Decision du Conseil: ' + bulletinAll.decision : ''
               },
               {
                 width: '50%',
@@ -805,10 +851,35 @@ export class BulletinComponent implements OnInit, OnDestroy {
     return content;
   }
 
+  async getDecisions(bulletinAllClasse) {
+    const array = [];
+    let somme = 0;
+    for (let b of bulletinAllClasse) {
+      const bb = b;
+      await this.noteService.getSumRecapSemestreInscriptionValideByInscription(b.inscription.id).toPromise().then(
+        (result) => {
+          console.log(result);
+          somme = result;
+          if (somme >= 42 && somme < 60) {
+            bb.decision = 'Admis sous réserve';
+          } else if (somme === 60) {
+            bb.decision = 'Admis';
+          } else if (somme < 42) {
+            bb.decision = 'redouble';
+          }
+          b = bb;
+          array.push(bb);
+        }
+      ).catch(error => error);
+    }
+    return array;
+  }
+
   async generateAllBulletin() {
     const logo = await this.getImageFromAssets('/assets/images/bulletin/header.png');
     const footer = await this.getImageFromAssets('/assets/images/bulletin/footer.png');
     console.log(logo);
+    this.bulletinAllClasse = await this.getDecisions(this.bulletinAllClasse);
     return {
       header: {
         columns: [
@@ -941,26 +1012,33 @@ export class BulletinComponent implements OnInit, OnDestroy {
     };
   }
 
-  onGenerateAllBulletin() {
+  async onGenerateAllBulletin() {
     this.subscription.push(
-      this.noteService.onGenerateAllBulletin.subscribe(
-        (data) => {
-          if (data && data.bulletinAllClasse && data.bulletinAllClasse.length) {
-            console.log(data);
-            this.bulletinAllClasse = data.bulletinAllClasse;
-            this.classeSousClasse = data.classe;
-            if (this.bulletinAllClasse && this.bulletinAllClasse.length > 0) {
-              this.downloadAllBulletin().then(result => {
-                console.log('generation ok');
-              }).catch(error => console.log(error));
-            }
+      await this.noteService.onGenerateAllBulletin.subscribe( (data) => {
+          if (data && data.length) {
+            this.bulletinAllClasse = data;
+            this.onGetClasse();
+
+            this.downloadAllBulletin().then(result => {
+              console.log('generation ok');
+            }).catch(error => console.log(error));
           }
         }, (error) => console.log(error),
-        () => {
-
-        }
+         () => {
+           console.log(this.bulletinAllClasse);
+         }
       )
     );
+  }
+
+  onGetClasse() {
+    this.noteService.onGenerateAllBulletinClasse.subscribe(
+      (data) => {
+        if (data) {
+          this.classeSousClasse = data;
+        }
+      }, (error) => console.log(error)
+    )
   }
 
 }

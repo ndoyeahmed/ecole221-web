@@ -8,6 +8,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 export class NotesService {
 
   api = '/api/notes/';
+  public onGenerateAllBulletinClasse = new BehaviorSubject<any>([]);
   public onGenerateAllBulletin = new BehaviorSubject<any>([]);
   constructor(private http: HttpClient) { }
 
@@ -80,5 +81,9 @@ export class NotesService {
   // ------------------------------ recap semestre inscription valide -----------------------------------------------
   getRecapSemestreInscriptionValideByInscriptionEtudiant(etudiantId): Observable<any> {
     return this.http.get(this.api + 'recap-semestre-inscription-valide/inscription/etudiant/' + etudiantId);
+  }
+
+  getSumRecapSemestreInscriptionValideByInscription(inscriptionId): Observable<any> {
+    return this.http.get(this.api + 'recap-semestre-inscription-valide/somme-credit/inscription/' + inscriptionId);
   }
 }

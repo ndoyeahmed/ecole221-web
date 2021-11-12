@@ -5,6 +5,7 @@ import {RecapNoteProgrammeModuleByProgrammeUeModel} from "./recap-note-programme
 
 export class BulletinAllModel {
   public inscription: InscriptionModel;
+  public decision: string;
   public sommeCreditUE: number;
   public sommeMoyenneUE: number;
   public sommeMCR: number;

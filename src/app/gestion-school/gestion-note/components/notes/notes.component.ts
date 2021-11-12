@@ -508,6 +508,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   async onShowBulletinEtudiant(item) {
+    this.noteService.onGenerateAllBulletin.next([]);
     this.showDialog = 'bulletin_etudiant';
     if (this.listNoteProgrammeModule && this.listNoteProgrammeModule.length > 0) {
       this.inscriptionId = item.note.inscription.id;
@@ -585,10 +586,8 @@ export class NotesComponent implements OnInit, OnDestroy {
       console.log(this.bulletinAllClasse);*/
       this.showDialog = 'bulletin_etudiant';
       $('#showNoteModal').modal('show');
-      this.noteService.onGenerateAllBulletin.next({
-        bulletinAllClasse: this.bulletinAllClasse,
-        classe: this.classeSousClasseModel
-      });
+      this.noteService.onGenerateAllBulletin.next(this.bulletinAllClasse);
+      this.noteService.onGenerateAllBulletinClasse.next(this.classeSousClasseModel);
     }
   }
 
