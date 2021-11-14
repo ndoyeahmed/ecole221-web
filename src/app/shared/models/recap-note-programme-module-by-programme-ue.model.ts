@@ -5,4 +5,5 @@ export class RecapNoteProgrammeModuleByProgrammeUeModel {
   public programmeUE: ProgrammeUEModel;
   public noteProgrammeModules: NoteProgrammeModuleModel[];
   public moyenneUE: number;
+  public valide: boolean;
 }

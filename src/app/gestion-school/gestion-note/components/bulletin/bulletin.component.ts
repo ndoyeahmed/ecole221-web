@@ -515,7 +515,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
           text: this.formatNumber((data.moyenneUE * data.programmeUE.credit)),
           style: 'tableData', rowSpan: data.noteProgrammeModules.length
         },
-        {text: data.moyenneUE >= 10 ? 'V' : 'NV', style: 'tableData', rowSpan: data.noteProgrammeModules.length},
+        {text: data.valide ? 'V' : 'NV', style: 'tableData', rowSpan: data.noteProgrammeModules.length},
       ];
       body.push(col);
       data.noteProgrammeModules.forEach(noteProgrammeModule => {
@@ -836,7 +836,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                     text: 'Le Directeur des Etudes'
                   },
                   {
-                    text: 'Nom du Directeur',
+                    text: 'M. NIASS',
                     fontSize: 11,
                     alignment: 'center',
                   }
@@ -865,7 +865,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
           } else if (somme === 60) {
             bb.decision = 'Admis';
           } else if (somme < 42) {
-            bb.decision = 'redouble';
+            bb.decision = 'Redouble';
           }
           b = bb;
           array.push(bb);
