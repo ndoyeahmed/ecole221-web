@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/app/authentication/services/auth.service';
 
 const url = environment.url;
 
@@ -11,6 +12,7 @@ const url = environment.url;
 export class AuthInterceptorService implements HttpInterceptor {
 
   constructor(
+    private auth: AuthService
   ) {
   }
 
@@ -22,13 +24,13 @@ export class AuthInterceptorService implements HttpInterceptor {
       });
     }
     // Adding a token to the request (JWT Token)
-    /* if (this.auth.isLoggedIn()) {
+    if (this.auth.token()) {
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${this.auth.token()}`
         }
       });
-    } */
+    }
     return next.handle(request);
   }
 }

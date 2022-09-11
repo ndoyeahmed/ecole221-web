@@ -20,12 +20,14 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import {MatStepperModule} from '@angular/material/stepper';
+import { AuthExpiredInterceptor } from './services/auth-expired.interceptor';
+import { HasAnyAuthorityDirective } from './directive/has-any-authority.directive';
 
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [HasAnyAuthorityDirective],
   imports: [
     CommonModule
   ],
@@ -50,13 +52,21 @@ import {MatStepperModule} from '@angular/material/stepper';
     MatDatepickerModule,
     MatNativeDateModule,
     MatStepperModule,
+    HasAnyAuthorityDirective,
+
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
       multi: true
-    }, {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthExpiredInterceptor,
+      multi: true
+    },
+    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

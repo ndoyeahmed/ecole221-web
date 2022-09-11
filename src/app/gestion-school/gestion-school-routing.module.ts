@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router';
 import {RecapReferentielComponent} from './parametrage/components/referentiel/recap-referentiel/recap-referentiel.component';
 import {PROFESSEUR_ADD_ROUTE, PROFESSEUR_EDIT_ROUTE, PROFESSEUR_LIST_ROUTE} from './professeurs/professeur.route';
 import {NOTE_ADD_ROUTE} from './gestion-note/notes.route';
+import { AuthGuard } from '../shared/services/auth.guard';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import {NOTE_ADD_ROUTE} from './gestion-note/notes.route';
       {
         path: 'parametrages',
         component: ParametragesComponent,
+        canActivate: [AuthGuard],
         children: [
           {
             path: 'parametrages',
@@ -26,6 +28,7 @@ import {NOTE_ADD_ROUTE} from './gestion-note/notes.route';
       {
         path: 'inscription',
         component: InscriptionComponent,
+        canActivate: [AuthGuard]
         /* children: [
           {
             path: 'inscription',
@@ -35,23 +38,28 @@ import {NOTE_ADD_ROUTE} from './gestion-note/notes.route';
       },
       {
         path: 'list-etudiant',
-        component: EtudiantListComponent
+        component: EtudiantListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'parcours-etudiant/:inscriptionid',
-        component: ParcoursEtudiantComponent
+        component: ParcoursEtudiantComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'dossier-etudiant/:inscriptionId/:anneescolaireid',
-        component: DossierEtudiantComponent
+        component: DossierEtudiantComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'dossier-absence-etudiant/:inscriptionid',
-        component: AfficherDossierAbsenceComponent
+        component: AfficherDossierAbsenceComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'recap-referentiel/:referentielid',
-        component: RecapReferentielComponent
+        component: RecapReferentielComponent,
+        canActivate: [AuthGuard]
       },
       PROFESSEUR_ADD_ROUTE,
       PROFESSEUR_EDIT_ROUTE,

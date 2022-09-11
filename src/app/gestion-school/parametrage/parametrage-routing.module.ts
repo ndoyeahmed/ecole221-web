@@ -4,17 +4,20 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { ParametragesComponent } from './components/parametrages/parametrages.component';
 import {RecapReferentielComponent} from './components/referentiel/recap-referentiel/recap-referentiel.component';
+import { AuthGuard } from 'src/app/shared/services/auth.guard';
 
 @NgModule({
   imports: [
     RouterModule.forChild([
       {
         path: 'domaine',
-        component: DomaineComponent
+        component: DomaineComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'niveau-add',
-        component: NiveauAddComponent
+        component: NiveauAddComponent,
+        canActivate: [AuthGuard]
       }
     ])
   ],
