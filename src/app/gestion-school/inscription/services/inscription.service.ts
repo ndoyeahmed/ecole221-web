@@ -15,6 +15,10 @@ export class InscriptionService {
     return this.http.post<any>(this.api + '/inscription', body);
   }
 
+  editEtudiant(cin : string, etudiant: any): Observable<any> {
+    return this.http.put<any>(this.api + '/etudiant/edit/' + cin, etudiant);
+  }
+
   getAllInscription(idAnneeScolaire): Observable<any> {
     return this.http.get<any>(this.api + '/inscription/annee/' + idAnneeScolaire);
   }

@@ -1,35 +1,51 @@
-<div class="video-container">
-  <iframe src="https://www.youtube.com/embed/_aEM_M9Z6_8?controls=0&autoplay=1&mute=1&playsinline=1&playlist=_aEM_M9Z6_8&loop=1" title="Fire Backround mp4"></iframe>
-  <!-- <iframe src="https://www.youtube.com/embed/Yj2iELI6OeI?controls=0&autoplay=1&mute=1&playsinline=1&loop=1&playlist=Yj2iELI6OeI"></iframe> -->
-</div>
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/assets/login/css/style.css">
+
+	<div class="img js-fullheight" style="background-image: url(/assets/login/images/bg.jpg);">
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+					<h2 class="heading-section">ECOLE 221</h2>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-md-6 col-lg-4">
+					<div class="login-wrap p-0">
+		      	<!-- <h3 class="mb-4 text-center">Have an account?</h3> -->
+		      	<form [formGroup]="form" (submit)="login()" class="signin-form">
+		      		<div class="form-group">
+		      			<input style="font-size: 1.5rem;" required formControlName="login" type="text" class="form-control" placeholder="Username" required>
+		      		</div>
+	            <div class="form-group">
+	              <input style="font-size: 1.5rem;" id="password-field" required type="password" formControlName="password" class="form-control" placeholder="Password" required>
+	              <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+	            </div>
+	            <div class="form-group">
+	            	<button type="submit" [disabled]="!form.valid" class="form-control btn btn-primary submit px-3">CONNEXION</button>
+	            </div>
+	            <div class="form-group d-md-flex">
+	            	<div class="w-50">
+		            	<label class="checkbox-wrap checkbox-primary">Remember Me
+									  <input type="checkbox" checked>
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="w-50 text-md-right">
+									<a href="#" style="color: #fff">Forgot Password</a>
+								</div>
+	            </div>
+	          </form>
+
+		      </div>
+				</div>
+			</div>
+		</div>
+	</section>
 
 
-<!-- <div class="cart"> -->
-  <form [formGroup]="form" (submit)="login()" class="forms">
-    <div class="logo">
-      <img class="img-logo" src="http://ecole221.com/wp-content/uploads/2020/10/forslide.png" alt="">
-    </div>
-    <h6 style="color: darkred">{{err}}</h6>
-    <div class="formulaire">
-      <div class="form-group">
-        <label for="">Nom utilisateur</label>
-        <input required formControlName="login" type="text" class="form-control my-input">
-      </div>
-      <div class="form-group">
-        <label for="">Mot de passe</label>
-        <input required type="password" formControlName="password" class="form-control my-input">
-      </div>
-      <div class="infos-plus">
-        <div class="infos">
-          <input type="checkbox">Se souvenir de moi
-        </div>
-        <div class="infos">
-          Mot de passe oublié?
-        </div>
-      </div>
-      <div class="btn-form-group">
-        <button type="submit" [disabled]="!form.valid" class="btn-connexion">CONNEXION</button>
-      </div>
-    </div>
-  </form>
-<!-- </div> -->
+
+	</div>
+

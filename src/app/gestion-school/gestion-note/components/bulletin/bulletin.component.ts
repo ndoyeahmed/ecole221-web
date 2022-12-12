@@ -323,7 +323,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                   text: 'Le Directeur des Etudes'
                 },
                 {
-                  text: 'Nom du Directeur',
+                  text: 'M. NDIAYE',
                   fontSize: 11,
                   alignment: 'center',
                 }
@@ -426,50 +426,100 @@ export class BulletinComponent implements OnInit, OnDestroy {
     // let cpt = 0;
 
 
-    for (let i = 0; i < 2; i++){
-      const bulletinRecap = bulletinRecapModels[i];
-      let col;
-      if (this.semestre.semestre.numero === 1 && bulletinRecap.semestre.id === this.semestre.semestre.id) {
-        col = [
-          {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
-          {
-            text: bulletinRecap ?
-              bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--',
-            style: 'tableData'
-          },
+    if (inscription.sousClasse.niveau.niveau === 1) {
+      for (let i = 0; i < 2; i++){
+        const bulletinRecap = bulletinRecapModels[i];
+        let col;
+        if (this.semestre.semestre.numero === 1 && bulletinRecap.semestre.id === this.semestre.semestre.id) {
+          col = [
+            {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+            {
+              text: bulletinRecap ?
+                bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--',
+              style: 'tableData'
+            },
 
-          {
-            text: bulletinRecap ?
-              bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
-                (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'
-          },
-        ];
-      } else if (this.semestre.semestre.numero === 2) {
-        col = [
-          {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
-          {
-            text: bulletinRecap ?
-              bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--',
-            style: 'tableData'
-          },
+            {
+              text: bulletinRecap ?
+                bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
+                  (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'
+            },
+          ];
+        } else if (this.semestre.semestre.numero === 2) {
+          col = [
+            {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+            {
+              text: bulletinRecap ?
+                bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--',
+              style: 'tableData'
+            },
 
-          {
-            text: bulletinRecap ?
-              bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
-                (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'
-          },
-        ];
-      } else {
-        col = [
-          {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
-          {text:  '--', style: 'tableData'},
+            {
+              text: bulletinRecap ?
+                bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
+                  (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'
+            },
+          ];
+        } else {
+          col = [
+            {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+            {text:  '--', style: 'tableData'},
 
-          {text: '--', style: 'tableData'},
-        ];
+            {text: '--', style: 'tableData'},
+          ];
+        }
+        body.push(col);
+
       }
-      body.push(col);
+    } else if (inscription.sousClasse.niveau.niveau === 2) {
+        for (let i = 2; i < 4; i++){
+          const bulletinRecap = bulletinRecapModels[i];
+          let col;
+          if (this.semestre.semestre.numero === 3 && bulletinRecap.semestre.id === this.semestre.semestre.id) {
+            col = [
+              {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+              {
+                text: bulletinRecap ?
+                  bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--',
+                style: 'tableData'
+              },
 
-    }
+              {
+                text: bulletinRecap ?
+                  bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
+                    (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'
+              },
+            ];
+          } else if (this.semestre.semestre.numero === 4) {
+            col = [
+              {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+              {
+                text: bulletinRecap ?
+                  bulletinRecap.totalCreditSemestre ? (bulletinRecap.totalCredit ? bulletinRecap.totalCredit : '0') : '--' : '--',
+                style: 'tableData'
+              },
+
+              {
+                text: bulletinRecap ?
+                  bulletinRecap.valide ? (bulletinRecap.totalCreditSemestre ? 'Validé' : '--') :
+                    (bulletinRecap.totalCreditSemestre ? 'Non Validé' : '--') : '--', style: 'tableData'
+              },
+            ];
+          } else {
+            col = [
+              {text: bulletinRecap ? bulletinRecap.semestre ? bulletinRecap.semestre.libelle : '' : '', style: 'tableData'},
+              {text:  '--', style: 'tableData'},
+
+              {text: '--', style: 'tableData'},
+            ];
+          }
+          body.push(col);
+
+        }
+      }
+
+
+
 
     return body;
   }
@@ -836,7 +886,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                     text: 'Le Directeur des Etudes'
                   },
                   {
-                    text: 'M. NIASS',
+                    text: 'M. NDIAYE',
                     fontSize: 11,
                     alignment: 'center',
                   }
@@ -856,6 +906,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
     let somme = 0;
     for (let b of bulletinAllClasse) {
       const bb = b;
+      console.log(b);
       await this.noteService.getSumRecapSemestreInscriptionValideByInscription(b.inscription.id).toPromise().then(
         (result) => {
           console.log(result);

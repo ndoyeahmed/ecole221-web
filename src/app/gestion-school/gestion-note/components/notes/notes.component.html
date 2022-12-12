@@ -114,12 +114,20 @@
           </div>
 
           <div class="row" style="margin-top: 2%;">
-            <div class="col-md-10 col-lg-10 col-sm-6 col-xs-12">
+            <div class="col-md-8 col-lg-8 col-sm-6 col-xs-12">
               <button mat-raised-button class="action-button"
                       [disabled]="!isNoteRemplacementok"
                       (click)="valideNote()" >
                 Valider Notes
                 <em class="fa fa-save fa-lg"></em>
+              </button>
+            </div>
+            <div class="col-md-2 col-lg-2 col-sm-6 col-xs-12">
+              <button mat-raised-button class="action-button"
+                      [disabled]="!isClassOk"
+                      (click)="getStatClasse()" >
+                Stats classe
+                <em class="fa fa-book fa-lg"></em>
               </button>
             </div>
             <div class="col-md-2 col-lg-2 col-sm-6 col-xs-12">

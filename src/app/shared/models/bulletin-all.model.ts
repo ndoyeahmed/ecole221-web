@@ -4,14 +4,14 @@ import {BulletinRecapModel} from "./bulletin-recap.model";
 import {RecapNoteProgrammeModuleByProgrammeUeModel} from "./recap-note-programme-module-by-programme-ue.model";
 
 export class BulletinAllModel {
-  public inscription: InscriptionModel;
-  public decision: string;
-  public sommeCreditUE: number;
-  public sommeMoyenneUE: number;
-  public sommeMCR: number;
-  public sommeCoef: number;
-  public moyenneGeneral: number;
-  public semestModel: SemestreNiveauModel;
-  public bulletinRecaps: BulletinRecapModel[];
-  public recapListNoteProgrammeModuleByProgrammeUe: RecapNoteProgrammeModuleByProgrammeUeModel[];
+  public inscription: InscriptionModel | undefined;
+  public decision: string | undefined;
+  public sommeCreditUE: number | undefined;
+  public sommeMoyenneUE: number | undefined;
+  public sommeMCR: number | undefined;
+  public sommeCoef: number | undefined;
+  public moyenneGeneral: number | undefined;
+  public semestModel: SemestreNiveauModel | undefined;
+  public bulletinRecaps: BulletinRecapModel[] | undefined;
+  public recapListNoteProgrammeModuleByProgrammeUe: RecapNoteProgrammeModuleByProgrammeUeModel[] | undefined;
 }

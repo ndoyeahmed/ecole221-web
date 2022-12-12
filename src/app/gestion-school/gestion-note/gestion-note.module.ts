@@ -14,6 +14,7 @@ import {NotesService} from "./services/notes.service";
 import { NotesEtudiantComponent } from './components/notes-etudiant/notes-etudiant.component';
 import { DevoirsListComponent } from './components/devoirs-list/devoirs-list.component';
 import { BulletinComponent } from './components/bulletin/bulletin.component';
+import { PdfGenerationService } from './services/pdf-generation.service';
 
 
 
@@ -31,7 +32,8 @@ import { BulletinComponent } from './components/bulletin/bulletin.component';
     MatExpansionModule,
   ],
   providers: [
-    NotesService
+    NotesService,
+    PdfGenerationService
   ]
 })
 export class GestionNoteModule { }

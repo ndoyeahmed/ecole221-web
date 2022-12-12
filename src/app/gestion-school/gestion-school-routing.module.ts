@@ -10,6 +10,7 @@ import {RecapReferentielComponent} from './parametrage/components/referentiel/re
 import {PROFESSEUR_ADD_ROUTE, PROFESSEUR_EDIT_ROUTE, PROFESSEUR_LIST_ROUTE} from './professeurs/professeur.route';
 import {NOTE_ADD_ROUTE} from './gestion-note/notes.route';
 import { AuthGuard } from '../shared/services/auth.guard';
+import { EtudiantEditComponent } from './inscription/components/etudiant-edit/etudiant-edit.component';
 
 @NgModule({
   imports: [
@@ -39,6 +40,11 @@ import { AuthGuard } from '../shared/services/auth.guard';
       {
         path: 'list-etudiant',
         component: EtudiantListComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'edit-etudiant/:etudiantId',
+        component: EtudiantEditComponent,
         canActivate: [AuthGuard]
       },
       {

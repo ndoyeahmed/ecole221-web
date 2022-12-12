@@ -2,6 +2,7 @@ import { AnneeScolaireModel } from './../../shared/models/annee-scolaire.model';
 import { Subscription } from 'rxjs';
 import { ParametragesBaseService } from './../../gestion-school/parametrage/services/parametrages-base.service';
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/authentication/services/auth.service';
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
 declare var $: any;
@@ -18,7 +19,7 @@ export class HeaderComponent implements OnInit {
 
   subscription = [] as Subscription[];
 
-  constructor(private paramBaseService: ParametragesBaseService) { }
+  constructor(private paramBaseService: ParametragesBaseService, private auth: AuthService) { }
 
   ngOnInit(): void {
     this.subscription.push(
@@ -71,6 +72,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
+    this.auth.logout();
   }
 
 }

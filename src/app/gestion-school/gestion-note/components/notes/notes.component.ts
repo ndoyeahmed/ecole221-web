@@ -22,7 +22,7 @@ import {ClasseSousClasse} from '../../../../shared/models/classe-sous-classe.mod
 import {DocumentParNiveauModel} from '../../../../shared/models/document-par-niveau.model';
 import {AnneeScolaireModel} from '../../../../shared/models/annee-scolaire.model';
 import {FormControl} from "@angular/forms";
-import {map, startWith} from "rxjs/operators";
+import {delay, map, startWith} from "rxjs/operators";
 import {ClasseModel} from "../../../../shared/models/classe.model";
 import {SemestreModel} from "../../../../shared/models/semestre.model";
 import {SemestreNiveauModel} from "../../../../shared/models/semestre-niveau.model";
@@ -36,6 +36,11 @@ import {RecapNoteProgrammeModuleByProgrammeUeModel} from "../../../../shared/mod
 import {BulletinRecapModel} from "../../../../shared/models/bulletin-recap.model";
 import {BulletinInscriptionModel} from "../../../../shared/models/bulletin-inscription.model";
 import {BulletinAllModel} from "../../../../shared/models/bulletin-all.model";
+import { PdfGenerationService } from '../../services/pdf-generation.service';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
 declare var $: any;
@@ -122,7 +127,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     private dialog: MatDialog, private notif: MycustomNotificationService, private http: HttpClient,
     private ngxService: NgxSpinnerService, private paramBaseService: ParametragesBaseService,
     private paramClasseService: ParametrageClasseService, private paramReferentiel: ParametrageReferentielService,
-    private noteService: NotesService
+    private noteService: NotesService, private pdfService: PdfGenerationService
   ) { }
 
   displayFn(classeSousClasse: ClasseSousClasse): string {
@@ -572,15 +577,33 @@ export class NotesComponent implements OnInit, OnDestroy {
     );
   }
 
+  async getStatClasse() {
+    this.bulletinAllClasse = [];
+    if (this.listInscriptionFiltered && this.listInscriptionFiltered.length > 0) {
+      for (const inscription1 of this.listInscriptionFiltered) {
+        await this.getAllRecapNoteProgrammeModuleByProgrammeUEByInscriptionForStat(inscription1);
+      }
+     /*  console.log('---------------------this.bulletinAllClasse');
+      console.log(this.bulletinAllClasse[0]); */
+      // await delay(5000);
+
+      const docDef = await this.pdfService.generateStats(this.bulletinAllClasse, this.semestreModel);
+      pdfMake.createPdf(docDef).download('statistiques');
+    }
+
+  }
+
   generateBulletine() {
 
   }
+
+
 
   async getAllBulletinClasse() {
     this.bulletinAllClasse = [];
     if (this.listInscriptionFiltered && this.listInscriptionFiltered.length > 0) {
       for (const inscription1 of this.listInscriptionFiltered) {
-        await this.getAllRecapNoteProgrammeModuleByProgrammeUEByInscription(inscription1);
+        await this.getAllRecapNoteProgrammeModuleByProgrammeUEByInscriptionForStat(inscription1);
       }
       /*console.log('---------------------this.bulletinAllClasse');
       console.log(this.bulletinAllClasse);*/
@@ -592,37 +615,64 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   async getAllRecapNoteProgrammeModuleByProgrammeUEByInscription(inscription) {
-    const bulletinAllModel = new BulletinAllModel();
-    this.subscription.push(
-      await this.noteService.getRecapNoteProgrammeModuleByProgrammeUEAndSemestre(inscription.id, this.semestreModel.semestre.id).subscribe(
-        (data) => {
-          bulletinAllModel.moyenneGeneral = data.moyenneGeneral;
-          bulletinAllModel.recapListNoteProgrammeModuleByProgrammeUe = data.recapNoteProgrammeModuleByProgrammeUES;
-        }, (error) => console.log(error),
-        () => {
-          bulletinAllModel.inscription = inscription;
-          bulletinAllModel.sommeMoyenneUE = 0;
-          bulletinAllModel.sommeCreditUE = 0;
-          bulletinAllModel.sommeMCR = 0;
-          bulletinAllModel.sommeCoef = 0;
-          bulletinAllModel.recapListNoteProgrammeModuleByProgrammeUe.forEach(recap => {
-            bulletinAllModel.sommeCreditUE = bulletinAllModel.sommeCreditUE + recap.programmeUE.credit;
-            bulletinAllModel.sommeMoyenneUE = bulletinAllModel.sommeMoyenneUE + recap.moyenneUE;
-            bulletinAllModel.sommeMCR = bulletinAllModel.sommeMCR + (recap.moyenneUE * recap.programmeUE.credit);
-            recap.noteProgrammeModules.forEach(n => {
-              bulletinAllModel.sommeCoef = bulletinAllModel.sommeCoef + n.programmeModule.coef;
-            });
+    let bulletinAllModel = new BulletinAllModel();
+    await this.noteService.getRecapNoteProgrammeModuleByProgrammeUEAndSemestre(inscription.id, this.semestreModel.semestre.id).subscribe(
+      (data) => {
+        bulletinAllModel.moyenneGeneral = data.moyenneGeneral;
+        bulletinAllModel.recapListNoteProgrammeModuleByProgrammeUe = data.recapNoteProgrammeModuleByProgrammeUES;
+      }, (error) => console.log(error),
+      () => {
+        bulletinAllModel.inscription = inscription;
+        bulletinAllModel.sommeMoyenneUE = 0;
+        bulletinAllModel.sommeCreditUE = 0;
+        bulletinAllModel.sommeMCR = 0;
+        bulletinAllModel.sommeCoef = 0;
+        bulletinAllModel.recapListNoteProgrammeModuleByProgrammeUe.forEach(recap => {
+          bulletinAllModel.sommeCreditUE = bulletinAllModel.sommeCreditUE + recap.programmeUE.credit;
+          bulletinAllModel.sommeMoyenneUE = bulletinAllModel.sommeMoyenneUE + recap.moyenneUE;
+          bulletinAllModel.sommeMCR = bulletinAllModel.sommeMCR + (recap.moyenneUE * recap.programmeUE.credit);
+          recap.noteProgrammeModules.forEach(n => {
+            bulletinAllModel.sommeCoef = bulletinAllModel.sommeCoef + n.programmeModule.coef;
           });
-        }
-      )
+        });
+      }
     );
 
-    this.subscription.push(
-      await this.noteService.getBulletinRecapByInscription(inscription.id).subscribe(
-        (data) => {
-          bulletinAllModel.bulletinRecaps = data;
-        }, (error) => console.log(error)
-      )
+    await this.noteService.getBulletinRecapByInscription(inscription.id).subscribe(
+      (data) => {
+        bulletinAllModel.bulletinRecaps = data;
+      }, (error) => console.log(error)
+    );
+
+    this.bulletinAllClasse.push(bulletinAllModel);
+  }
+
+  async getAllRecapNoteProgrammeModuleByProgrammeUEByInscriptionForStat(inscription) {
+    let bulletinAllModel = new BulletinAllModel();
+    await this.noteService.getRecapNoteProgrammeModuleByProgrammeUEAndSemestre(inscription.id, this.semestreModel.semestre.id)
+    .toPromise().then(
+      (data) => {
+        bulletinAllModel.moyenneGeneral = data.moyenneGeneral;
+        bulletinAllModel.recapListNoteProgrammeModuleByProgrammeUe = data.recapNoteProgrammeModuleByProgrammeUES;
+        bulletinAllModel.inscription = inscription;
+        bulletinAllModel.sommeMoyenneUE = 0;
+        bulletinAllModel.sommeCreditUE = 0;
+        bulletinAllModel.sommeMCR = 0;
+        bulletinAllModel.sommeCoef = 0;
+        bulletinAllModel.recapListNoteProgrammeModuleByProgrammeUe.forEach(recap => {
+          bulletinAllModel.sommeCreditUE = bulletinAllModel.sommeCreditUE + recap.programmeUE.credit;
+          bulletinAllModel.sommeMoyenneUE = bulletinAllModel.sommeMoyenneUE + recap.moyenneUE;
+          bulletinAllModel.sommeMCR = bulletinAllModel.sommeMCR + (recap.moyenneUE * recap.programmeUE.credit);
+          recap.noteProgrammeModules.forEach(n => {
+            bulletinAllModel.sommeCoef = bulletinAllModel.sommeCoef + n.programmeModule.coef;
+          });
+        });
+      });
+
+    await this.noteService.getBulletinRecapByInscription(inscription.id).toPromise().then(
+      (data) => {
+        bulletinAllModel.bulletinRecaps = data;
+      }
     );
 
     this.bulletinAllClasse.push(bulletinAllModel);

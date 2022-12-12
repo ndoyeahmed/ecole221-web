@@ -17,11 +17,12 @@ import {ParcoursEtudiantComponent} from './components/parcours-etudiant/parcours
 import {DossierEtudiantComponent} from './components/dossier-etudiant/dossier-etudiant.component';
 import {GestionPresenceComponent} from './components/gestion-presence/gestion-presence.component';
 import {AfficherDossierAbsenceComponent} from './components/afficher-dossier-absence/afficher-dossier-absence.component';
+import { EtudiantEditComponent } from './components/etudiant-edit/etudiant-edit.component';
 
 
 @NgModule({
   declarations: [InscriptionComponent, FicheRenseignementComponent, EtudiantListComponent, ChangementClasseComponent,
-    ParcoursEtudiantComponent, DossierEtudiantComponent, GestionPresenceComponent, AfficherDossierAbsenceComponent],
+    ParcoursEtudiantComponent, DossierEtudiantComponent, GestionPresenceComponent, AfficherDossierAbsenceComponent, EtudiantEditComponent],
   imports: [
     SharedModule,
     MatCardModule,
