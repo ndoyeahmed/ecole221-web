@@ -52,7 +52,7 @@ import { HasAnyAuthorityDirective } from './directive/has-any-authority.directiv
     MatDatepickerModule,
     MatNativeDateModule,
     MatStepperModule,
-    HasAnyAuthorityDirective,
+    HasAnyAuthorityDirective
 
   ],
   providers: [

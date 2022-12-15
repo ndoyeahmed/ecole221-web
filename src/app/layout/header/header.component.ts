@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { ParametragesBaseService } from './../../gestion-school/parametrage/services/parametrages-base.service';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/authentication/services/auth.service';
+import { UtilisateurModel } from 'src/app/shared/models/utilisateur.model';
 
 /// <reference path ="../../node_modules/@types/jquery/index.d.ts"/>
 declare var $: any;
@@ -18,6 +19,7 @@ export class HeaderComponent implements OnInit {
   id: any;
 
   subscription = [] as Subscription[];
+  userConnected = new UtilisateurModel();
 
   constructor(private paramBaseService: ParametragesBaseService, private auth: AuthService) { }
 
@@ -47,6 +49,8 @@ export class HeaderComponent implements OnInit {
     } else {
       this.id = this.anneeScolaire.id;
     }
+
+    this.getConnectedUser();
   }
 
   onSelectedAnneeScolaire(event) {
@@ -73,6 +77,19 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.auth.logout();
+  }
+
+  getConnectedUser() {
+    this.subscription.push(
+      this.auth.identity().subscribe(
+        (data) => {
+          console.log(data);
+          this.userConnected = data;
+        }, (error) => {
+          console.log(error);
+        }
+      )
+    );
   }
 
 }

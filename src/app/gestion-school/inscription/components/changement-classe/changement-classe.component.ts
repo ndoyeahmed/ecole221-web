@@ -71,7 +71,7 @@ export class ChangementClasseComponent implements OnInit {
         this.subscription.push(
           this.paramClasseService.getSousClasseAInscrire(body).subscribe(
             (data) => {
-              console.log(data);
+              // console.log(data);
               this.sousClasseModel = data;
             }, (error) => {
               if (Number(error.status) === 400 && error.error.message === 'sousclasse full') {
@@ -129,7 +129,7 @@ export class ChangementClasseComponent implements OnInit {
 
   onRegulariser(value: MatSlideToggleChange) {
     this.regulariser = value.checked;
-    console.log(this.regulariser);
+    // console.log(this.regulariser);
   }
 
   save(item) {

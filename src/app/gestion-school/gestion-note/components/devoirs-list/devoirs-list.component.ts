@@ -48,7 +48,7 @@ export class DevoirsListComponent implements OnInit {
           : this.noteService.addDevoir(devoir))
           .subscribe(
           (data) => {
-            console.log(data);
+            // console.log(data);
           }, (error) => console.log(error)
         )
       );
@@ -59,7 +59,7 @@ export class DevoirsListComponent implements OnInit {
     this.subscription.push(
       this.noteService.updateMoyenneDevoir(this.note.id, this.note).subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
         }, (error) => console.log(error)
       )
     );

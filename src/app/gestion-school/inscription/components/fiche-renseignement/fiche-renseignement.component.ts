@@ -87,7 +87,7 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
 
   selectFile(event, doc) {
     // this.selectedFiles = event.target.files;
-    console.log(event.target.files);
+    // console.log(event.target.files);
     if (event.target.files[0].type === 'application/pdf') {
       const reader = new FileReader();
 
@@ -105,7 +105,7 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
       this.notif.error('Veuillez choisir un fichier pdf SVP');
     }
 
-    console.log(this.listSelectedDocument);
+    // console.log(this.listSelectedDocument);
   }
 
   upload() {
@@ -191,7 +191,7 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
       this.subscription.push(
         this.paramClasseService.getSousClasseAInscrire(body).subscribe(
           (data) => {
-            console.log(data);
+            // console.log(data);
             this.sousClasseModel = data;
           }, (error) => {
             console.log(error);
@@ -303,7 +303,7 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
           this.subscription.push(
             this.inscriptionService.inscription(this.inscriptionPOJOModel).subscribe(
               (data) => {
-                console.log(data);
+                // console.log(data);
               }, (error) => {
                 if (error.error.message === 'deja inscrit dans cette filiere') {
                   this.notif.error('Deja inscrit dans cette spécialité');

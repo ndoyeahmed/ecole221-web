@@ -124,7 +124,7 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
   }
 
   onSelectedReferentiel(event: MatRadioChange) {
-    console.log(event);
+    // console.log(event);
     this.listClasse.forEach(x => {
       this.paramClasseService.getClasseReferentielByClasseAndReferentiel(x.id, event.value.id)
       .subscribe(
@@ -283,7 +283,7 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
         this.subscription.push(
           this.paramClasseService.addClasseReferentiel(this.listClasseReferentiel).subscribe(
             (data) => {
-              console.log(data);
+              // console.log(data);
             }, (error) => {
               console.log(error);
               this.notif.error();

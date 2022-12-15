@@ -10,7 +10,8 @@ import {GestionNoteModule} from './gestion-note/gestion-note.module';
     GestionSchoolRoutingModule,
     InscriptionModule,
     ProfesseursModule,
-    GestionNoteModule
+    GestionNoteModule,
+
   ],
 })
 export class GestionSchoolModule { }

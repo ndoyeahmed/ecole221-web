@@ -108,7 +108,7 @@ export class PdfGenerationService {
                 },
                 {
                   columns: [
-                    {text: 'Parcours: ', style: 'labelStyle', width: '20%'},
+                    {text: 'Grade: ', style: 'labelStyle', width: '20%'},
                     {
                       text: bulletinAllClasse[0].inscription.sousClasse.niveau.parcours.libelle,
                       fontSize: 10, width: '80%'

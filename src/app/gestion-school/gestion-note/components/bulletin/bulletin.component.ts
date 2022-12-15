@@ -14,6 +14,8 @@ import {Subscription} from 'rxjs';
 import {BulletinAllModel} from '../../../../shared/models/bulletin-all.model';
 import {ClasseSousClasse} from '../../../../shared/models/classe-sous-classe.model';
 import {ParametragesSpecialiteService} from '../../../parametrage/services/parametrages-specialite.service';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { MycustomNotificationService } from 'src/app/gestion-school/parametrage/services/mycustom-notification.service';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
@@ -27,6 +29,7 @@ declare var $: any;
   styleUrls: ['./bulletin.component.css']
 })
 export class BulletinComponent implements OnInit, OnDestroy {
+  @BlockUI() blockUI: NgBlockUI;
   @Input() listRecapNoteProgrammeModule: RecapNoteProgrammeModuleByProgrammeUeModel[];
   @Input() bulletinRecapModels: BulletinRecapModel[];
   @Input() inscription: InscriptionModel;
@@ -43,11 +46,13 @@ export class BulletinComponent implements OnInit, OnDestroy {
   semestreNiveauArray = [] as SemestreNiveauModel[];
   recapSemestreInscription = [];
   classeSousClasse: ClasseSousClasse;
+  decisionForStudent = '';
   url = '';
   somme = 0;
 
   constructor(private sanitizer: DomSanitizer,
               private noteService: NotesService,
+              private notif: MycustomNotificationService,
               private paramSpecialiteService: ParametragesSpecialiteService,
               private http: HttpClient) {
   }
@@ -88,7 +93,8 @@ export class BulletinComponent implements OnInit, OnDestroy {
   async generateBulletin() {
     const logo = await this.getImageFromAssets('/assets/images/bulletin/header.png');
     const footer = await this.getImageFromAssets('/assets/images/bulletin/footer.png');
-    console.log(logo);
+    // console.log(logo);
+    await this.getDecisionsForAStudent(this.inscription)
     return {
       header: {
         columns: [
@@ -162,7 +168,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                 },
                 {
                   columns: [
-                    {text: 'Parcours: ', style: 'labelStyle', width: '20%'},
+                    {text: 'Grade: ', style: 'labelStyle', width: '20%'},
                     {
                       text: this.inscription ? this.inscription.sousClasse.niveau.parcours.libelle ?
                         this.inscription.sousClasse.niveau.parcours.libelle : '' : '',
@@ -308,7 +314,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
               margin: [0, 15, 0, 0],
               fontSize: 11,
               bold: true,
-              text: 'Decision du Conseil: '
+              text: this.semestre.semestre.numero === 2 ? 'Decision du Conseil: ' + this.decisionForStudent : ''
             },
             {
               width: '50%',
@@ -323,7 +329,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                   text: 'Le Directeur des Etudes'
                 },
                 {
-                  text: 'M. NDIAYE',
+                  text: 'Ababacar NDIAYE',
                   fontSize: 11,
                   alignment: 'center',
                 }
@@ -389,14 +395,14 @@ export class BulletinComponent implements OnInit, OnDestroy {
   }
 
   async getDecisionConseil() {
-    console.log('eeee');
+
     for (const bulletinAll of this.bulletinAllClasse) {
       this.somme = 0;
       this.subscription.push(
        await this.noteService.getSumRecapSemestreInscriptionValideByInscription(bulletinAll.inscription.id)
           .subscribe(
             (data) => {
-              console.log('somme', data);
+              //console.log('somme', data);
               if (data) {
                 this.somme = data;
               }
@@ -627,19 +633,23 @@ export class BulletinComponent implements OnInit, OnDestroy {
   }
 
   async downloadBulletin() {
+    this.blockUI.start();
     const filename = '' +
       this.inscription.etudiant.nom +
       this.inscription.etudiant.prenom + moment();
     const docDef = await this.generateBulletin();
     pdfMake.createPdf(docDef).download(filename);
+    this.blockUI.stop();
   }
 
   async downloadAllBulletin() {
+    this.blockUI.start();
     const filename = this.classeSousClasse.classe.libelle + '-' +
       this.semestre.semestre.libelle + '-' +
       moment().format('DD-MM-YYYY HH-mm-ss');
     const docDef = await this.generateAllBulletin();
     pdfMake.createPdf(docDef).download(filename);
+    this.blockUI.stop();
   }
 
   getAppreciation(moyenneGeneral) {
@@ -721,7 +731,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                   },
                   {
                     columns: [
-                      {text: 'Parcours: ', style: 'labelStyle', width: '20%'},
+                      {text: 'Grade: ', style: 'labelStyle', width: '20%'},
                       {
                         text: bulletinAll.inscription ? bulletinAll.inscription.sousClasse.niveau.parcours.libelle ?
                           bulletinAll.inscription.sousClasse.niveau.parcours.libelle : '' : '',
@@ -886,7 +896,7 @@ export class BulletinComponent implements OnInit, OnDestroy {
                     text: 'Le Directeur des Etudes'
                   },
                   {
-                    text: 'M. NDIAYE',
+                    text: 'Ababacar NDIAYE',
                     fontSize: 11,
                     alignment: 'center',
                   }
@@ -906,10 +916,10 @@ export class BulletinComponent implements OnInit, OnDestroy {
     let somme = 0;
     for (let b of bulletinAllClasse) {
       const bb = b;
-      console.log(b);
+      // console.log(b);
       await this.noteService.getSumRecapSemestreInscriptionValideByInscription(b.inscription.id).toPromise().then(
         (result) => {
-          console.log(result);
+          // console.log(result);
           somme = result;
           if (somme >= 42 && somme < 60) {
             bb.decision = 'Admis sous réserve';
@@ -926,10 +936,32 @@ export class BulletinComponent implements OnInit, OnDestroy {
     return array;
   }
 
+  async getDecisionsForAStudent(inscription) {
+    const array = [];
+    let somme = 0;
+    this.decisionForStudent = ''
+    // for (let b of bulletinAllClasse) {
+      await this.noteService.getSumRecapSemestreInscriptionValideByInscription(inscription.id).toPromise().then(
+        (result) => {
+          // console.log(result);
+          somme = result;
+          if (somme >= 42 && somme < 60) {
+            this.decisionForStudent = 'Admis sous réserve';
+          } else if (somme === 60) {
+            this.decisionForStudent = 'Admis';
+          } else if (somme < 42) {
+            this.decisionForStudent = 'Redouble';
+          }
+
+        }
+      ).catch(error => error);
+    // }
+  }
+
   async generateAllBulletin() {
     const logo = await this.getImageFromAssets('/assets/images/bulletin/header.png');
     const footer = await this.getImageFromAssets('/assets/images/bulletin/footer.png');
-    console.log(logo);
+    // console.log(logo);
     this.bulletinAllClasse = await this.getDecisions(this.bulletinAllClasse);
     return {
       header: {
@@ -1071,12 +1103,12 @@ export class BulletinComponent implements OnInit, OnDestroy {
             this.onGetClasse();
 
             this.downloadAllBulletin().then(result => {
-              console.log('generation ok');
-            }).catch(error => console.log(error));
+              // console.log('generation ok');
+            }).catch(error => {this.notif.error('Veuillez actualiser le filtre SVP') ;this.blockUI.stop();});
           }
-        }, (error) => console.log(error),
+        }, (error) => {this.notif.error('Veuillez actualiser le filtre SVP');this.blockUI.stop();},
          () => {
-           console.log(this.bulletinAllClasse);
+           // console.log(this.bulletinAllClasse);
          }
       )
     );

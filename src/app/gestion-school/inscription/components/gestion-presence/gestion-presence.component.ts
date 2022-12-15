@@ -74,11 +74,11 @@ export class GestionPresenceComponent implements OnInit, OnDestroy {
   }
 
   saveListPresence() {
-    console.log(this.listPresence);
+    // console.log(this.listPresence);
     this.subscription.push(
       this.presenceService.savePresence(this.listPresence).subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
         }, (error) => {
           if (error.error.message === 'presence already marked') {
             this.notif.error('Les présences ont déja été gérer pour cette journée');

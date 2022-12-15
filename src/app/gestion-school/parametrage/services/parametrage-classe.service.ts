@@ -35,7 +35,7 @@ export class ParametrageClasseService {
   }
 
   updateClasse(id: any, classe: any): Observable<any> {
-    console.log(classe);
+    // console.log(classe);
     return this.http.put<any>(this.api + '/classe/' + id,
     {
       libelle: classe.libelle,

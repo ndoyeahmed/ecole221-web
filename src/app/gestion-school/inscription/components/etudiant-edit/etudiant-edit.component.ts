@@ -69,7 +69,7 @@ export class EtudiantEditComponent implements OnInit, OnDestroy {
         (data) => {
           if (data) {
             this.etudiantModel = data as EtudiantModel;
-            console.log(data);
+            // console.log(data);
           } else {
             this.etudiantModel = new EtudiantModel();
             this.etudiantModel.cin = cin;
@@ -87,7 +87,7 @@ export class EtudiantEditComponent implements OnInit, OnDestroy {
     this.subscription.push(
       this.inscriptionService.editEtudiant(this.etudiantCin, this.etudiantModel).subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
         }, (error) => {
           this.notif.error();
           this.ngxService.hide(this.LOADERID);

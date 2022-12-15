@@ -304,8 +304,8 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
   }
 
   getDocumentToPrint(event, inscription) {
-    console.log(event);
-    console.log(inscription);
+    // console.log(event);
+    // console.log(inscription);
     $('#showPDFModal').modal('show');
   }
 
@@ -558,7 +558,7 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
     this.subscription.push(
       this.inscriptionService.getAllInscription(this.anneeScolaireEncours.id).subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
           this.listInscription = data;
           this.dataSource = new MatTableDataSource<InscriptionModel>(this.listInscription);
           this.dataSource.paginator = this.paginator;

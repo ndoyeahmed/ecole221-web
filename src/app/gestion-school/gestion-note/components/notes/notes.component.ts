@@ -39,6 +39,7 @@ import {BulletinAllModel} from "../../../../shared/models/bulletin-all.model";
 import { PdfGenerationService } from '../../services/pdf-generation.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
@@ -51,7 +52,7 @@ declare var $: any;
   styleUrls: ['./notes.component.css']
 })
 export class NotesComponent implements OnInit, OnDestroy {
-
+  @BlockUI() blockUI: NgBlockUI;
   showDialog = 'note_etudiant';
   isNoteRemplacement = false;
   isNoteRemplacementok = true;
@@ -189,13 +190,13 @@ export class NotesComponent implements OnInit, OnDestroy {
   valideNote() {
     if (this.sessionModel && this.sessionModel.id === 2) {
       this.setNoteToRemplacementState(this.listNoteProgrammeModule);
-      console.log(this.listNoteProgrammeModule);
+     // console.log(this.listNoteProgrammeModule);
     }
     if (this.listNoteProgrammeModule && this.listNoteProgrammeModule.length > 0) {
       this.listNoteProgrammeModule.forEach(npm => {
         this.subscription.push(
           this.noteService.updateNote(npm.note, this.programmeModuleModel.id).subscribe(
-            (data) => console.log(data),
+            (data) => // console.log(data){},
             (error) => console.log(error),
             () => {
               this.loadNoteProgrammeModule(this.programmeModuleModel.id);
@@ -447,7 +448,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         ).subscribe(
           (data) => {
             this.listNoteProgrammeModuleEtudiant = data;
-            console.log(data);
+           // console.log(data);
             this.noteProgrammeModuleEtudiantDataSource = new MatTableDataSource<NoteProgrammeModuleModel>
             (this.listNoteProgrammeModuleEtudiant);
             localStorage.setItem('list-note-etudiant', JSON.stringify(data));
@@ -461,7 +462,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         ).subscribe(
           (data) => {
             this.listNoteProgrammeModuleEtudiant = data;
-            console.log(data);
+            // console.log(data);
             this.noteProgrammeModuleEtudiantDataSource = new MatTableDataSource<NoteProgrammeModuleModel>
             (this.listNoteProgrammeModuleEtudiant);
             localStorage.setItem('list-note-etudiant', JSON.stringify(data));
@@ -558,9 +559,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.subscription.push(
       this.noteService.getBulletinRecapByInscription(inscriptionId).subscribe(
         (data) => {
-          console.log('moyenne');
+          // console.log('moyenne');
           this.bulletinRecaps = data;
-          console.log(this.bulletinRecaps);
+          // console.log(this.bulletinRecaps);
         }, (error) => console.log(error)
       )
     );
@@ -571,7 +572,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       this.noteService.getAllProgrammeUEInscriptionByInscription(idInscription)
         .subscribe(
           (data) => {
-            console.log(data);
+            // console.log(data);
           }, (error) => console.log(error)
         )
     );
@@ -602,15 +603,17 @@ export class NotesComponent implements OnInit, OnDestroy {
   async getAllBulletinClasse() {
     this.bulletinAllClasse = [];
     if (this.listInscriptionFiltered && this.listInscriptionFiltered.length > 0) {
+      this.blockUI.start();
       for (const inscription1 of this.listInscriptionFiltered) {
         await this.getAllRecapNoteProgrammeModuleByProgrammeUEByInscriptionForStat(inscription1);
       }
       /*console.log('---------------------this.bulletinAllClasse');
       console.log(this.bulletinAllClasse);*/
       this.showDialog = 'bulletin_etudiant';
-      $('#showNoteModal').modal('show');
+      // $('#showNoteModal').modal('show');
       this.noteService.onGenerateAllBulletin.next(this.bulletinAllClasse);
       this.noteService.onGenerateAllBulletinClasse.next(this.classeSousClasseModel);
+      this.blockUI.stop();
     }
   }
 

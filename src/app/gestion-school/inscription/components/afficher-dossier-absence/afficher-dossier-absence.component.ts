@@ -106,7 +106,7 @@ export class AfficherDossierAbsenceComponent implements OnInit, OnDestroy {
     this.subscription.push(
       this.presenceService.updatePresenceMotif(presence.id, { motif: presence.motif }).subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
         }, (error) => {
           console.log(error);
           this.notif.error();

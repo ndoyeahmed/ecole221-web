@@ -1,10 +1,13 @@
-<header class="main-header">
+<header class="main-header" >
   <!-- Logo -->
   <a href="javascript:void(0);" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
     <span class="logo-mini"><strong>ESN</strong></span>
     <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><strong>ECOLE</strong></span>
+    <span class="logo-lg">
+      <!-- <strong>ECOLE 221</strong> -->
+      <img src="https://ecole221.com/wp-content/uploads/2022/11/e21.png" alt="ECOLE221">
+    </span>
   </a>
   <!-- Header Navbar: style can be found in header.less -->
   <nav class="navbar navbar-static-top">
@@ -98,7 +101,8 @@
           <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
             <img [src]="'../../../assets/images/login2.png'"
                  alt="User Image" class="user-image">
-            <span class="hidden-xs"> Mouhamed NDOYE
+            <span class="hidden-xs">
+              {{userConnected?.prenom}} {{userConnected?.nom}}
             </span>
           </a>
           <ul class="dropdown-menu">
@@ -108,7 +112,7 @@
                    class="img-circle" alt="User Image">
 
               <p>
-              ADMIN
+              {{userConnected?.profil?.libelle}}
                 <!--<small>Member since Nov. 2012</small>-->
               </p>
             </li>

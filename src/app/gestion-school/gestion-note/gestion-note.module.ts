@@ -15,6 +15,7 @@ import { NotesEtudiantComponent } from './components/notes-etudiant/notes-etudia
 import { DevoirsListComponent } from './components/devoirs-list/devoirs-list.component';
 import { BulletinComponent } from './components/bulletin/bulletin.component';
 import { PdfGenerationService } from './services/pdf-generation.service';
+import { BlockUIModule } from 'ng-block-ui';
 
 
 
@@ -30,6 +31,9 @@ import { PdfGenerationService } from './services/pdf-generation.service';
     MatIconModule,
     MatAutocompleteModule,
     MatExpansionModule,
+    BlockUIModule.forRoot({
+      message: 'Traitement en cours.....'
+    })
   ],
   providers: [
     NotesService,

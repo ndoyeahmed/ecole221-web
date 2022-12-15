@@ -99,13 +99,15 @@ export class NotesEtudiantComponent implements OnInit, AfterViewInit {
   valideNote() {
     if (this.sessionModel && this.sessionModel.id === 2) {
       this.setNoteToRemplacementState(this.dataSource.data);
-      console.log(this.dataSource.data);
+      // console.log(this.dataSource.data);
     }
     if (this.dataSource.data && this.dataSource.data.length > 0) {
       this.dataSource.data.forEach(npm => {
         this.subscription.push(
           this.noteService.updateNote(npm.note, npm.programmeModule.id).subscribe(
-            (data) => console.log(data),
+            (data) => {
+              // console.log(data);
+             },
             (error) => console.log(error),
             () => {
             }
