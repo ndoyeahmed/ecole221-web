@@ -188,7 +188,7 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
     const content = await this.getContent();
 
     logo = await this.getImageFromAssets('/assets/images/forslide.png');
-    photoProfil = await this.getImageFromAssets('/assets/images/photo_profil.jpg');
+    photoProfil = await this.getImageFromAssets('/assets/images/login2.png');
 
     const documentDefinition = {
       header: {
@@ -588,6 +588,162 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
       if (result && result.rep === true) {
         this.loadListInscription();
       }
+    });
+  }
+
+  async getCardNewVersion() {
+    let logo = '';
+    let bgCardID = '';
+    let photoProfil = '';
+
+    // const content = await this.getContent();
+
+    logo = await this.getImageFromAssets('/assets/images/forslide.png');
+    bgCardID = await this.getImageFromAssets('/assets/images/cardID/bg_cardID.jpg');
+    photoProfil = await this.getImageFromAssets('/assets/images/login2.png');
+
+    const documentDefinition = {
+
+      content: [
+        {
+          columns: [
+
+            {
+              // star-sized columns fill the remaining space
+              // if there's more than one star-column, available width is divided equally
+              width: '50%',
+              stack: [
+                {
+                  columns: [
+                    {
+                      width: '100%',
+                      stack: [
+                        {
+                          image: 'myProfil',
+                          fit: [50, 50]
+                        }
+                      ],
+                      margin: [ 0, 25, 0, 0 ],
+                      style: { alignment: 'center' }
+                    }
+                  ]
+                },
+                {
+                  columns: [
+                    {
+                      width: '10%',
+                      stack: [
+                        {
+                          image: 'myProfil',
+                          width: 15,
+                          height: 30
+                        }
+                      ],
+                      margin: [ 0, 0, 0, 0 ]
+                    },
+                    {
+                      width: '90%',
+                      stack: [
+                        {
+                          text: 'Mouhamed NDOYE', style: {fontSize: 9, color: 'black'}
+                        },
+                        {
+                          margin: [ 0, 2, 0, 15 ],
+                          text: 'Marketing et Communication Digitale ', style: {fontSize: 7, color: 'red'}
+                        },
+                        {
+                          columns: [
+                            {
+                              width: '10%',
+                              text: 'T', style: {fontSize: 8, color: 'black'}
+                            },
+                            {
+                              width: '90%',
+                              text: '77 000 00 00', style: {fontSize: 8, color: 'black'}
+                            }
+                          ]
+                        },
+                        {
+                          columns: [
+                            {
+                              width: '10%',
+                              text: '@', style: {fontSize: 8, color: 'black'}
+                            },
+                            {
+                              width: '90%',
+                              text: 'ndoyeahmed2602@gmail.com', style: {fontSize: 8, color: 'black'}
+                            }
+                          ]
+                        }
+                      ],
+                      margin: [ 5, 3, 0, 0 ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              // % width
+              width: '50%',
+              text: 'Fourth column'
+            }
+          ],
+          // optional space between columns
+          columnGap: 0
+        }
+      ],
+      background: {
+        image: 'myBG',
+        width: 300,
+        height: 170,
+        style: { alignment: 'center' }
+      },
+
+      pageSize: {
+        width: 300, // 2381,1 pt = 84 cm
+        height: 170 // 55 cm = ?
+      },
+      pageMargins: [0, 0, 0, 0],
+      styles: {
+        sectionTitle: {
+          bold: true,
+          fontSize: 8,
+          alignment: 'center',
+          color: '#FFFFFF'
+        },
+        footerStyle: {
+          bold: true,
+          fontSize: 6,
+          alignment: 'right',
+          color: '#FFFFFF'
+        },
+        labelStyle: {
+          fontSize: 6,
+          alignment: 'left'
+        },
+        infosEtudiantStyle: {
+          bold: true,
+          fontSize: 8,
+          alignment: 'left'
+        },
+        promocodeStyle: {
+          bold: true,
+          fontSize: 5,
+          color: '#ca151b',
+          alignment: 'center'
+        }
+      },
+      images: {
+        mylogo: logo,
+        myProfil: photoProfil,
+        myBG: bgCardID
+      }
+    };
+
+    const pdfDocGenerator = pdfMake.createPdf(documentDefinition);
+    pdfDocGenerator.getDataUrl((data) => {
+      this.urlCarteEtudiant = data;
+      $('#showPDFModal').modal('show');
     });
   }
 
