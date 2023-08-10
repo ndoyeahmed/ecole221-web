@@ -591,107 +591,467 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
     });
   }
 
+  async getNewContent() {
+    const content = [];
+    const image = [];
+    this.listInscription.forEach(x => {
+      if(x.etudiant && x.etudiant.photo && x.etudiant.photo != null) {
+        let resultat = null;
+        this.inscriptionService.getFileByName(x.etudiant.photo).subscribe((result) => {
+          resultat = result;
+        }, (error) => console.log(error),
+        async () => {
+          console.log(resultat);
+          resultat = await this.toBase64(resultat) + '';
+          content.push(
+            {
+              columns: [
+
+                {
+                  // star-sized columns fill the remaining space
+                  // if there's more than one star-column, available width is divided equally
+                  width: '50%',
+                  stack: [
+                    {
+                      columns: [
+                        {
+                          width: '100%',
+                          stack: [
+                            {
+                              image: resultat ? resultat : 'myProfil',
+                              fit: [50, 50]
+                            }
+                          ],
+                          margin: [ 0, 20, 0, 5 ],
+                          style: { alignment: 'center' }
+                        }
+                      ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'contactIcon',
+                              width: 20,
+                              height: 35
+                            }
+                          ],
+                          margin: [ 0, 3, 0, 0 ]
+                        },
+                        {
+                          width: '90%',
+                          stack: [
+                            {
+                              text: x.etudiant.prenom + ' ' + x.etudiant.nom, style: {fontSize: 9, color: 'black'},
+                              margin: [ 3, 6, 0, 0 ],
+                            },
+                            {
+                              margin: [ 3, 3, 0, 15 ],
+                              text: x.sousClasse.specialite.libelle, style: {fontSize: 7, color: 'red'}
+                            },
+                            {
+                              columns: [
+                                {
+                                  width: '10%',
+                                  stack: [
+                                    {
+                                      image: 'tel1Icon',
+                                      width: 10,
+                                      height: 10
+                                    }
+                                  ]
+                                },
+                                {
+                                  width: '90%',
+                                  text: x.etudiant.telephone, style: {fontSize: 8, color: 'black'}
+                                }
+                              ],
+                              margin: [ 0, 0, 0, 3 ],
+                            },
+                            {
+                              columns: [
+                                {
+                                  width: '10%',
+                                  stack: [
+                                    {
+                                      image: 'mailIcon',
+                                      width: 10,
+                                      height: 10
+                                    }
+                                  ]
+                                },
+                                {
+                                  width: '90%',
+                                  text: x.etudiant.email, style: {fontSize: 8, color: 'black'}
+                                }
+                              ]
+                            }
+                          ],
+                          margin: [ 5, 3, 0, 0 ]
+                        }
+                      ]
+                    }
+                  ],
+                  margin: [ 0, 20, 0, 0 ],
+                },
+                {
+                  // % width
+                  width: '50%',
+                  stack: [
+                    {
+                      columns: [
+                        {
+                          width: '100%',
+                          stack: [
+                            {
+                              image: 'mylogo',
+                              fit: [40, 40]
+                            }
+                          ],
+                          margin: [ 80, 15, 0, 0 ]
+                        }
+                      ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '100%',
+                          stack: [
+                            {
+                              image: 'mylogo',
+                              fit: [40, 40]
+                            }
+                          ],
+                          margin: [ 80, 10, 0, 15 ]
+                        }
+                      ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'localisationIcon',
+                              width: 10,
+                              height: 10
+                            }
+                          ]
+                        },
+                        {
+                          width: '90%',
+                          text: 'ndoyeahmed2602@gmail.com', style: {fontSize: 7, color: 'white'}
+                        }
+                      ],
+                      margin: [ 5, 0, 0, 0 ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'mailBlancIcon',
+                              width: 10,
+                              height: 10
+                            }
+                          ]
+                        },
+                        {
+                          width: '90%',
+                          text: 'Email: contact@ecole221.com', style: {fontSize: 7, color: 'white'}
+                        }
+                      ],
+                      margin: [ 5, 0, 0, 0 ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'phoneIcon',
+                              width: 10,
+                              height: 10
+                            }
+                          ]
+                        },
+                        {
+                          width: '90%',
+                          text: 'Tel: 33 834 84 41 / 77 117 33 33', style: {fontSize: 7, color: 'white'}
+                        }
+                      ],
+                      margin: [ 5, 0, 0, 0 ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'siteIcon',
+                              width: 10,
+                              height: 10
+                            }
+                          ]
+                        },
+                        {
+                          width: '90%',
+                          text: 'www.ecole221.com', style: {fontSize: 7, color: 'white'}
+                        }
+                      ],
+                      margin: [ 5, 0, 0, 0 ]
+                    }
+                  ]
+                }
+              ],
+              // optional space between columns
+              columnGap: 0
+            }
+          );
+        }
+        );
+      } else {
+
+          content.push(
+            {
+              columns: [
+
+                {
+                  // star-sized columns fill the remaining space
+                  // if there's more than one star-column, available width is divided equally
+                  width: '50%',
+                  stack: [
+                    {
+                      columns: [
+                        {
+                          width: '100%',
+                          stack: [
+                            {
+                              image: 'myProfil',
+                              fit: [50, 50]
+                            }
+                          ],
+                          margin: [ 0, 20, 0, 5 ],
+                          style: { alignment: 'center' }
+                        }
+                      ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'contactIcon',
+                              width: 20,
+                              height: 35
+                            }
+                          ],
+                          margin: [ 0, 3, 0, 0 ]
+                        },
+                        {
+                          width: '90%',
+                          stack: [
+                            {
+                              text: x.etudiant.prenom + ' ' + x.etudiant.nom, style: {fontSize: 9, color: 'black'},
+                              margin: [ 3, 6, 0, 0 ],
+                            },
+                            {
+                              margin: [ 3, 3, 0, 15 ],
+                              text: x.sousClasse.specialite.libelle, style: {fontSize: 7, color: 'red'}
+                            },
+                            {
+                              columns: [
+                                {
+                                  width: '10%',
+                                  stack: [
+                                    {
+                                      image: 'tel1Icon',
+                                      width: 10,
+                                      height: 10
+                                    }
+                                  ]
+                                },
+                                {
+                                  width: '90%',
+                                  text: x.etudiant.telephone, style: {fontSize: 8, color: 'black'}
+                                }
+                              ],
+                              margin: [ 0, 0, 0, 3 ],
+                            },
+                            {
+                              columns: [
+                                {
+                                  width: '10%',
+                                  stack: [
+                                    {
+                                      image: 'mailIcon',
+                                      width: 10,
+                                      height: 10
+                                    }
+                                  ]
+                                },
+                                {
+                                  width: '90%',
+                                  text: x.etudiant.email, style: {fontSize: 8, color: 'black'}
+                                }
+                              ]
+                            }
+                          ],
+                          margin: [ 5, 3, 0, 0 ]
+                        }
+                      ]
+                    }
+                  ],
+                  margin: [ 0, 20, 0, 0 ],
+                },
+                {
+                  // % width
+                  width: '50%',
+                  stack: [
+                    {
+                      columns: [
+                        {
+                          width: '100%',
+                          stack: [
+                            {
+                              image: 'mylogo',
+                              fit: [40, 40]
+                            }
+                          ],
+                          margin: [ 80, 15, 0, 0 ]
+                        }
+                      ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '100%',
+                          stack: [
+                            {
+                              image: 'mylogo',
+                              fit: [40, 40]
+                            }
+                          ],
+                          margin: [ 80, 10, 0, 15 ]
+                        }
+                      ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'localisationIcon',
+                              width: 10,
+                              height: 10
+                            }
+                          ]
+                        },
+                        {
+                          width: '90%',
+                          text: 'ndoyeahmed2602@gmail.com', style: {fontSize: 7, color: 'white'}
+                        }
+                      ],
+                      margin: [ 5, 0, 0, 0 ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'mailBlancIcon',
+                              width: 10,
+                              height: 10
+                            }
+                          ]
+                        },
+                        {
+                          width: '90%',
+                          text: 'Email: contact@ecole221.com', style: {fontSize: 7, color: 'white'}
+                        }
+                      ],
+                      margin: [ 5, 0, 0, 0 ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'phoneIcon',
+                              width: 10,
+                              height: 10
+                            }
+                          ]
+                        },
+                        {
+                          width: '90%',
+                          text: 'Tel: 33 834 84 41 / 77 117 33 33', style: {fontSize: 7, color: 'white'}
+                        }
+                      ],
+                      margin: [ 5, 0, 0, 0 ]
+                    },
+                    {
+                      columns: [
+                        {
+                          width: '10%',
+                          stack: [
+                            {
+                              image: 'siteIcon',
+                              width: 10,
+                              height: 10
+                            }
+                          ]
+                        },
+                        {
+                          width: '90%',
+                          text: 'www.ecole221.com', style: {fontSize: 7, color: 'white'}
+                        }
+                      ],
+                      margin: [ 5, 0, 0, 0 ]
+                    }
+                  ]
+                }
+              ],
+              // optional space between columns
+              columnGap: 0
+            }
+          );
+
+      }
+
+    });
+
+    return { image, content };
+  }
+
   async getCardNewVersion() {
     let logo = '';
     let bgCardID = '';
     let photoProfil = '';
 
-    // const content = await this.getContent();
+    const content = await this.getNewContent();
 
     logo = await this.getImageFromAssets('/assets/images/forslide.png');
     bgCardID = await this.getImageFromAssets('/assets/images/cardID/bg_cardID.jpg');
+    const contactImg = await this.getImageFromAssets('/assets/images/cardID/contact.png');
+    const telImg = await this.getImageFromAssets('/assets/images/cardID/logo-phone-rouge.png');
+    const mailImg = await this.getImageFromAssets('/assets/images/cardID/logo-mail.png');
+    const mailBlancImg = await this.getImageFromAssets('/assets/images/cardID/logo-mail-blanc.png');
+    const localisationImg = await this.getImageFromAssets('/assets/images/cardID/logo-localisation.png');
+    const phoneImg = await this.getImageFromAssets('/assets/images/cardID/logo-phone.png');
+    const siteImg = await this.getImageFromAssets('/assets/images/cardID/logo-site.png');
     photoProfil = await this.getImageFromAssets('/assets/images/login2.png');
 
     const documentDefinition = {
 
-      content: [
-        {
-          columns: [
-
-            {
-              // star-sized columns fill the remaining space
-              // if there's more than one star-column, available width is divided equally
-              width: '50%',
-              stack: [
-                {
-                  columns: [
-                    {
-                      width: '100%',
-                      stack: [
-                        {
-                          image: 'myProfil',
-                          fit: [50, 50]
-                        }
-                      ],
-                      margin: [ 0, 25, 0, 0 ],
-                      style: { alignment: 'center' }
-                    }
-                  ]
-                },
-                {
-                  columns: [
-                    {
-                      width: '10%',
-                      stack: [
-                        {
-                          image: 'myProfil',
-                          width: 15,
-                          height: 30
-                        }
-                      ],
-                      margin: [ 0, 0, 0, 0 ]
-                    },
-                    {
-                      width: '90%',
-                      stack: [
-                        {
-                          text: 'Mouhamed NDOYE', style: {fontSize: 9, color: 'black'}
-                        },
-                        {
-                          margin: [ 0, 2, 0, 15 ],
-                          text: 'Marketing et Communication Digitale ', style: {fontSize: 7, color: 'red'}
-                        },
-                        {
-                          columns: [
-                            {
-                              width: '10%',
-                              text: 'T', style: {fontSize: 8, color: 'black'}
-                            },
-                            {
-                              width: '90%',
-                              text: '77 000 00 00', style: {fontSize: 8, color: 'black'}
-                            }
-                          ]
-                        },
-                        {
-                          columns: [
-                            {
-                              width: '10%',
-                              text: '@', style: {fontSize: 8, color: 'black'}
-                            },
-                            {
-                              width: '90%',
-                              text: 'ndoyeahmed2602@gmail.com', style: {fontSize: 8, color: 'black'}
-                            }
-                          ]
-                        }
-                      ],
-                      margin: [ 5, 3, 0, 0 ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              // % width
-              width: '50%',
-              text: 'Fourth column'
-            }
-          ],
-          // optional space between columns
-          columnGap: 0
-        }
-      ],
+      content: content.content,
       background: {
         image: 'myBG',
         width: 300,
@@ -736,7 +1096,14 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
       images: {
         mylogo: logo,
         myProfil: photoProfil,
-        myBG: bgCardID
+        myBG: bgCardID,
+        contactIcon: contactImg,
+        tel1Icon: telImg,
+        mailIcon: mailImg,
+        mailBlancIcon: mailBlancImg,
+        localisationIcon: localisationImg,
+        phoneIcon: phoneImg,
+        siteIcon: siteImg,
       }
     };
 

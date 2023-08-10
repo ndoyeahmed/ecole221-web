@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   // url: 'http://cloud-28a1it3y.hosteur.net:8080/school'
-  // url: 'http://ges221.com:8080/school'
-  // url: 'http://192.168.1.46:8090'
-  url: 'http://localhost:8080'
+  // url: 'http://localhost:8080/school'
+  url: 'https://gesaf221.com:8081/school'
+  // url: 'http://localhost:8080'
 };
 
 

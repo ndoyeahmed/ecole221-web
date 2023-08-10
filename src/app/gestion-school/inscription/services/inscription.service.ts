@@ -64,4 +64,8 @@ export class InscriptionService {
   getFilesByName(filename: string): Observable<any> {
     return this.http.put('/api/files-storage/files/base64', filename);
   }
+
+  getFileByName(filename: string): Observable<any> {
+    return this.http.post('/api/files-storage/files/myfile', filename);
+  }
 }

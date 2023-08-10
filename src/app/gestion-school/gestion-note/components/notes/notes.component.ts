@@ -448,7 +448,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         ).subscribe(
           (data) => {
             this.listNoteProgrammeModuleEtudiant = data;
-           // console.log(data);
+          //  console.log(data);
             this.noteProgrammeModuleEtudiantDataSource = new MatTableDataSource<NoteProgrammeModuleModel>
             (this.listNoteProgrammeModuleEtudiant);
             localStorage.setItem('list-note-etudiant', JSON.stringify(data));
@@ -462,7 +462,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         ).subscribe(
           (data) => {
             this.listNoteProgrammeModuleEtudiant = data;
-            // console.log(data);
+            console.log(data);
             this.noteProgrammeModuleEtudiantDataSource = new MatTableDataSource<NoteProgrammeModuleModel>
             (this.listNoteProgrammeModuleEtudiant);
             localStorage.setItem('list-note-etudiant', JSON.stringify(data));
