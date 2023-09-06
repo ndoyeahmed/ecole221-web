@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  // url: 'http://cloud-28a1it3y.hosteur.net:8080/school'
+  url: 'https://momedrone-school-api-39624a6ff1f5.herokuapp.com'
   // url: 'http://localhost:8080/school'
-  url: 'https://gesaf221.com:8081/school'
+  // url: 'https://gesaf221.com:8081/school'
   // url: 'http://localhost:8080'
 };
 
