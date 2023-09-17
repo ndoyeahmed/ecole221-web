@@ -3,7 +3,7 @@ import {Observable, Subscription} from 'rxjs';
 import {ProfesseurService} from '../../services/professeur.service';
 import {MycustomNotificationService} from '../../../parametrage/services/mycustom-notification.service';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {map, startWith} from 'rxjs/operators';
@@ -30,7 +30,7 @@ export class ProfesseurAddComponent implements OnInit, OnDestroy {
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  specialiteCtrl = new FormControl();
+  specialiteCtrl = new UntypedFormControl();
   filteredSpecialite: Observable<string[]>;
   specialites: string[] = [];
   allSpecialites: string[] = ['JAVA', 'PHP', 'JavaScript', 'Angular', 'Marketing'];
@@ -42,7 +42,7 @@ export class ProfesseurAddComponent implements OnInit, OnDestroy {
   // input chips diplome config
   selectableDiplome = true;
   removableDiplome = true;
-  diplomeCtrl = new FormControl();
+  diplomeCtrl = new UntypedFormControl();
   filteredDiplome: Observable<string[]>;
   diplomes: string[] = [];
   allDiplome: string[] = [];

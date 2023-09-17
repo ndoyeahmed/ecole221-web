@@ -21,7 +21,7 @@ import {NiveauSpecialiteModel} from '../../../../shared/models/niveau-specialite
 import {ClasseSousClasse} from '../../../../shared/models/classe-sous-classe.model';
 import {DocumentParNiveauModel} from '../../../../shared/models/document-par-niveau.model';
 import {AnneeScolaireModel} from '../../../../shared/models/annee-scolaire.model';
-import {FormControl} from "@angular/forms";
+import {UntypedFormControl} from "@angular/forms";
 import {delay, map, startWith} from "rxjs/operators";
 import {ClasseModel} from "../../../../shared/models/classe.model";
 import {SemestreModel} from "../../../../shared/models/semestre.model";
@@ -115,7 +115,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     name: null
   };
 
-  myControl = new FormControl();
+  myControl = new UntypedFormControl();
   filteredOptions: Observable<ClasseSousClasse[]>;
   isClassOk = false;
 
@@ -350,7 +350,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.listNoteProgrammeModule = [];
     this.semestreModel = null;
     this.horaireModel = null;
-    this.myControl = new FormControl();
+    this.myControl = new UntypedFormControl();
     this.setFilteredOptions();
     this.loadListInscription();
   }
