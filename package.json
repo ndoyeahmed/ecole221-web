@@ -29,7 +29,6 @@
     "moment": "^2.29.1",
     "ng-block-ui": "^3.0.2",
     "ngx-pagination": "^5.0.0",
-    "ngx-spinner": "11.2.14",
     "ngx-toastr": "17.0.2",
     "pdfmake": "^0.1.70",
     "rxjs": "~6.5.4",
