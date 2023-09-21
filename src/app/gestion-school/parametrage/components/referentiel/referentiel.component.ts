@@ -13,7 +13,6 @@ import {ParametrageReferentielService} from './../../services/parametrage-refere
 import {ParametragesSpecialiteService} from './../../services/parametrages-specialite.service';
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {NgxSpinnerService} from 'ngx-spinner';
 import {Subscription} from 'rxjs';
 import {MycustomNotificationService} from '../../services/mycustom-notification.service';
 import {trigger, transition, style, animate, state} from '@angular/animations';
@@ -111,7 +110,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private dialog: MatDialog, private paramSpecialiteService: ParametragesSpecialiteService,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramReferentielService: ParametrageReferentielService, private paramModuleUEService: ParametrageModuleUeService,
     private paramClasseService: ParametrageClasseService, private inscriptionService: InscriptionService,
     private sanitizer: DomSanitizer
@@ -162,7 +161,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListNiveau();
     this.loadListReferentiel();
     this.paramReferentielService.downloadModelExcelBehaviorSubject.next(true);
@@ -209,10 +208,10 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -229,13 +228,13 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onAddNewProgrammeUE(referentiel) {
-    this.ngxService.show(this.LOADERPROGRAMMEUE);
+
     this.loadListUe(referentiel.specialite.id);
     this.loadListSemestre();
   }
 
   onAddNewProgrammeModule(referentiel) {
-    this.ngxService.show(this.LOADERPROGRAMMEUE);
+
     this.loadListModule(referentiel.specialite.id);
   }
 
@@ -247,10 +246,10 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         }
       )
     );
@@ -264,10 +263,10 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         }
       )
     );
@@ -450,10 +449,10 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -482,10 +481,10 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -499,17 +498,17 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         }
       )
     );
   }
 
   /* loadListProgrammeUE(referentiel: ReferentielModel) {
-    this.ngxService.show(this.LOADERPROGRAMMEUE);
+
     this.subscription.push(
       this.paramReferentielService.getAllProgrammeUEByReferentiel(referentiel.id).subscribe(
         (data) => {
@@ -517,17 +516,17 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         }
       )
     );
   } */
 
   loadListProgrammeUE(referentiel: ReferentielModel, semestre: SemestreModel) {
-    this.ngxService.show(this.LOADERPROGRAMMEUE);
+
     this.subscription.push(
       this.paramReferentielService.getAllProgrammeUEByReferentielAndSemestre(referentiel.id, semestre.id).subscribe(
         (data) => {
@@ -535,17 +534,17 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         }
       )
     );
   }
 
   loadListProgrammeModule(programmeUE: ProgrammeUEModel) {
-    this.ngxService.show(this.LOADERPROGRAMMEUE);
+
     this.subscription.push(
       this.paramReferentielService.getAllProgrammeModuleByProgrammeUE(programmeUE.id).subscribe(
         (data) => {
@@ -554,10 +553,10 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
         }
       )
     );
@@ -567,7 +566,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.referentielModel.annee && this.referentielModel.credit
       && this.referentielModel.volumeHeureTotal && this.referentielModel.description) {
       if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id) {
-        this.ngxService.show(this.LOADERID);
+
         this.referentielModel.niveau = this.niveauModel;
         this.referentielModel.specialite = this.specialiteModel;
         this.subscription.push(
@@ -578,13 +577,13 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
               console.log(data);
             }, (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+
             }, () => {
               addForm.resetForm();
               this.clear();
               this.notif.success();
               this.loadListReferentiel();
-              this.ngxService.hide(this.LOADERID);
+
             }
           )
         );
@@ -602,7 +601,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
      if (this.programmeUEModel.fondamental && this.programmeUEModel.credit
       && this.programmeUEModel.nbreHeureUE) {
       if (this.ueModel && this.ueModel.id ) {
-        this.ngxService.show(this.LOADERPROGRAMMEUE);
+
         this.programmeUEModel.ue = this.ueModel;
         this.programmeUEModel.semestre = semestre;
         this.programmeUEModel.referentiel = referentiel;
@@ -614,7 +613,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log(data);
               }, (error) => {
                 this.notif.error();
-                this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
               }, () => {
                 this.loadListProgrammeUE(this.programmeUEModel.referentiel, semestre);
                 this.semestreModel = new SemestreModel();
@@ -622,7 +621,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.programmeUEModel = new ProgrammeUEModel();
                 this.expandedNewProgrammeUE = false;
                 this.notif.success();
-                this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
               }
             )
         );
@@ -642,7 +641,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
       && this.programmeModuleModel.tp && this.programmeModuleModel.tpe
       && this.programmeModuleModel.vhp && this.programmeModuleModel.vht) {
       if (this.moduleModel && this.moduleModel.id) {
-        this.ngxService.show(this.LOADERPROGRAMMEUE);
+
         this.programmeModuleModel.module = this.moduleModel;
         this.programmeModuleModel.programmeUE = programmeUE;
         this.subscription.push(
@@ -653,14 +652,14 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log(data);
               }, (error) => {
                 this.notif.error();
-                this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
               }, () => {
                 this.loadListProgrammeModule(this.programmeModuleModel.programmeUE);
                 this.moduleModel = new ModuleModel();
                 this.programmeModuleModel = new ProgrammeModuleModel();
                 this.expandedNewProgrammeModule = false;
                 this.notif.success();
-                this.ngxService.hide(this.LOADERPROGRAMMEUE);
+
               }
             )
         );
@@ -679,7 +678,7 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramReferentielService.archiveReferentiel(id).subscribe(
         (data) => {
@@ -688,9 +687,9 @@ export class ReferentielComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

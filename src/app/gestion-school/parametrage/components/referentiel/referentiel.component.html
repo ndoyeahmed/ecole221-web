@@ -1,11 +1,5 @@
 <!--<link rel="stylesheet" href="referentiel.component.css">-->
 <div>
-  <ngx-spinner
-    [name]="LOADERID"
-    [fullScreen]="false"
-    type="square-jelly-box"
-    size="medium"
-  ></ngx-spinner>
 
   <div class="row">
     <button matTooltip="Ajouter" *ngIf="!onAdd" mat-fab (click)="onAddReferentiel()" type="button" color="primary">

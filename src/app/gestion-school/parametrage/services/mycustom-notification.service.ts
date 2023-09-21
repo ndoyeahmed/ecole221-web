@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
+import { AlertService } from 'src/app/shared/services/alert.service';
 
 
 @Injectable({
@@ -7,21 +7,21 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class MycustomNotificationService {
 
-  constructor(private toastr: ToastrService) { }
+  constructor(private alertService: AlertService) { }
 
   success(message = 'Opération effectuée avec succès') {
-    this.toastr.success(message, 'Succès');
+    this.alertService.success(message);
   }
 
   error(message = 'Echec de l\'opération') {
-    this.toastr.error(message, 'Erreur');
+    this.alertService.error(message);
   }
 
   info(message = 'Information') {
-    this.toastr.info(message, 'Info');
+    this.alertService.info(message);
   }
 
   warning(message = 'Attention') {
-    this.toastr.warning(message, 'Attention');
+    this.alertService.warn(message);
   }
 }

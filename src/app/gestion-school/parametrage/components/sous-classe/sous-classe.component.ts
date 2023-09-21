@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatTableDataSource } from '@angular/material/table';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { HoraireModel } from 'src/app/shared/models/horaire.model';
 import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.model';
@@ -49,7 +48,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramClasseService: ParametrageClasseService, private paramBaseService: ParametragesBaseService
   ) { }
 
@@ -86,10 +85,10 @@ export class SousClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -105,10 +104,10 @@ export class SousClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -122,10 +121,10 @@ export class SousClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -139,10 +138,10 @@ export class SousClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -151,7 +150,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   save(addForm) {
     if (this.sousClasseModel.libelle && this.sousClasseModel.libelle.trim() !== ''
       && this.niveauModel.id && this.specialiteModel.id && this.horaireModel.id) {
-      this.ngxService.show(this.LOADERID);
+
       this.sousClasseModel.niveau = this.niveauModel;
       this.sousClasseModel.specialite = this.specialiteModel.specialite;
       this.sousClasseModel.horaire = this.horaireModel;
@@ -171,7 +170,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
                 this.onClasseNotExist(classe);
               } else {
                 this.notif.error();
-                this.ngxService.hide(this.LOADERID);
+
               }
             }, () => {
               addForm.resetForm();
@@ -203,7 +202,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramClasseService.archiveSousClasse(id).subscribe(
         (data) => {
@@ -212,16 +211,16 @@ export class SousClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
   }
 
   createClasseAndSousClasse(item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramClasseService.addClasse(item).subscribe(
         (data) => {
@@ -229,7 +228,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
           this.paramClasseService.addSousClasse(this.sousClasseModel).subscribe(
             (result) => {
@@ -240,10 +239,10 @@ export class SousClasseComponent implements OnInit, OnDestroy {
             }, () => {
               this.loadListSousClasse();
               this.notif.success();
-              this.ngxService.hide(this.LOADERID);
+
             }
           );
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -276,7 +275,7 @@ export class SousClasseComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramClasseService.updateSousClasseStatus(value.checked, item.id)
       .subscribe(
@@ -286,9 +285,9 @@ export class SousClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

@@ -13,7 +13,6 @@ import {ParametragesSpecialiteService} from '../../../parametrage/services/param
 import {MatDialog} from '@angular/material/dialog';
 import {MycustomNotificationService} from '../../../parametrage/services/mycustom-notification.service';
 import {HttpClient} from '@angular/common/http';
-import {NgxSpinnerService} from 'ngx-spinner';
 import {ParametragesBaseService} from '../../../parametrage/services/parametrages-base.service';
 import {ParametrageClasseService} from '../../../parametrage/services/parametrage-classe.service';
 import {MatPaginator} from '@angular/material/paginator';
@@ -39,7 +38,6 @@ import {BulletinAllModel} from "../../../../shared/models/bulletin-all.model";
 import { PdfGenerationService } from '../../services/pdf-generation.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
@@ -52,7 +50,6 @@ declare var $: any;
   styleUrls: ['./notes.component.css']
 })
 export class NotesComponent implements OnInit, OnDestroy {
-  @BlockUI() blockUI: NgBlockUI;
   showDialog = 'note_etudiant';
   isNoteRemplacement = false;
   isNoteRemplacementok = true;
@@ -126,7 +123,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   constructor(
     private inscriptionService: InscriptionService, private paramSpecialiteService: ParametragesSpecialiteService,
     private dialog: MatDialog, private notif: MycustomNotificationService, private http: HttpClient,
-    private ngxService: NgxSpinnerService, private paramBaseService: ParametragesBaseService,
+    private paramBaseService: ParametragesBaseService,
     private paramClasseService: ParametrageClasseService, private paramReferentiel: ParametrageReferentielService,
     private noteService: NotesService, private pdfService: PdfGenerationService
   ) { }
@@ -304,10 +301,10 @@ export class NotesComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -365,10 +362,10 @@ export class NotesComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -603,7 +600,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   async getAllBulletinClasse() {
     this.bulletinAllClasse = [];
     if (this.listInscriptionFiltered && this.listInscriptionFiltered.length > 0) {
-      this.blockUI.start();
+
       for (const inscription1 of this.listInscriptionFiltered) {
         await this.getAllRecapNoteProgrammeModuleByProgrammeUEByInscriptionForStat(inscription1);
       }
@@ -613,7 +610,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       // $('#showNoteModal').modal('show');
       this.noteService.onGenerateAllBulletin.next(this.bulletinAllClasse);
       this.noteService.onGenerateAllBulletinClasse.next(this.classeSousClasseModel);
-      this.blockUI.stop();
+
     }
   }
 

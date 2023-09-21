@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from 'src/app/gestion-school/parametrage/services/mycustom-notification.service';
 import { ParametragesBaseService } from 'src/app/gestion-school/parametrage/services/parametrages-base.service';
@@ -29,7 +28,6 @@ export class EtudiantEditComponent implements OnInit, OnDestroy {
   constructor(
     private notif: MycustomNotificationService,
     private route: ActivatedRoute,
-    private ngxService: NgxSpinnerService,
      private paramBaseService: ParametragesBaseService,
      private inscriptionService: InscriptionService
   ) { }
@@ -53,10 +51,10 @@ export class EtudiantEditComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+          
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -90,12 +88,12 @@ export class EtudiantEditComponent implements OnInit, OnDestroy {
           // console.log(data);
         }, (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
           _t16.resetForm();
           this.clear();
           this.notif.success();
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );

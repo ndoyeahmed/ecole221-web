@@ -5,7 +5,6 @@ import {RecapProgrammeAnnuelleModel} from '../../../../../shared/models/recap-pr
 import {MatDialog} from '@angular/material/dialog';
 import {ParametragesSpecialiteService} from '../../../services/parametrages-specialite.service';
 import {MycustomNotificationService} from '../../../services/mycustom-notification.service';
-import {NgxSpinnerService} from 'ngx-spinner';
 import {ParametrageReferentielService} from '../../../services/parametrage-referentiel.service';
 import {ParametrageModuleUeService} from '../../../services/parametrage-module-ue.service';
 import {ParametrageClasseService} from '../../../services/parametrage-classe.service';
@@ -44,7 +43,7 @@ export class RecapReferentielComponent implements OnInit, OnDestroy {
   referentiel: ReferentielModel;
   constructor(
     private dialog: MatDialog, private paramSpecialiteService: ParametragesSpecialiteService,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramReferentielService: ParametrageReferentielService, private route: ActivatedRoute,
     private sanitizer: DomSanitizer, private inscriptionService: InscriptionService,
     private paramModuleUEService: ParametrageModuleUeService

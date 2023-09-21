@@ -1,7 +1,6 @@
 import { ParcoursModel } from './../../../../shared/models/parcours.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
@@ -31,7 +30,7 @@ export class ParcoursComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService
+    private notif: MycustomNotificationService
   ) { }
 
   ngOnDestroy(): void {
@@ -39,7 +38,7 @@ export class ParcoursComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListParcours();
   }
 
@@ -53,10 +52,10 @@ export class ParcoursComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -64,7 +63,7 @@ export class ParcoursComponent implements OnInit, OnDestroy {
 
   save() {
     if (this.parcours.libelle && this.parcours.libelle.trim() !== '') {
-      this.ngxService.show(this.LOADERID);
+
       this.subscription.push(
         (this.parcours.id ?
           this.paramBaseService.updateParcours(this.parcours.id, this.parcours) :
@@ -75,9 +74,9 @@ export class ParcoursComponent implements OnInit, OnDestroy {
               this.notif.success();
             }, (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+
             }, () => {
-              this.ngxService.hide(this.LOADERID);
+
             }
           )
       );
@@ -89,7 +88,7 @@ export class ParcoursComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramBaseService.archiveParcours(id).subscribe(
         (data) => {
@@ -98,9 +97,9 @@ export class ParcoursComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -120,7 +119,7 @@ export class ParcoursComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramBaseService.updateParcoursStatus(value.checked, item.id)
       .subscribe(
@@ -130,9 +129,9 @@ export class ParcoursComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

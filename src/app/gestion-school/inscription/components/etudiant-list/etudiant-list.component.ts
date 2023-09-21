@@ -18,7 +18,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { MycustomNotificationService } from 'src/app/gestion-school/parametrage/services/mycustom-notification.service';
 import * as moment from 'moment';
 import { DocumentParNiveauModel } from 'src/app/shared/models/document-par-niveau.model';
@@ -72,7 +71,7 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
 
   constructor(private inscriptionService: InscriptionService, private paramSpecialiteService: ParametragesSpecialiteService,
               private dialog: MatDialog, private notif: MycustomNotificationService, private http: HttpClient,
-              private ngxService: NgxSpinnerService, private paramBaseService: ParametragesBaseService,
+              private paramBaseService: ParametragesBaseService,
               private paramClasseService: ParametrageClasseService, private sanitizer: DomSanitizer) { }
 
   ngOnDestroy(): void {
@@ -378,10 +377,10 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -395,10 +394,10 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
           this.listSpecialite = data;
         },
         (error) => {
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -413,10 +412,10 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -430,10 +429,10 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -449,10 +448,10 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
               this.listSousClasse = data;
             },
             (error) => {
-              this.ngxService.hide(this.LOADERID);
+
             },
             () => {
-              this.ngxService.hide(this.LOADERID);
+
             }
           )
       );
@@ -565,10 +564,10 @@ export class EtudiantListComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

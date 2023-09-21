@@ -1,7 +1,6 @@
 import { CycleModel } from './../../../../shared/models/cycle.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
@@ -31,14 +30,14 @@ export class CycleComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService
+    private notif: MycustomNotificationService
   ) { }
   ngOnDestroy(): void {
     this.subscription.forEach(x => x.unsubscribe());
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListCycle();
   }
 
@@ -51,9 +50,9 @@ export class CycleComponent implements OnInit, OnDestroy {
           this.dataSource.paginator = this.paginator;
         }, (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -61,7 +60,7 @@ export class CycleComponent implements OnInit, OnDestroy {
 
   save() {
     if (this.cycleModel.cycle && this.cycleModel.cycle.trim() !== '') {
-      this.ngxService.show(this.LOADERID);
+
       this.subscription.push(
         (this.cycleModel.id ?
           this.paramBaseService.updateCycle(this.cycleModel.id, this.cycleModel) :
@@ -72,9 +71,9 @@ export class CycleComponent implements OnInit, OnDestroy {
               this.notif.success();
             }, (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+
             }, () => {
-              this.ngxService.hide(this.LOADERID);
+
             }
           )
       );
@@ -86,7 +85,7 @@ export class CycleComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramBaseService.archiveCycle(id).subscribe(
         (data) => {
@@ -95,9 +94,9 @@ export class CycleComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -117,7 +116,7 @@ export class CycleComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramBaseService.updateCycleStatus(value.checked, item.id)
       .subscribe(
@@ -127,9 +126,9 @@ export class CycleComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

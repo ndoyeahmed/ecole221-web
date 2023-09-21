@@ -10,7 +10,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialogModule} from '@angular/material/dialog';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { NgxSpinnerModule } from 'ngx-spinner';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatTableModule} from '@angular/material/table';
@@ -22,12 +21,15 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import {MatStepperModule} from '@angular/material/stepper';
 import { AuthExpiredInterceptor } from './services/auth-expired.interceptor';
 import { HasAnyAuthorityDirective } from './directive/has-any-authority.directive';
+import { AlertsComponent } from './components/alerts/alerts.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import { LoadingInterceptor } from './services/loading.interceptor';
 
 
 
 
 @NgModule({
-  declarations: [HasAnyAuthorityDirective],
+  declarations: [HasAnyAuthorityDirective, AlertsComponent, SpinnerComponent],
   imports: [
     CommonModule
   ],
@@ -42,7 +44,6 @@ import { HasAnyAuthorityDirective } from './directive/has-any-authority.directiv
     MatCheckboxModule,
     MatDialogModule,
     MatSnackBarModule,
-    NgxSpinnerModule,
     NgxPaginationModule,
     DragDropModule,
     MatTableModule,
@@ -52,7 +53,9 @@ import { HasAnyAuthorityDirective } from './directive/has-any-authority.directiv
     MatDatepickerModule,
     MatNativeDateModule,
     MatStepperModule,
-    HasAnyAuthorityDirective
+    HasAnyAuthorityDirective,
+    AlertsComponent,
+    SpinnerComponent
 
   ],
   providers: [
@@ -66,7 +69,12 @@ import { HasAnyAuthorityDirective } from './directive/has-any-authority.directiv
       useClass: AuthExpiredInterceptor,
       multi: true
     },
-    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
+    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'},
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
+      multi: true
+    }
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

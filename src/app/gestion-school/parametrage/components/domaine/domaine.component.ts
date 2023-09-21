@@ -1,7 +1,6 @@
 import { DomaineModel } from './../../../../shared/models/domaine.model';
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
@@ -31,7 +30,7 @@ export class DomaineComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService
+    private notif: MycustomNotificationService
   ) {
   }
   ngOnDestroy(): void {
@@ -39,7 +38,7 @@ export class DomaineComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListDomaine();
   }
 
@@ -53,10 +52,10 @@ export class DomaineComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -64,7 +63,7 @@ export class DomaineComponent implements OnInit, OnDestroy {
 
   save() {
     if (this.domaineModel.libelle && this.domaineModel.libelle.trim() !== '') {
-      this.ngxService.show(this.LOADERID);
+
       this.subscription.push(
         (this.domaineModel.id ?
           this.paramBaseService.updateDomaine(this.domaineModel.id, this.domaineModel) :
@@ -75,9 +74,9 @@ export class DomaineComponent implements OnInit, OnDestroy {
               this.notif.success();
             }, (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+
             }, () => {
-              this.ngxService.hide(this.LOADERID);
+
             }
           )
       );
@@ -89,7 +88,7 @@ export class DomaineComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramBaseService.archiveDomaine(id).subscribe(
         (data) => {
@@ -98,9 +97,9 @@ export class DomaineComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -120,7 +119,7 @@ export class DomaineComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramBaseService.updateDomaineStatus(value.checked, item.id)
       .subscribe(
@@ -130,9 +129,9 @@ export class DomaineComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

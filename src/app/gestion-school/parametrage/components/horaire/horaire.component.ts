@@ -1,7 +1,6 @@
 import { HoraireModel } from './../../../../shared/models/horaire.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
@@ -30,7 +29,7 @@ export class HoraireComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService
+    private notif: MycustomNotificationService
   ) { }
 
   ngOnDestroy(): void {
@@ -38,7 +37,7 @@ export class HoraireComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListHoraire();
   }
 
@@ -52,10 +51,10 @@ export class HoraireComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -63,7 +62,7 @@ export class HoraireComponent implements OnInit, OnDestroy {
 
   save() {
     if (this.horaireModel.libelle && this.horaireModel.libelle.trim() !== '') {
-      this.ngxService.show(this.LOADERID);
+
       this.subscription.push(
         (this.horaireModel.id ?
           this.paramBaseService.updateHoraire(this.horaireModel.id, this.horaireModel) :
@@ -74,9 +73,9 @@ export class HoraireComponent implements OnInit, OnDestroy {
               this.notif.success();
             }, (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+
             }, () => {
-              this.ngxService.hide(this.LOADERID);
+
             }
           )
       );
@@ -88,7 +87,7 @@ export class HoraireComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramBaseService.archiveHoraire(id).subscribe(
         (data) => {
@@ -97,9 +96,9 @@ export class HoraireComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

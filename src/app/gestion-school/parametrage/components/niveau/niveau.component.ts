@@ -8,11 +8,9 @@ import { DocumentModel } from './../../../../shared/models/document.model';
 import { NiveauModel } from './../../../../shared/models/niveau.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SemestreNiveauModel } from 'src/app/shared/models/semestre-niveau.model';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
@@ -60,7 +58,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramBaseService: ParametragesBaseService, private sharedService: SharedService
   ) {
   }
@@ -97,7 +95,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
   saveSemestreNiveau(niveau) {
     this.listSemestreNiveau = [];
     if (this.listSelectedSemestre && this.listSelectedSemestre.length > 0) {
-      this.ngxService.show(this.LOADERID);
+
       this.listSelectedSemestre.forEach(s => {
         const semestreNiveau = new SemestreNiveauModel();
         semestreNiveau.niveau = niveau;
@@ -112,12 +110,12 @@ export class NiveauComponent implements OnInit, OnDestroy {
             this.listSelectedSemestre = [];
             this.onNewSemestreNiveau = false;
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+
           }, () => {
             this.onNewSemestreNiveau = false;
             this.listSelectedSemestre = [];
             this.notif.success();
-            this.ngxService.hide(this.LOADERID);
+
             this.loadListNiveau();
           }
         )
@@ -130,7 +128,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
   saveDocumentNiveauAFournir(niveau) {
     this.listDocumentParNiveau = [];
     if (this.listSelectedDocument && this.listSelectedDocument.length > 0) {
-      this.ngxService.show(this.LOADERID);
+
       this.listSelectedDocument.forEach(s => {
         const documentNiveau = new DocumentParNiveauModel();
         documentNiveau.niveau = niveau;
@@ -146,12 +144,12 @@ export class NiveauComponent implements OnInit, OnDestroy {
             this.listSelectedDocument = [];
             this.onNewDocumentFournirNiveau = false;
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+
           }, () => {
             this.onNewDocumentFournirNiveau = false;
             this.listSelectedDocument = [];
             this.notif.success();
-            this.ngxService.hide(this.LOADERID);
+
             this.loadListNiveau();
           }
         )
@@ -164,7 +162,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
   saveDocumentNiveauADonner(niveau) {
     this.listDocumentParNiveau = [];
     if (this.listSelectedDocument && this.listSelectedDocument.length > 0) {
-      this.ngxService.show(this.LOADERID);
+
       this.listSelectedDocument.forEach(s => {
         const documentNiveau = new DocumentParNiveauModel();
         documentNiveau.niveau = niveau;
@@ -180,12 +178,12 @@ export class NiveauComponent implements OnInit, OnDestroy {
             this.listSelectedDocument = [];
             this.onNewDocumentDonnerNiveau = false;
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+
           }, () => {
             this.onNewDocumentDonnerNiveau = false;
             this.listSelectedDocument = [];
             this.notif.success();
-            this.ngxService.hide(this.LOADERID);
+
             this.loadListNiveau();
           }
         )
@@ -203,10 +201,10 @@ export class NiveauComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -220,17 +218,17 @@ export class NiveauComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
   }
 
   loadListNiveau() {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.getAllNiveau().subscribe(
         (data) => {
@@ -238,7 +236,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
           this.listNiveau.forEach(n => {
@@ -266,7 +264,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
           });
           this.dataSource = new MatTableDataSource<NiveauModel>(this.listNiveau);
           this.dataSource.paginator = this.paginator;
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -279,7 +277,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
   }
 
   archiveNiveau(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.archiveNiveau(id).subscribe(
         (data) => {
@@ -288,9 +286,9 @@ export class NiveauComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
           this.sharedService.isVisibleSource.next(true);
         }
       )
@@ -298,7 +296,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
   }
 
   archiveSemestreNiveau(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.archiveSemestreNiveau(id).subscribe(
         (data) => {
@@ -307,16 +305,16 @@ export class NiveauComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
   }
 
   archiveDocumentNiveau(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.archiveDocumentNiveau(id).subscribe(
         (data) => {
@@ -325,9 +323,9 @@ export class NiveauComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -353,7 +351,7 @@ export class NiveauComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.updateNiveauStatus(value.checked, item.id)
         .subscribe(
@@ -363,16 +361,16 @@ export class NiveauComponent implements OnInit, OnDestroy {
           },
           (error) => {
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+
           }, () => {
-            this.ngxService.hide(this.LOADERID);
+
           }
         )
     );
   }
 
   onChangeStatusSemestre(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.updateSemestreNiveauEncours(value.checked, item.id)
         .subscribe(
@@ -382,9 +380,9 @@ export class NiveauComponent implements OnInit, OnDestroy {
           },
           (error) => {
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+
           }, () => {
-            this.ngxService.hide(this.LOADERID);
+
           }
         )
     );

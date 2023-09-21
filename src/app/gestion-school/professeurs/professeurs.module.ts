@@ -12,6 +12,7 @@ import {LayoutModule} from "../../layout/layout.module";
 import {MatIconModule} from "@angular/material/icon";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatExpansionModule} from "@angular/material/expansion";
+import { MatChipsModule } from '@angular/material/chips';
 
 
 
@@ -27,6 +28,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
     MatIconModule,
     MatAutocompleteModule,
     MatExpansionModule,
+    MatChipsModule
   ],
   providers: [
     ProfesseurService

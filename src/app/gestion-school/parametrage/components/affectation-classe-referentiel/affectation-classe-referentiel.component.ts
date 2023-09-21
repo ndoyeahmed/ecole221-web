@@ -4,8 +4,6 @@ import { ClasseReferentielModel } from './../../../../shared/models/classe-refer
 import { ClasseModel } from './../../../../shared/models/classe.model';
 import { ParametrageClasseService } from './../../services/parametrage-classe.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { ReferentielModel } from 'src/app/shared/models/referentiel.model';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
@@ -44,7 +42,7 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private paramBaseService: ParametragesBaseService,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramReferentielService: ParametrageReferentielService, private paramClasseService: ParametrageClasseService
   ) { }
 
@@ -53,7 +51,7 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListClasse();
     this.loadListNiveau();
     this.loadListReferentiel();
@@ -80,10 +78,10 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -97,10 +95,10 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -114,10 +112,10 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -147,10 +145,10 @@ export class AffectationClasseReferentielComponent implements OnInit, OnDestroy 
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

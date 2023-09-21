@@ -4,7 +4,6 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatDialog} from "@angular/material/dialog";
 import {MycustomNotificationService} from "../../../parametrage/services/mycustom-notification.service";
-import {NgxSpinnerService} from "ngx-spinner";
 import {ProfesseurService} from "../../services/professeur.service";
 import {ProfesseurModel} from "../../../../shared/models/professeur.model";
 import {ProfesseurModuleModel} from "../../../../shared/models/professeur-module.model";
@@ -41,7 +40,7 @@ export class ProfesseurListComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialog: MatDialog, private profService: ProfesseurService,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private router: Router
   ) { }
 

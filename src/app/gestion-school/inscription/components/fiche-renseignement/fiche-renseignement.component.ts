@@ -13,7 +13,6 @@ import { SpecialiteModel } from 'src/app/shared/models/specialite.model';
 import { NiveauModel } from 'src/app/shared/models/niveau.model';
 import { ParametragesSpecialiteService } from './../../../parametrage/services/parametrages-specialite.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { MycustomNotificationService } from 'src/app/gestion-school/parametrage/services/mycustom-notification.service';
 import { Observable, Subscription } from 'rxjs';
 import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.model';
@@ -64,7 +63,7 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
   fileInfos: Observable<any>;
 
   constructor(
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramSpecialiteService: ParametragesSpecialiteService, private paramBaseService: ParametragesBaseService,
     private paramClasseService: ParametrageClasseService, private inscriptionService: InscriptionService
   ) { }
@@ -154,10 +153,10 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -209,10 +208,10 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -226,10 +225,10 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -243,10 +242,10 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -260,10 +259,10 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -287,7 +286,7 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
             && this.utilisateurPereModel.telephone) || (this.utilisateurTuteurModel
               && this.utilisateurTuteurModel.prenom && this.utilisateurTuteurModel.nom && this.utilisateurTuteurModel.telephone)) {*/
 
-          this.ngxService.show(this.LOADERID);
+          
 
           this.etudiantModel.pays = this.paysModel;
           this.etudiantModel.photo = this.url;
@@ -310,12 +309,12 @@ export class FicheRenseignementComponent implements OnInit, OnDestroy {
                 } else {
                   this.notif.error();
                 }
-                this.ngxService.hide(this.LOADERID);
+
               }, () => {
                 addForm.resetForm();
                 this.clear();
                 this.notif.success();
-                this.ngxService.hide(this.LOADERID);
+
               }
             )
           );

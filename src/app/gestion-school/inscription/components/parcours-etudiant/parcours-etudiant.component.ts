@@ -5,7 +5,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InscriptionService } from '../../services/inscription.service';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { MycustomNotificationService } from 'src/app/gestion-school/parametrage/services/mycustom-notification.service';
 import * as moment from 'moment';
 
@@ -33,12 +32,11 @@ export class ParcoursEtudiantComponent implements OnInit {
   constructor(
     private inscriptionService: InscriptionService,
     private route: ActivatedRoute,
-    private notif: MycustomNotificationService,
-    private ngxService: NgxSpinnerService
+    private notif: MycustomNotificationService
   ) { }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.idInscription = Number(this.route.snapshot.paramMap.get('inscriptionid'));
     this.subscription.push(
       this.inscriptionService.getInscriptionById(this.idInscription).subscribe(
@@ -78,10 +76,10 @@ export class ParcoursEtudiantComponent implements OnInit {
         },
         (error) => {
           this.notif.error('Echec chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

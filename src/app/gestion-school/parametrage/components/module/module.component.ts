@@ -3,7 +3,6 @@ import { MentionModuleModel } from './../../../../shared/models/mention-module.m
 import { ModuleModel } from './../../../../shared/models/module.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MentionModel } from 'src/app/shared/models/mention.model';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
@@ -44,7 +43,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramModuleUE: ParametrageModuleUeService
   ) { }
 
@@ -53,7 +52,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListModule();
     this.loadListMention();
   }
@@ -79,14 +78,14 @@ export class ModuleComponent implements OnInit, OnDestroy {
           }, (error) => {
             this.onNewModuleMention = false;
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+            
           }, () => {
             this.onNewModuleMention = false;
             this.listSelectedMentionUpdate = [];
             this.listMentionModule = [];
             this.notif.success();
             this.loadListModule();
-            this.ngxService.hide(this.LOADERID);
+            
           }
         )
       );
@@ -103,7 +102,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+          
         },
         () => {
           this.listModule.forEach(n => {
@@ -116,7 +115,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
             );
             this.dataSource = new MatTableDataSource<ModuleModel>(this.listModule);
             this.dataSource.paginator = this.paginator;
-            this.ngxService.hide(this.LOADERID);
+            
           }
           );
         }
@@ -131,10 +130,10 @@ export class ModuleComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+          
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -143,7 +142,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
   save(addForm) {
     if (this.moduleModel.libelle && this.moduleModel.libelle.trim() !== '') {
       if (this.listSelectedMention && this.listSelectedMention.length > 0) {
-        this.ngxService.show(this.LOADERID);
+
         this.listSelectedMention.forEach(x => {
           const mentionModule = new MentionModuleModel();
           mentionModule.mention = x;
@@ -165,7 +164,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
                 }
               }, (error) => {
                 this.notif.error();
-                this.ngxService.hide(this.LOADERID);
+                
               }, () => {
                 addForm.resetForm();
                 this.clear();
@@ -193,14 +192,14 @@ export class ModuleComponent implements OnInit, OnDestroy {
         (data) => {
         }, (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
           mentionModuleModel = [];
           this.listSelectedMention = [];
           this.listMentionModule = [];
           this.loadListModule();
           this.loadListMention();
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -216,7 +215,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
   }
 
   archiveModule(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramModuleUE.archiveModule(id).subscribe(
         (data) => {
@@ -225,16 +224,16 @@ export class ModuleComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
   }
 
   archiveMentionModule(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramModuleUE.archiveMentionModule(id).subscribe(
         (data) => {
@@ -243,9 +242,9 @@ export class ModuleComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -269,7 +268,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramModuleUE.updateModuleStatus(value.checked, item.id)
       .subscribe(
@@ -279,9 +278,9 @@ export class ModuleComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );

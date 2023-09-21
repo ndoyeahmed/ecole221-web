@@ -2,7 +2,6 @@ import { ParametragesSpecialiteService } from './../../services/parametrages-spe
 import { SemestreModel } from './../../../../shared/models/semestre.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -30,7 +29,7 @@ export class SemestreComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService
+    private notif: MycustomNotificationService,
   ) { }
 
   ngOnDestroy(): void {
@@ -38,7 +37,7 @@ export class SemestreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListSemestre();
   }
 
@@ -52,10 +51,10 @@ export class SemestreComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+          
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -63,7 +62,7 @@ export class SemestreComponent implements OnInit, OnDestroy {
 
   save() {
     if (this.semestreModel.libelle && this.semestreModel.libelle.trim() !== '') {
-      this.ngxService.show(this.LOADERID);
+
       this.subscription.push(
         (this.semestreModel.id ?
           this.paramSpecialiteService.updateSemestre(this.semestreModel.id, this.semestreModel) :
@@ -74,9 +73,9 @@ export class SemestreComponent implements OnInit, OnDestroy {
               this.notif.success();
             }, (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+              
             }, () => {
-              this.ngxService.hide(this.LOADERID);
+              
             }
           )
       );
@@ -88,7 +87,7 @@ export class SemestreComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.archiveSemestre(id).subscribe(
         (data) => {
@@ -97,9 +96,9 @@ export class SemestreComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -119,7 +118,7 @@ export class SemestreComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.updateSemestreStatus(value.checked, item.id)
       .subscribe(
@@ -129,9 +128,9 @@ export class SemestreComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );

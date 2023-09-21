@@ -1,7 +1,6 @@
 import { SharedService } from './../../../../shared/services/shared.service';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { CycleModel } from 'src/app/shared/models/cycle.model';
 import { DocumentParNiveauModel } from 'src/app/shared/models/document-par-niveau.model';
@@ -46,7 +45,7 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramBaseService: ParametragesBaseService, private sharedService: SharedService
   ) { }
 
@@ -55,7 +54,7 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListCycle();
     this.loadListSemestre();
     this.loadListParcours();
@@ -81,10 +80,10 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -98,10 +97,10 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -115,10 +114,10 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -132,10 +131,10 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -179,7 +178,7 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
       && this.cycleModel.cycle && this.cycleModel.cycle.trim() !== '') {
       if ((this.listSemestreNiveau && this.listSemestreNiveau.length > 0
         && this.listSelectedDocumentsAFournir && this.listSelectedDocumentsAFournir.length > 0) || this.niveauModel.id) {
-        this.ngxService.show(this.LOADERID);
+
         this.niveauModel.parcours = this.parcoursModel;
         this.niveauModel.cycle = this.cycleModel;
         console.log(this.niveauModel);
@@ -204,12 +203,12 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
                 // }
               }, (error) => {
                 this.notif.error();
-                this.ngxService.hide(this.LOADERID);
+
               }, () => {
                 addForm.resetForm();
                 this.clear();
                 this.notif.success();
-                this.ngxService.hide(this.LOADERID);
+
                 this.sharedService.isVisibleSource.next(true);
               }
             )
@@ -237,12 +236,12 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
           console.log(data);
         }, (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
           docParNiveau = [];
           this.listSelectedDocumentsAFournir = [];
           this.loadListDocument();
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -256,12 +255,12 @@ export class NiveauAddComponent implements OnInit, OnDestroy {
           console.log(data);
         }, (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
           semestreNiveau = [];
           this.listSemestreNiveau = [];
           this.loadListSemestre();
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

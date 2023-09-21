@@ -1,6 +1,5 @@
 import { NiveauSpecialiteModel } from './../../../../shared/models/niveau-specialite.model';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { NiveauModel } from 'src/app/shared/models/niveau.model';
 import { ReferentielModel } from 'src/app/shared/models/referentiel.model';
@@ -44,7 +43,7 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramReferentielService: ParametrageReferentielService, private paramModuleUEService: ParametrageModuleUeService
   ) { }
 
@@ -53,7 +52,7 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListNiveau();
   }
 
@@ -65,10 +64,10 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+          
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -110,10 +109,10 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+          
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -123,7 +122,7 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
     if (this.referentielModel.annee && this.referentielModel.credit
       && this.referentielModel.volumeHeureTotal && this.referentielModel.description) {
       if (this.niveauModel && this.niveauModel.id && this.specialiteModel && this.specialiteModel.id) {
-        this.ngxService.show(this.LOADERID);
+
         this.referentielModel.niveau = this.niveauModel;
         this.referentielModel.specialite = this.specialiteModel;
         if (this.status === 'clone') {
@@ -135,12 +134,12 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
                 console.log(data);
               }, (error) => {
                 this.notif.error();
-                this.ngxService.hide(this.LOADERID);
+                
               }, () => {
                 addForm.resetForm();
                 this.clear();
                 this.notif.success();
-                this.ngxService.hide(this.LOADERID);
+                
               }
             )
           );
@@ -153,12 +152,12 @@ export class ReferentielAddComponent implements OnInit, OnDestroy {
                   console.log(data);
                 }, (error) => {
                   this.notif.error();
-                  this.ngxService.hide(this.LOADERID);
+                  
                 }, () => {
                   addForm.resetForm();
                   this.clear();
                   this.notif.success();
-                  this.ngxService.hide(this.LOADERID);
+                  
                 }
               )
           );

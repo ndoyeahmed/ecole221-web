@@ -5,7 +5,6 @@ import { SpecialiteModel } from './../../../../shared/models/specialite.model';
 import { NiveauModel } from './../../../../shared/models/niveau.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesSpecialiteService } from '../../services/parametrages-specialite.service';
@@ -47,7 +46,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramBaseService: ParametragesBaseService, private sharedService: SharedService
   ) { }
 
@@ -56,7 +55,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListSpecialite();
     this.loadListMention();
     this.loadListNiveau();
@@ -84,7 +83,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
           if (this.listSpecialite.length > 0) {
@@ -98,13 +97,13 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
               );
               this.dataSource = new MatTableDataSource<SpecialiteModel>(this.listSpecialite);
               this.dataSource.paginator = this.paginator;
-              this.ngxService.hide(this.LOADERID);
+
             }
             );
           } else {
             this.dataSource = new MatTableDataSource<SpecialiteModel>(this.listSpecialite);
             this.dataSource.paginator = this.paginator;
-            this.ngxService.hide(this.LOADERID);
+
           }
         }
       ));
@@ -118,10 +117,10 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -135,10 +134,10 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -160,7 +159,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
     if (this.specialiteModel.libelle && this.specialiteModel.libelle.trim() !== ''
       && this.mentionModel.id) {
       if (this.listSelectedNiveau && this.listSelectedNiveau.length > 0) {
-        this.ngxService.show(this.LOADERID);
+
         this.specialiteModel.mention = this.mentionModel;
         const body = {
           specialite: this.specialiteModel,
@@ -178,7 +177,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
                 } */
               }, (error) => {
                 this.notif.error();
-                this.ngxService.hide(this.LOADERID);
+
               }, () => {
                 addForm.resetForm();
                 this.clear();
@@ -209,13 +208,13 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
           console.log(data);
         }, (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
           niveauSpecialite = [];
           this.listSelectedNiveau = [];
           this.loadListSpecialite();
           this.loadListNiveau();
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -237,14 +236,14 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
           }, (error) => {
             this.onNewNiveauSpecialite = false;
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+
           }, () => {
             this.onNewNiveauSpecialite = false;
             this.listSelectedNiveauUpdate = [];
             this.listSelectedNiveau = [];
             this.notif.success();
             this.loadListSpecialite();
-            this.ngxService.hide(this.LOADERID);
+
           }
         )
       );
@@ -259,7 +258,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
   }
 
   archiveSpecialite(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.archiveSpecialite(id).subscribe(
         (data) => {
@@ -268,9 +267,9 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
           this.loadListSpecialite();
         }
       )
@@ -278,7 +277,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
   }
 
   archiveNiveauSpecialite(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.archiveNiveauSpecialite(id).subscribe(
         (data) => {
@@ -287,9 +286,9 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
           this.loadListSpecialite();
         }
       )
@@ -314,7 +313,7 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramSpecialiteService.updateSpecialiteStatus(value.checked, item.id)
         .subscribe(
@@ -324,9 +323,9 @@ export class SpecialiteComponent implements OnInit, OnDestroy {
           },
           (error) => {
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+
           }, () => {
-            this.ngxService.hide(this.LOADERID);
+
           }
         )
     );

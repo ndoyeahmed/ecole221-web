@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { NotesComponent } from './components/notes/notes.component';
 import {SharedModule} from '../../shared/shared.module';
 import {MatCardModule} from '@angular/material/card';
@@ -15,7 +14,6 @@ import { NotesEtudiantComponent } from './components/notes-etudiant/notes-etudia
 import { DevoirsListComponent } from './components/devoirs-list/devoirs-list.component';
 import { BulletinComponent } from './components/bulletin/bulletin.component';
 import { PdfGenerationService } from './services/pdf-generation.service';
-import { BlockUIModule } from 'ng-block-ui';
 
 
 
@@ -31,9 +29,6 @@ import { BlockUIModule } from 'ng-block-ui';
     MatIconModule,
     MatAutocompleteModule,
     MatExpansionModule,
-    BlockUIModule.forRoot({
-      message: 'Traitement en cours.....'
-    })
   ],
   providers: [
     NotesService,

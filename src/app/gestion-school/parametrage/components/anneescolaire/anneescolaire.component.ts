@@ -6,7 +6,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { NgxSpinnerService } from "ngx-spinner";
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 
@@ -30,10 +29,9 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
   dialogRef: any;
 
   constructor(private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-              private notif: MycustomNotificationService, private ngxService: NgxSpinnerService) { }
+              private notif: MycustomNotificationService) { }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
     this.loadListAnneeScolaire();
   }
 
@@ -51,10 +49,10 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -62,7 +60,7 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
 
   save() {
     if (this.anneeScolaire.libelle && this.anneeScolaire.libelle.trim() !== '') {
-      this.ngxService.show(this.LOADERID);
+      
       this.subscription.push(
         (this.anneeScolaire.id ?
           this.paramBaseService.updateAnneeScolaire(this.anneeScolaire, this.anneeScolaire.id) :
@@ -74,9 +72,9 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
             },
             (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+
             }, () => {
-              this.ngxService.hide(this.LOADERID);
+
             }
           )
       );
@@ -90,7 +88,7 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+    
     this.subscription.push(
       this.paramBaseService.archiveAnneeScolaire(id).subscribe(
         (data) => {
@@ -99,9 +97,9 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -121,7 +119,7 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+    
     this.subscription.push(
       this.paramBaseService.updateAnneeScolaireEnCoursStatus(value.checked, item.id)
       .subscribe(
@@ -131,9 +129,9 @@ export class AnneescolaireComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

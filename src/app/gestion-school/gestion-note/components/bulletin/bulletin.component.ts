@@ -6,7 +6,6 @@ import {DomSanitizer} from '@angular/platform-browser';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import {HttpClient} from '@angular/common/http';
-import {log} from 'util';
 import * as moment from 'moment/moment';
 import {SemestreNiveauModel} from '../../../../shared/models/semestre-niveau.model';
 import {NotesService} from '../../services/notes.service';
@@ -14,7 +13,6 @@ import {Subscription} from 'rxjs';
 import {BulletinAllModel} from '../../../../shared/models/bulletin-all.model';
 import {ClasseSousClasse} from '../../../../shared/models/classe-sous-classe.model';
 import {ParametragesSpecialiteService} from '../../../parametrage/services/parametrages-specialite.service';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { MycustomNotificationService } from 'src/app/gestion-school/parametrage/services/mycustom-notification.service';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
@@ -29,7 +27,6 @@ declare var $: any;
   styleUrls: ['./bulletin.component.css']
 })
 export class BulletinComponent implements OnInit, OnDestroy {
-  @BlockUI() blockUI: NgBlockUI;
   @Input() listRecapNoteProgrammeModule: RecapNoteProgrammeModuleByProgrammeUeModel[];
   @Input() bulletinRecapModels: BulletinRecapModel[];
   @Input() inscription: InscriptionModel;
@@ -633,23 +630,23 @@ export class BulletinComponent implements OnInit, OnDestroy {
   }
 
   async downloadBulletin() {
-    this.blockUI.start();
+
     const filename = '' +
       this.inscription.etudiant.nom +
       this.inscription.etudiant.prenom + moment();
     const docDef = await this.generateBulletin();
     pdfMake.createPdf(docDef).download(filename);
-    this.blockUI.stop();
+
   }
 
   async downloadAllBulletin() {
-    this.blockUI.start();
+
     const filename = this.classeSousClasse.classe.libelle + '-' +
       this.semestre.semestre.libelle + '-' +
       moment().format('DD-MM-YYYY HH-mm-ss');
     const docDef = await this.generateAllBulletin();
     pdfMake.createPdf(docDef).download(filename);
-    this.blockUI.stop();
+
   }
 
   getAppreciation(moyenneGeneral) {
@@ -1104,9 +1101,9 @@ export class BulletinComponent implements OnInit, OnDestroy {
 
             this.downloadAllBulletin().then(result => {
               // console.log('generation ok');
-            }).catch(error => {this.notif.error('Veuillez actualiser le filtre SVP') ;this.blockUI.stop();});
+            }).catch(error => {this.notif.error('Veuillez actualiser le filtre SVP') ;});
           }
-        }, (error) => {this.notif.error('Veuillez actualiser le filtre SVP');this.blockUI.stop();},
+        }, (error) => {this.notif.error('Veuillez actualiser le filtre SVP');},
          () => {
            // console.log(this.bulletinAllClasse);
          }

@@ -2,7 +2,6 @@ import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core
 import {Observable, Subscription} from 'rxjs';
 import {ProfesseurService} from '../../services/professeur.service';
 import {MycustomNotificationService} from '../../../parametrage/services/mycustom-notification.service';
-import {NgxSpinnerService} from 'ngx-spinner';
 import {UntypedFormControl} from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
@@ -75,7 +74,7 @@ export class ProfesseurAddComponent implements OnInit, OnDestroy {
 
   constructor(
     private profService: ProfesseurService, private paramModuleService: ParametrageModuleUeService,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private route: ActivatedRoute
   ) {
     this.filteredSpecialite = this.specialiteCtrl.valueChanges.pipe(

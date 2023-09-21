@@ -6,7 +6,6 @@ import { MentionModel } from 'src/app/shared/models/mention.model';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametrageModuleUeService } from '../../services/parametrage-module-ue.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
@@ -44,7 +43,7 @@ export class UeComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramModuleUE: ParametrageModuleUeService
   ) { }
 
@@ -53,7 +52,7 @@ export class UeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListUE();
     this.loadListMention();
   }
@@ -79,14 +78,14 @@ export class UeComponent implements OnInit, OnDestroy {
           }, (error) => {
             this.onNewUEMention = false;
             this.notif.error();
-            this.ngxService.hide(this.LOADERID);
+            
           }, () => {
             this.onNewUEMention = false;
             this.listSelectedMentionUpdate = [];
             this.listMentionUE = [];
             this.notif.success();
             this.loadListUE();
-            this.ngxService.hide(this.LOADERID);
+            
           }
         )
       );
@@ -103,7 +102,7 @@ export class UeComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+          
         },
         () => {
           this.listUE.forEach(n => {
@@ -116,7 +115,7 @@ export class UeComponent implements OnInit, OnDestroy {
             );
             this.dataSource = new MatTableDataSource<UeModel>(this.listUE);
             this.dataSource.paginator = this.paginator;
-            this.ngxService.hide(this.LOADERID);
+            
           }
           );
         }
@@ -131,10 +130,10 @@ export class UeComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+          
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -143,7 +142,7 @@ export class UeComponent implements OnInit, OnDestroy {
   save(addForm) {
     if (this.ueModel.libelle && this.ueModel.libelle.trim() !== '') {
       if (this.listSelectedMention && this.listSelectedMention.length > 0) {
-        this.ngxService.show(this.LOADERID);
+
         this.listSelectedMention.forEach(x => {
           const mentionUE = new MentionUEModel();
           mentionUE.mention = x;
@@ -164,7 +163,7 @@ export class UeComponent implements OnInit, OnDestroy {
                 }
               }, (error) => {
                 this.notif.error();
-                this.ngxService.hide(this.LOADERID);
+                
               }, () => {
                 addForm.resetForm();
                 this.clear();
@@ -192,14 +191,14 @@ export class UeComponent implements OnInit, OnDestroy {
         (data) => {
         }, (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
           mentionUEModel = [];
           this.listSelectedMention = [];
           this.listMentionUE = [];
           this.loadListUE();
           this.loadListMention();
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -215,7 +214,7 @@ export class UeComponent implements OnInit, OnDestroy {
   }
 
   archiveUE(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramModuleUE.archiveUE(id).subscribe(
         (data) => {
@@ -224,16 +223,16 @@ export class UeComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
   }
 
   archiveMentionModule(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramModuleUE.archiveMentionModule(id).subscribe(
         (data) => {
@@ -242,9 +241,9 @@ export class UeComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );
@@ -268,7 +267,7 @@ export class UeComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramModuleUE.updateUEStatus(value.checked, item.id)
       .subscribe(
@@ -278,9 +277,9 @@ export class UeComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+          
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+          
         }
       )
     );

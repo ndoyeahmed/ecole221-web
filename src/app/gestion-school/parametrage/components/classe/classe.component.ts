@@ -4,12 +4,10 @@ import { ClasseModel } from './../../../../shared/models/classe.model';
 import { ParametrageClasseService } from './../../services/parametrage-classe.service';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesSpecialiteService } from '../../services/parametrages-specialite.service';
 import { NiveauModel } from 'src/app/shared/models/niveau.model';
-import { SpecialiteModel } from 'src/app/shared/models/specialite.model';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { NiveauSpecialiteModel } from 'src/app/shared/models/niveau-specialite.model';
@@ -49,7 +47,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramSpecialiteService: ParametragesSpecialiteService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService,
+    private notif: MycustomNotificationService,
     private paramClasseService: ParametrageClasseService, private paramBaseService: ParametragesBaseService
   ) { }
 
@@ -91,7 +89,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
             },
             (error) => {
               this.notif.error('Echec de chargement des données');
-              this.ngxService.hide(this.LOADERID);
+
             },
             () => {
               this.listClasse.forEach(x => {
@@ -103,7 +101,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
               });
               this.dataSource = new MatTableDataSource<ClasseModel>(this.listClasse);
               this.dataSource.paginator = this.paginator;
-              this.ngxService.hide(this.LOADERID);
+
             }
           );
         }
@@ -119,10 +117,10 @@ export class ClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -136,10 +134,10 @@ export class ClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -153,10 +151,10 @@ export class ClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -165,7 +163,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
   save(addForm) {
     if (this.classeModel.libelle && this.classeModel.libelle.trim() !== ''
       && this.niveauModel.id && this.specialiteModel.specialite && this.horaireModel.id) {
-      this.ngxService.show(this.LOADERID);
+
       this.classeModel.niveau = this.niveauModel;
       this.classeModel.specialite = this.specialiteModel.specialite;
       this.classeModel.horaire = this.horaireModel;
@@ -178,7 +176,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
               console.log(data);
             }, (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+
             }, () => {
               addForm.resetForm();
               this.clear();
@@ -210,7 +208,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramClasseService.archiveClasse(id).subscribe(
         (data) => {
@@ -219,9 +217,9 @@ export class ClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -241,7 +239,7 @@ export class ClasseComponent implements OnInit, OnDestroy {
   }
 
   onChangeStatus(value: MatSlideToggleChange, item) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramClasseService.updateClasseStatus(value.checked, item.id)
       .subscribe(
@@ -251,9 +249,9 @@ export class ClasseComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

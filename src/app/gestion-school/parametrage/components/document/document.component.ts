@@ -1,7 +1,6 @@
 import { DocumentModel } from './../../../../shared/models/document.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { MycustomNotificationService } from '../../services/mycustom-notification.service';
 import { ParametragesBaseService } from '../../services/parametrages-base.service';
@@ -29,7 +28,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
 
   constructor(
     private paramBaseService: ParametragesBaseService, private dialog: MatDialog,
-    private notif: MycustomNotificationService, private ngxService: NgxSpinnerService
+    private notif: MycustomNotificationService
   ) { }
 
   ngOnDestroy(): void {
@@ -37,7 +36,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ngxService.show(this.LOADERID);
+
     this.loadListDocument();
   }
 
@@ -51,10 +50,10 @@ export class DocumentComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error('Echec de chargement des données');
-          this.ngxService.hide(this.LOADERID);
+
         },
         () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );
@@ -62,7 +61,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
 
   save() {
     if (this.documentModel.libelle && this.documentModel.libelle.trim() !== '') {
-      this.ngxService.show(this.LOADERID);
+
       this.subscription.push(
         (this.documentModel.id ?
           this.paramBaseService.updateDocument(this.documentModel.id, this.documentModel) :
@@ -73,9 +72,9 @@ export class DocumentComponent implements OnInit, OnDestroy {
               this.notif.success();
             }, (error) => {
               this.notif.error();
-              this.ngxService.hide(this.LOADERID);
+
             }, () => {
-              this.ngxService.hide(this.LOADERID);
+
             }
           )
       );
@@ -87,7 +86,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   archive(id) {
-    this.ngxService.show(this.LOADERID);
+
     this.subscription.push(
       this.paramBaseService.archiveDocument(id).subscribe(
         (data) => {
@@ -96,9 +95,9 @@ export class DocumentComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.notif.error();
-          this.ngxService.hide(this.LOADERID);
+
         }, () => {
-          this.ngxService.hide(this.LOADERID);
+
         }
       )
     );

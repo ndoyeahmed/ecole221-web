@@ -1,10 +1,4 @@
 <div>
-  <ngx-spinner
-    [name]="LOADERID"
-    [fullScreen]="false"
-    type="square-jelly-box"
-    size="medium"
-  ></ngx-spinner>
   <div class="row">
     <button matTooltip="Ajouter niveau" *ngIf="!onAdd" mat-fab (click)="onAdd = true;clear()" type="button" color="primary">
       <em class="fa fa-plus fa-lg"></em>
