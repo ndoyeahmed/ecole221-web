@@ -33,6 +33,7 @@
     "ngx-pagination": "^6.0.3",
     "pdfmake": "^0.2.7",
     "rxjs": "~6.5.4",
+    "school221-web": "file:",
     "tslib": "^2.0.0",
     "zone.js": "~0.13.0"
   },
